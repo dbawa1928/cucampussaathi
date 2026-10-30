@@ -6,6 +6,30 @@ const ROUTE_TITLES: Record<string, { title: string; description: string }> = {
     title: 'CUCampusSaathi — AI-Powered University Knowledge & Collaboration Platform',
     description: 'Discover skills, connect with mentors, find teammates, and turn academic knowledge into real-world projects.',
   },
+  '/dashboard': {
+    title: 'Dashboard — CUCampusSaathi',
+    description: 'Personalized student and faculty university hub for consultations, projects, and activities.',
+  },
+  '/ai-tutor': {
+    title: 'AI Document Tutor — CUCampusSaathi',
+    description: 'AI-powered grounded academic learning workspace for lecture slides, notes, and study materials.',
+  },
+  '/directory': {
+    title: 'Campus Directory — CUCampusSaathi',
+    description: 'Search verified university faculty members, mentors, and departments.',
+  },
+  '/appointments': {
+    title: 'Consultations & Availability — CUCampusSaathi',
+    description: 'Book and manage 1-on-1 faculty student consultation appointments and slots.',
+  },
+  '/admin': {
+    title: 'Admin Console — CUCampusSaathi',
+    description: 'Administrative management for faculty verifications, students, and university appointments.',
+  },
+  '/profile': {
+    title: 'My Profile & Settings — CUCampusSaathi',
+    description: 'Manage your academic profile, department, skills, and notification preferences.',
+  },
   '/about': {
     title: 'About Us — CUCampusSaathi',
     description: 'Learn about our mission, vision, core principles, and the Chandigarh University team building CUCampusSaathi.',
@@ -52,10 +76,28 @@ export const RouteMetaUpdater: React.FC = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const meta = ROUTE_TITLES[pathname] || {
-      title: 'Page Not Found — CUCampusSaathi',
-      description: 'The requested campus page could not be located.',
-    };
+    const cleanPath = pathname.replace(/\/+$/, '') || '/';
+
+    // 1. Direct route match
+    let meta = ROUTE_TITLES[cleanPath];
+
+    // 2. Prefix route match (e.g., /appointments?tab=... or /directory/...)
+    if (!meta) {
+      const matchingKey = Object.keys(ROUTE_TITLES).find(
+        (key) => key !== '/' && cleanPath.startsWith(key)
+      );
+      if (matchingKey) {
+        meta = ROUTE_TITLES[matchingKey];
+      }
+    }
+
+    // 3. Graceful university brand fallback if not matched
+    if (!meta) {
+      meta = {
+        title: 'CUCampusSaathi — Chandigarh University Knowledge & Collaboration Platform',
+        description: 'Learn • Share • Teach • Build • Grow Together. Chandigarh University platform.',
+      };
+    }
 
     document.title = meta.title;
 

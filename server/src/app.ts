@@ -41,20 +41,26 @@ export function createApp(): Application {
   // 5. Serve Frontend static files for All-in-One deployment (if dist exists)
   const candidatePaths = [
     path.resolve(process.cwd(), 'dist'),
+    path.resolve(process.cwd(), '../dist'),
     path.resolve(__dirname, '../../dist'),
     path.resolve(__dirname, '../dist'),
+    path.resolve(__dirname, '../../../dist'),
   ];
   const frontendDistPath = candidatePaths.find((p) => fs.existsSync(p));
 
   if (frontendDistPath) {
     app.use(express.static(frontendDistPath));
 
-    // Wildcard SPA route fallback for React Router
+    // Wildcard SPA route fallback for React Router (skip /api routes)
     app.get('*', (req, res, next) => {
       if (req.path.startsWith('/api')) {
         return next();
       }
-      res.sendFile(path.join(frontendDistPath, 'index.html'));
+      const indexPath = path.join(frontendDistPath, 'index.html');
+      if (fs.existsSync(indexPath)) {
+        return res.sendFile(indexPath);
+      }
+      next();
     });
   }
 
