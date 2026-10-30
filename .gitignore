@@ -24,6 +24,7 @@ server/dist
 server/node_modules
 server/uploads
 MY DATA
+*.pdf
 
 # Editor directories and files
 .vscode/*
