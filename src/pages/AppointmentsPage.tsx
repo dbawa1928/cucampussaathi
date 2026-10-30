@@ -101,11 +101,31 @@ export const AppointmentsPage: React.FC = () => {
   const [searchParams] = useSearchParams();
 
   // Active Tab:
-  // For student: 'my_bookings' | 'book_slot'
-  // For teacher: 'requests' | 'manage_slots'
-  const [activeTab, setActiveTab] = useState<string>(
-    user?.role === 'TEACHER' ? 'requests' : 'my_bookings'
-  );
+  // For teacher: 'manage_slots' (default) | 'requests'
+  // For student: 'book_slot' (default) | 'my_bookings'
+  const getInitialTab = () => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam) {
+      if (tabParam === 'slots' || tabParam === 'manage_slots') return 'manage_slots';
+      if (tabParam === 'book' || tabParam === 'book_slot') return 'book_slot';
+      if (tabParam === 'requests') return 'requests';
+      if (tabParam === 'my_bookings' || tabParam === 'bookings') return 'my_bookings';
+    }
+    return user?.role === 'TEACHER' ? 'manage_slots' : 'book_slot';
+  };
+
+  const [activeTab, setActiveTab] = useState<string>(getInitialTab);
+
+  // Sync activeTab whenever URL search parameter changes
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam) {
+      if (tabParam === 'slots' || tabParam === 'manage_slots') setActiveTab('manage_slots');
+      else if (tabParam === 'book' || tabParam === 'book_slot') setActiveTab('book_slot');
+      else if (tabParam === 'requests') setActiveTab('requests');
+      else if (tabParam === 'my_bookings' || tabParam === 'bookings') setActiveTab('my_bookings');
+    }
+  }, [searchParams]);
 
   // General feedback states
   const [loading, setLoading] = useState<boolean>(false);
@@ -789,21 +809,6 @@ export const AppointmentsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => {
-                  setActiveTab('requests');
-                  setApiError('');
-                  setSuccessMessage('');
-                }}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
-                  activeTab === 'requests'
-                    ? 'bg-[#C62828] text-white shadow-xs'
-                    : 'text-[#666666] hover:text-[#252525]'
-                }`}
-              >
-                <CalendarCheck className="w-4 h-4" /> Consultation Requests ({appointments.length})
-              </button>
-              <button
-                type="button"
-                onClick={() => {
                   setActiveTab('manage_slots');
                   setApiError('');
                   setSuccessMessage('');
@@ -816,9 +821,39 @@ export const AppointmentsPage: React.FC = () => {
               >
                 <Calendar className="w-4 h-4" /> Manage Availability Slots
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('requests');
+                  setApiError('');
+                  setSuccessMessage('');
+                }}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                  activeTab === 'requests'
+                    ? 'bg-[#C62828] text-white shadow-xs'
+                    : 'text-[#666666] hover:text-[#252525]'
+                }`}
+              >
+                <CalendarCheck className="w-4 h-4" /> Consultation Requests ({appointments.length})
+              </button>
             </>
           ) : (
             <>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('book_slot');
+                  setApiError('');
+                  setSuccessMessage('');
+                }}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                  activeTab === 'book_slot'
+                    ? 'bg-[#C62828] text-white shadow-xs'
+                    : 'text-[#666666] hover:text-[#252525]'
+                }`}
+              >
+                <Plus className="w-4 h-4" /> Available Slots / Book Consultation
+              </button>
               <button
                 type="button"
                 onClick={() => {
@@ -833,21 +868,6 @@ export const AppointmentsPage: React.FC = () => {
                 }`}
               >
                 <CalendarCheck className="w-4 h-4" /> My Appointments ({appointments.length})
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveTab('book_slot');
-                  setApiError('');
-                  setSuccessMessage('');
-                }}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
-                  activeTab === 'book_slot'
-                    ? 'bg-[#C62828] text-white shadow-xs'
-                    : 'text-[#666666] hover:text-[#252525]'
-                }`}
-              >
-                <Plus className="w-4 h-4" /> Book New Consultation
               </button>
             </>
           )}

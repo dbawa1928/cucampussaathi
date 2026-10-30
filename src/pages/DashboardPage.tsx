@@ -284,13 +284,13 @@ export const DashboardPage: React.FC = () => {
                     AI Document Tutor
                   </Button>
                   <Button
-                    to="/appointments"
+                    to={user.role === 'TEACHER' ? '/appointments?tab=manage_slots' : '/appointments?tab=book_slot'}
                     variant="outline"
                     size="sm"
                     icon={<Calendar className="w-3.5 h-3.5" />}
                     className="flex-1 md:flex-none justify-center"
                   >
-                    FacultyConnect
+                    {user.role === 'TEACHER' ? 'Manage Availability Slots' : 'Book Faculty Slot'}
                   </Button>
                   <Button
                     to="/profile"
@@ -844,10 +844,10 @@ export const DashboardPage: React.FC = () => {
                   </div>
 
                   <Link
-                    to="/appointments"
+                    to={user.role === 'TEACHER' ? '/appointments?tab=manage_slots' : '/appointments?tab=book_slot'}
                     className="inline-flex items-center justify-between text-xs font-bold text-[#8E1717] hover:text-[#701212] pt-2 border-t border-[#E7DADA]"
                   >
-                    <span>{user.role === 'TEACHER' ? 'Manage Availability & Requests' : 'Book / View Consultations'}</span>
+                    <span>{user.role === 'TEACHER' ? 'Manage Availability Slots' : 'Book / View Consultations'}</span>
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
@@ -918,7 +918,7 @@ export const DashboardPage: React.FC = () => {
                       : 'Configure your weekly availability slots so students can book office hours.'}
                   </p>
                   <Button
-                    to="/appointments"
+                    to={user.role === 'TEACHER' ? '/appointments?tab=manage_slots' : '/appointments?tab=book_slot'}
                     variant="primary"
                     size="sm"
                   >
