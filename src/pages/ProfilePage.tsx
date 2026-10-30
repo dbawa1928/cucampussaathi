@@ -183,8 +183,14 @@ export const ProfilePage: React.FC = () => {
     setSuccessMessage('');
 
     try {
-      const res = await apiClient.put<ApiResponse<{ profile: any }>>('/users/profile/student', studentForm);
+      const res = await apiClient.put<ApiResponse<{ profile: any }>>('/users/profile/student', {
+        ...studentForm,
+        isOnboardingCompleted: true,
+      });
       if (res.success) {
+        if (typeof window !== 'undefined' && user) {
+          localStorage.setItem(`cucampus_onboarding_done_${user.id || user._id}`, 'true');
+        }
         setSuccessMessage('Student profile updated successfully in MongoDB Atlas.');
       }
     } catch (err: any) {

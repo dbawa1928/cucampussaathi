@@ -20,17 +20,23 @@ export function isStudentProfileComplete(user: AuthUser | null): boolean {
   if (!user) return false;
   if (user.role !== 'STUDENT') return true;
 
+  const userId = user.id || user._id;
+  if (typeof window !== 'undefined' && userId) {
+    if (localStorage.getItem(`cucampus_onboarding_done_${userId}`) === 'true') {
+      return true;
+    }
+  }
+
   const p = user.profile;
   if (!p) return false;
   if (p.isOnboardingCompleted === true) return true;
 
-  const hasBio = Boolean(p.bio && p.bio.trim().length >= 10);
-  const hasSkills = Boolean(Array.isArray(p.skills) && p.skills.length > 0);
-  const hasGithub = Boolean(p.socialLinks?.github && p.socialLinks.github.trim().length > 0);
-  const hasLinkedin = Boolean(p.socialLinks?.linkedin && p.socialLinks.linkedin.trim().length > 0);
-  const hasPersonalEmail = Boolean(p.personalEmail && p.personalEmail.trim().length > 0);
+  // If student has saved course, semester, bio, skills, or personalEmail, consider profile complete
+  if (p.course || p.bio || (Array.isArray(p.skills) && p.skills.length > 0) || p.personalEmail) {
+    return true;
+  }
 
-  return hasBio && hasSkills && hasGithub && hasLinkedin && hasPersonalEmail;
+  return false;
 }
 
 interface AuthContextType {

@@ -83,10 +83,6 @@ export const Navbar: React.FC = () => {
         href: user.role === 'ADMIN' ? '/admin' : '/dashboard',
       });
       links.push({
-        name: 'Learn & Teach',
-        href: '/learn-teach',
-      });
-      links.push({
         name: 'Profile',
         href: '/profile',
       });

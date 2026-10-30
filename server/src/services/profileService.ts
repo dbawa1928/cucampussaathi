@@ -66,15 +66,20 @@ export class ProfileService {
       throw new AppError('Only students can create or update a student profile', 403);
     }
 
-    const hasRequiredOnboarding = Boolean(
-      (data.personalEmail || '').trim() &&
-      (data.bio || '').trim() &&
-      Array.isArray(data.skills) && data.skills.length > 0 &&
-      (data.socialLinks?.github || '').trim() &&
-      (data.socialLinks?.linkedin || '').trim()
+    const existing = await StudentProfile.findOne({ user: userId });
+    const isAlreadyCompleted = existing?.isOnboardingCompleted === true;
+
+    const hasBasicInfo = Boolean(
+      (data.course || '').trim() ||
+      (data.bio || '').trim() ||
+      (Array.isArray(data.skills) && data.skills.length > 0) ||
+      (data.personalEmail || '').trim()
     );
 
-    const isOnboardingCompleted = data.isOnboardingCompleted ?? hasRequiredOnboarding;
+    const isOnboardingCompleted =
+      data.isOnboardingCompleted === true ||
+      isAlreadyCompleted ||
+      hasBasicInfo;
 
     const profile = await StudentProfile.findOneAndUpdate(
       { user: userId },

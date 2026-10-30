@@ -197,6 +197,9 @@ export const StudentOnboardingPage: React.FC = () => {
       if (res.success && res.data?.profile) {
         setSuccess('Profile completed successfully! Redirecting to Dashboard...');
         if (user) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(`cucampus_onboarding_done_${user.id || user._id}`, 'true');
+          }
           updateUser({
             ...user,
             profile: res.data.profile,

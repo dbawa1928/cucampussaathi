@@ -21,7 +21,7 @@ import {
   ShieldCheck,
   UserCheck,
 } from 'lucide-react';
-import { useAuth, isStudentProfileComplete } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { apiClient, API_BASE_URL, type ApiResponse } from '../api/client';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
@@ -112,8 +112,6 @@ export const DashboardPage: React.FC = () => {
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/login');
-    } else if (!authLoading && user && user.role === 'STUDENT' && !isStudentProfileComplete(user)) {
-      navigate('/student/onboarding');
     }
   }, [user, authLoading, navigate]);
 
@@ -141,24 +139,9 @@ export const DashboardPage: React.FC = () => {
             if (profileRes?.data?.profile) {
               const p = profileRes.data.profile;
               setStudentProfile(p);
-
-              // Verify mandatory fields are completed
-              const isDone = !!(
-                p.isOnboardingCompleted ||
-                (p.personalEmail &&
-                 p.bio && p.bio.trim().length > 0 &&
-                 p.skills && p.skills.length > 0 &&
-                 p.socialLinks?.github &&
-                 p.socialLinks?.linkedin)
-              );
-
-              if (!isDone) {
-                navigate('/student/onboarding');
-                return;
+              if (typeof window !== 'undefined') {
+                localStorage.setItem(`cucampus_onboarding_done_${user.id || user._id}`, 'true');
               }
-            } else {
-              navigate('/student/onboarding');
-              return;
             }
           } else if (user.role === 'TEACHER') {
             const profileRes = await apiClient
@@ -738,7 +721,7 @@ export const DashboardPage: React.FC = () => {
                 <span className="text-xs text-[#666666] font-medium">Tailored for your role</span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                 {/* FEATURE 0: AI DOCUMENT TUTOR */}
                 <div className="bg-white rounded-2xl border border-[#C62828]/40 shadow-xs p-6 hover:shadow-md hover:border-[#C62828] transition-all group flex flex-col justify-between relative overflow-hidden">
                   <div className="absolute top-0 right-0 bg-[#C62828] text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
@@ -905,6 +888,38 @@ export const DashboardPage: React.FC = () => {
                     className="inline-flex items-center justify-between text-xs font-bold text-[#C62828] hover:text-[#8E1717] pt-2 border-t border-[#E7DADA]"
                   >
                     <span>Browse Directory</span>
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+
+                {/* FEATURE 4: LEARN & TEACH NETWORK */}
+                <div className="bg-white rounded-2xl border border-[#C62828]/40 shadow-xs p-6 hover:shadow-md hover:border-[#C62828] transition-all group flex flex-col justify-between relative overflow-hidden">
+                  <div className="absolute top-0 right-0 bg-[#C62828] text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
+                    Community
+                  </div>
+                  <div>
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                      <GraduationCap className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-base font-bold text-[#252525] mb-1.5">
+                      Learn & Teach Network
+                    </h3>
+                    <p className="text-xs text-[#666666] leading-relaxed mb-4">
+                      Share skills you can teach, discover skills you want to learn, connect with peers & faculty mentors, and schedule 1-on-1 sessions.
+                    </p>
+                    <div className="p-3 bg-[#FFF7F7] rounded-xl border border-[#C62828]/20 mb-4 flex items-center justify-between text-xs">
+                      <span className="text-[#C62828] font-semibold">Network:</span>
+                      <span className="font-extrabold text-[#252525] px-2 py-0.5 bg-white rounded-md border border-[#C62828]/30">
+                        Peer & Faculty
+                      </span>
+                    </div>
+                  </div>
+
+                  <Link
+                    to="/learn-teach"
+                    className="inline-flex items-center justify-between text-xs font-bold text-[#C62828] hover:text-[#8E1717] pt-2 border-t border-[#E7DADA]"
+                  >
+                    <span>Launch Learn & Teach</span>
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
