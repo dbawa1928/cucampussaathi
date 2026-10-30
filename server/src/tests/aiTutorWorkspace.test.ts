@@ -35,7 +35,7 @@ describe('AI Tutor Workspace: Multi-Format Extraction, Learning Tools & Content 
     );
 
     vi.spyOn(groqService, 'generateQuiz').mockImplementation(
-      async (_documentTitle, _chunks, numQuestions = 2) => {
+      async (_documentTitle, _chunks, _numQuestions = 2) => {
         return {
           questions: [
             {
@@ -171,6 +171,7 @@ describe('AI Tutor Workspace: Multi-Format Extraction, Learning Tools & Content 
     expect(res.body.data.document.documentFormat).toBe('docx');
     expect(res.body.data.document.processingStatus).toBe('COMPLETED');
     docxDocId = res.body.data.document._id;
+    expect(docxDocId).toBeDefined();
   });
 
   it('allows student to retrieve structured slide/page content for document viewer', async () => {

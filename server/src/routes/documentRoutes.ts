@@ -4,7 +4,13 @@ import { authGuard, roleGuard } from '../middleware/authGuard';
 
 const router = Router();
 
-// Upload document (authenticated students/faculty)
+// Upload document (authenticated students/faculty) - support both '/' and '/upload'
+router.post(
+  '/',
+  authGuard,
+  documentUploadMiddleware,
+  documentController.upload.bind(documentController)
+);
 router.post(
   '/upload',
   authGuard,

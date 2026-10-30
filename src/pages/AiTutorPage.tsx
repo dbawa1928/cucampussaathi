@@ -207,18 +207,25 @@ export const AiTutorPage: React.FC = () => {
   }, []);
 
   // 1. Fetch user's uploaded documents
+  // 1. Fetch user's uploaded documents
   const fetchDocuments = async (autoSelectLatest = true) => {
     setDocsLoading(true);
     try {
-      const res = await apiClient.get<ApiResponse<{ documents: DocumentItem[] }>>('/documents');
-      if (res.success && res.data?.documents) {
-        setDocuments(res.data.documents);
-        if (autoSelectLatest && res.data.documents.length > 0 && !selectedDoc) {
-          setSelectedDoc(res.data.documents[0]);
-        }
+      const res = await apiClient.get<any>('/documents');
+      const docsList: DocumentItem[] = Array.isArray(res.data)
+        ? res.data
+        : Array.isArray(res.data?.documents)
+        ? res.data.documents
+        : Array.isArray(res.data?.data?.documents)
+        ? res.data.data.documents
+        : [];
+      setDocuments(docsList);
+      if (autoSelectLatest && docsList.length > 0 && !selectedDoc) {
+        setSelectedDoc(docsList[0]);
       }
     } catch (err: any) {
       console.error('Failed to load documents:', err);
+      setDocuments([]);
     } finally {
       setDocsLoading(false);
     }
@@ -228,13 +235,14 @@ export const AiTutorPage: React.FC = () => {
   const fetchDocumentContent = async (docId: string) => {
     setIsViewerLoading(true);
     try {
-      const res = await apiClient.get<ApiResponse<{ document: DocumentItem; pages: ExtractedPageContent[] }>>(
-        `/documents/${docId}/content`
-      );
-      if (res.success && res.data?.pages) {
-        setViewerPages(res.data.pages);
-        setActiveViewerPage(1);
-      }
+      const res = await apiClient.get<any>(`/documents/${docId}/content`);
+      const pagesList: ExtractedPageContent[] = Array.isArray(res.data?.pages)
+        ? res.data.pages
+        : Array.isArray(res.data?.data?.pages)
+        ? res.data.data.pages
+        : [];
+      setViewerPages(pagesList);
+      setActiveViewerPage(1);
     } catch (err) {
       console.error('Failed to fetch document content:', err);
       setViewerPages([]);
@@ -246,14 +254,18 @@ export const AiTutorPage: React.FC = () => {
   // 3. Fetch conversations for selected document
   const fetchConversations = async (docId: string) => {
     try {
-      const res = await apiClient.get<ApiResponse<{ conversations: ConversationItem[] }>>(
-        `/ai/documents/${docId}/conversations`
-      );
-      if (res.success && res.data?.conversations) {
-        setConversations(res.data.conversations);
-      }
+      const res = await apiClient.get<any>(`/ai/documents/${docId}/conversations`);
+      const convList: ConversationItem[] = Array.isArray(res.data)
+        ? res.data
+        : Array.isArray(res.data?.conversations)
+        ? res.data.conversations
+        : Array.isArray(res.data?.data?.conversations)
+        ? res.data.data.conversations
+        : [];
+      setConversations(convList);
     } catch (err) {
       console.error('Failed to load conversations:', err);
+      setConversations([]);
     }
   };
 
@@ -262,14 +274,16 @@ export const AiTutorPage: React.FC = () => {
     setActiveConversationId(convId);
     setIsChatLoading(true);
     try {
-      const res = await apiClient.get<ApiResponse<{ conversation: { messages: ChatMessage[] } }>>(
-        `/ai/conversations/${convId}`
-      );
-      if (res.success && res.data?.conversation?.messages) {
-        setMessages(res.data.conversation.messages);
+      const res = await apiClient.get<any>(`/ai/conversations/${convId}`);
+      const rawMsgs = res.data?.conversation?.messages || res.data?.messages || res.data;
+      if (Array.isArray(rawMsgs)) {
+        setMessages(rawMsgs);
+      } else {
+        setMessages([]);
       }
     } catch (err: any) {
       setChatError('Failed to load conversation history.');
+      setMessages([]);
     } finally {
       setIsChatLoading(false);
     }
@@ -314,19 +328,26 @@ export const AiTutorPage: React.FC = () => {
 
     try {
       setUploadProgress(50);
-      const res = await apiClient.postFormData<ApiResponse<{ document: DocumentItem }>>(
-        '/documents/upload',
-        formData
-      );
+      let res: any;
+      try {
+        res = await apiClient.postFormData<any>('/documents/upload', formData);
+      } catch (postErr: any) {
+        if (postErr?.message?.includes('Route not found') || postErr?.message?.includes('404')) {
+          res = await apiClient.postFormData<any>('/documents', formData);
+        } else {
+          throw postErr;
+        }
+      }
       setUploadProgress(90);
 
-      if (res.success && res.data?.document) {
+      const uploadedDoc = res.data?.document || res.data;
+      if (res.success && uploadedDoc?._id) {
         setUploadProgress(100);
         setUploadModalOpen(false);
         setUploadFile(null);
         setUploadTitle('');
         await fetchDocuments(false);
-        setSelectedDoc(res.data.document);
+        setSelectedDoc(uploadedDoc);
       } else {
         setUploadError(res.message || 'Upload failed. Please check the file.');
       }
@@ -588,12 +609,14 @@ export const AiTutorPage: React.FC = () => {
         numQuestions: 5,
       });
 
-      if (res.success && res.data?.questions) {
+      if (res.success && Array.isArray(res.data?.questions)) {
         setQuizQuestions(res.data.questions);
       } else {
+        setQuizQuestions([]);
         setToolError(res.message || 'Failed to generate quiz.');
       }
     } catch (err: any) {
+      setQuizQuestions([]);
       setToolError(err.message || 'Failed to generate practice quiz.');
     } finally {
       setIsToolLoading(false);
@@ -641,11 +664,15 @@ export const AiTutorPage: React.FC = () => {
   };
 
   // Filtered documents
-  const filteredDocuments = documents.filter((doc) => {
+  const safeDocs = Array.isArray(documents) ? documents : [];
+  const filteredDocuments = safeDocs.filter((doc) => {
+    if (!doc) return false;
+    const title = doc.title || '';
+    const filename = doc.originalFilename || '';
     const matchesSearch =
-      doc.title.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
-      doc.originalFilename.toLowerCase().includes(docSearchQuery.toLowerCase());
-    const ext = (doc.documentFormat || doc.originalFilename.split('.').pop() || '').toLowerCase();
+      title.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
+      filename.toLowerCase().includes(docSearchQuery.toLowerCase());
+    const ext = (doc.documentFormat || filename.split('.').pop() || '').toLowerCase();
     const matchesFormat =
       docFormatFilter === 'ALL'
         ? true
@@ -660,12 +687,13 @@ export const AiTutorPage: React.FC = () => {
   // Calculate Quiz Score
   const calculateQuizScore = () => {
     let correct = 0;
-    quizQuestions.forEach((q) => {
-      if (quizUserAnswers[q.id] === q.correctOptionIndex) {
+    const safeQuestions = Array.isArray(quizQuestions) ? quizQuestions : [];
+    safeQuestions.forEach((q) => {
+      if (q && quizUserAnswers[q.id] === q.correctOptionIndex) {
         correct++;
       }
     });
-    return { correct, total: quizQuestions.length };
+    return { correct, total: safeQuestions.length };
   };
 
   return (
@@ -1072,7 +1100,7 @@ export const AiTutorPage: React.FC = () => {
                   </button>
                 </div>
                 <div className="space-y-1.5">
-                  {conversations.map((c) => (
+                  {Array.isArray(conversations) && conversations.map((c) => (
                     <button
                       key={c._id}
                       onClick={() => {
@@ -1134,7 +1162,7 @@ export const AiTutorPage: React.FC = () => {
                 </div>
               ) : (
                 // Message List
-                messages.map((msg, idx) => (
+                Array.isArray(messages) && messages.map((msg, idx) => (
                   <div
                     key={idx}
                     className={`flex flex-col ${msg.role === 'USER' ? 'items-end' : 'items-start'} space-y-1.5`}
@@ -1149,7 +1177,7 @@ export const AiTutorPage: React.FC = () => {
                       <div className="whitespace-pre-wrap">{msg.content}</div>
 
                       {/* Source Citations Pills */}
-                      {msg.role === 'ASSISTANT' && msg.sourceReferences && msg.sourceReferences.length > 0 && (
+                      {msg.role === 'ASSISTANT' && Array.isArray(msg.sourceReferences) && msg.sourceReferences.length > 0 && (
                         <div className="mt-3 pt-3 border-t border-[#E7DADA]/60 flex flex-wrap items-center gap-1.5">
                           <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider mr-1">
                             Citations:
@@ -1384,7 +1412,7 @@ export const AiTutorPage: React.FC = () => {
                 </Button>
               </div>
             ) : (
-              filteredDocuments.map((doc) => {
+              Array.isArray(filteredDocuments) && filteredDocuments.map((doc) => {
                 const details = getFormatDetails(doc.documentFormat, doc.originalFilename);
                 const IconComp = details.icon;
                 const isSelected = selectedDoc?._id === doc._id;
@@ -1757,7 +1785,7 @@ export const AiTutorPage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {quizQuestions.map((q, qIndex) => (
+                    {Array.isArray(quizQuestions) && quizQuestions.map((q, qIndex) => (
                       <div key={q.id} className="bg-white rounded-xl border border-[#E7DADA] p-4 shadow-xs">
                         <div className="flex items-start justify-between gap-2 mb-3">
                           <h4 className="text-xs sm:text-sm font-bold text-[#252525]">
@@ -1769,7 +1797,7 @@ export const AiTutorPage: React.FC = () => {
                         </div>
 
                         <div className="space-y-2">
-                          {q.options.map((opt, optIndex) => {
+                          {Array.isArray(q?.options) && q.options.map((opt, optIndex) => {
                             const isSelected = quizUserAnswers[q.id] === optIndex;
                             const isCorrect = q.correctOptionIndex === optIndex;
                             let optionClass = 'bg-[#FFF7F7] border-[#E7DADA] text-[#252525] hover:border-[#C62828]';
