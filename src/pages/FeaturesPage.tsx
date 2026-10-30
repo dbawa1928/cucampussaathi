@@ -4,7 +4,6 @@ import { FeatureCard } from '../components/ui/FeatureCard';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 
-
 export const FeaturesPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
@@ -16,15 +15,15 @@ export const FeaturesPage: React.FC = () => {
   return (
     <div className="flex flex-col w-full">
       {/* Hero Header */}
-      <section className="pt-14 pb-16 bg-[#F6F8FC] border-b border-[#E2E8F0]">
+      <section className="pt-14 pb-16 bg-[#FFF7F7] border-b border-[#E7DADA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Badge variant="primary" size="md" className="mb-4">
             Platform Capabilities
           </Badge>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#17233B] tracking-tight max-w-3xl mx-auto">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#252525] tracking-tight max-w-3xl mx-auto">
             Features & Services
           </h1>
-          <p className="mt-4 text-base sm:text-lg text-[#64748B] max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-4 text-base sm:text-lg text-[#666666] max-w-2xl mx-auto leading-relaxed">
             Explore the comprehensive suite of AI learning tools, matchmaking engines, and faculty connectivity features built for our university.
           </p>
 
@@ -35,8 +34,8 @@ export const FeaturesPage: React.FC = () => {
               onClick={() => setSelectedCategory('all')}
               className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer ${
                 selectedCategory === 'all'
-                  ? 'bg-[#3157D5] text-white shadow-xs'
-                  : 'bg-white text-[#64748B] border border-[#E2E8F0] hover:bg-[#F6F8FC] hover:text-[#17233B]'
+                  ? 'bg-[#C62828] text-white shadow-xs'
+                  : 'bg-white text-[#666666] border border-[#E7DADA] hover:bg-[#FFF7F7] hover:text-[#252525]'
               }`}
             >
               All Features (20)
@@ -48,8 +47,8 @@ export const FeaturesPage: React.FC = () => {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer ${
                   selectedCategory === cat.id
-                    ? 'bg-[#3157D5] text-white shadow-xs'
-                    : 'bg-white text-[#64748B] border border-[#E2E8F0] hover:bg-[#F6F8FC] hover:text-[#17233B]'
+                    ? 'bg-[#C62828] text-white shadow-xs'
+                    : 'bg-white text-[#666666] border border-[#E7DADA] hover:bg-[#FFF7F7] hover:text-[#252525]'
                 }`}
               >
                 {cat.title} ({cat.features.length})
@@ -65,13 +64,13 @@ export const FeaturesPage: React.FC = () => {
           {filteredCategories.map((category) => (
             <div key={category.id} id={category.id} className="scroll-mt-24">
               <div className="mb-8">
-                <span className="text-xs font-bold text-[#3157D5] uppercase tracking-wider">
+                <span className="text-xs font-bold text-[#C62828] uppercase tracking-wider">
                   Category Showcase
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-bold text-[#17233B] tracking-tight mt-1">
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#252525] tracking-tight mt-1">
                   {category.title}
                 </h2>
-                <p className="text-sm sm:text-base text-[#64748B] mt-1.5 max-w-2xl">
+                <p className="text-sm sm:text-base text-[#666666] mt-1.5 max-w-2xl">
                   {category.subtitle}
                 </p>
               </div>
@@ -94,12 +93,12 @@ export const FeaturesPage: React.FC = () => {
       </section>
 
       {/* Bottom CTA */}
-      <section className="py-16 bg-[#F6F8FC] border-t border-[#E2E8F0]">
+      <section className="py-16 bg-[#FFF7F7] border-t border-[#E7DADA]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-2xl font-bold text-[#17233B]">
+          <h3 className="text-2xl font-bold text-[#252525]">
             Ready to experience these features firsthand?
           </h3>
-          <p className="mt-2 text-sm text-[#64748B]">
+          <p className="mt-2 text-sm text-[#666666]">
             Sign up now with your campus ID to explore our interactive modules.
           </p>
           <div className="mt-6 flex justify-center gap-3">

@@ -34,13 +34,13 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantClasses = {
     primary:
-      'bg-[#3157D5] text-white hover:bg-[#2546b5] active:bg-[#1f3ba0] focus-visible:ring-[#3157D5] shadow-[0_1px_2px_rgba(49,87,213,0.2)] hover:shadow-[0_4px_12px_rgba(49,87,213,0.3)]',
+      'bg-[#C62828] text-white hover:bg-[#8E1717] active:bg-[#701212] focus-visible:ring-[#C62828] shadow-[0_1px_2px_rgba(198,40,40,0.2)] hover:shadow-[0_4px_12px_rgba(198,40,40,0.3)]',
     secondary:
-      'bg-[#EAF1FF] text-[#3157D5] hover:bg-[#d8e6ff] active:bg-[#c9ddff] focus-visible:ring-[#3157D5] font-semibold',
+      'bg-[#FFF7F7] text-[#C62828] hover:bg-[#ffebee] active:bg-[#ffcdd2] border border-[#E7DADA] focus-visible:ring-[#C62828] font-semibold',
     outline:
-      'border border-[#E2E8F0] bg-white text-[#17233B] hover:bg-[#F6F8FC] hover:border-[#CBD5E1] active:bg-[#EEF2F6] focus-visible:ring-[#3157D5] shadow-xs',
+      'border border-[#E7DADA] bg-white text-[#252525] hover:bg-[#FFF7F7] hover:border-[#C62828]/40 active:bg-[#ffebee] focus-visible:ring-[#C62828] shadow-xs',
     ghost:
-      'text-[#64748B] hover:text-[#17233B] hover:bg-[#F6F8FC] active:bg-[#EEF2F6] focus-visible:ring-[#3157D5]',
+      'text-[#666666] hover:text-[#252525] hover:bg-[#FFF7F7] active:bg-[#ffebee] focus-visible:ring-[#C62828]',
     success:
       'bg-[#16845B] text-white hover:bg-[#126c4a] active:bg-[#0e573b] focus-visible:ring-[#16845B] shadow-sm',
   };

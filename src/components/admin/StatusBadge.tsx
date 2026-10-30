@@ -75,8 +75,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, type = 'accoun
       );
     case 'COMPLETED':
       return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#EAF1FF] text-[#3157D5] border border-[#3157D5]/20">
-          <CheckCircle2 className="w-3 h-3" /> Completed
+        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#FFF7F7] text-[#C62828] border border-[#E7DADA]">
+          <CheckCircle2 className="w-3 h-3 text-[#C62828]" /> Completed
         </span>
       );
     case 'CANCELLED':

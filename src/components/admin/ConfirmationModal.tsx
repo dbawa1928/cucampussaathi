@@ -45,30 +45,30 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#17233B]/50 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl max-w-md w-full p-6 animate-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 bg-[#252525]/50 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xl max-w-md w-full p-6 animate-in zoom-in-95 duration-150">
         <div className="flex items-start gap-3 mb-4">
           <div
             className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${
               variant === 'danger'
-                ? 'bg-[#FEF2F2] text-[#EF4444]'
+                ? 'bg-[#FFF7F7] text-[#C62828] border border-[#E7DADA]'
                 : variant === 'warning'
                 ? 'bg-[#FFF7ED] text-[#C2410C]'
-                : 'bg-[#EAF1FF] text-[#3157D5]'
+                : 'bg-[#FFF7F7] text-[#C62828] border border-[#E7DADA]'
             }`}
           >
             <AlertCircle className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-[#17233B]">{title}</h3>
-            <p className="text-xs text-[#64748B] mt-1 leading-relaxed">{description}</p>
+            <h3 className="text-base font-bold text-[#252525]">{title}</h3>
+            <p className="text-xs text-[#666666] mt-1 leading-relaxed">{description}</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {requiresReason && (
             <div>
-              <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+              <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                 Administrative Reason *
               </label>
               <textarea
@@ -77,26 +77,26 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
                 placeholder={reasonPlaceholder}
-                className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] transition-all"
+                className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] transition-all"
               />
-              {error && <p className="text-xs text-[#EF4444] mt-1">{error}</p>}
+              {error && <p className="text-xs text-[#C62828] mt-1 font-semibold">{error}</p>}
             </div>
           )}
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E7DADA]">
             <Button onClick={onClose} variant="outline" size="sm" type="button" disabled={isLoading}>
               {cancelLabel}
             </Button>
             <Button
               type="submit"
               disabled={isLoading}
-              variant={variant === 'danger' ? 'outline' : 'primary'}
+              variant={variant === 'danger' ? 'primary' : 'primary'}
               size="sm"
               className={
                 variant === 'danger'
-                  ? 'text-[#EF4444] border-[#FCA5A5] hover:bg-[#FEF2F2]'
+                  ? 'bg-[#C62828] hover:bg-[#8E1717] text-white shadow-xs'
                   : variant === 'warning'
-                  ? 'bg-[#C2410C] hover:bg-[#9a3412]'
+                  ? 'bg-[#C2410C] hover:bg-[#9a3412] text-white'
                   : ''
               }
             >

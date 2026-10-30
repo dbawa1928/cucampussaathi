@@ -689,13 +689,13 @@ export const AppointmentsPage: React.FC = () => {
         );
       case 'COMPLETED':
         return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#EAF1FF] text-[#3157D5] border border-[#3157D5]/20 flex items-center gap-1">
+          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center gap-1">
             <Sparkles className="w-3 h-3" /> Completed
           </span>
         );
       case 'CANCELLED':
         return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0] flex items-center gap-1">
+          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#E7DADA] text-[#666666] border border-[#E7DADA] flex items-center gap-1">
             <CalendarX className="w-3 h-3" /> Cancelled
           </span>
         );
@@ -707,7 +707,7 @@ export const AppointmentsPage: React.FC = () => {
         );
       default:
         return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#F1F5F9] text-[#64748B]">
+          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#E7DADA] text-[#666666]">
             {status}
           </span>
         );
@@ -717,21 +717,21 @@ export const AppointmentsPage: React.FC = () => {
   // Unauthenticated Guard
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#F6F8FC] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#3157D5] animate-spin" />
+      <div className="min-h-screen bg-[#FFF7F7] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[#C62828] animate-spin" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#F6F8FC] py-16 px-4 flex items-center justify-center">
-        <div className="bg-white rounded-3xl border border-[#E2E8F0] p-8 sm:p-10 max-w-md w-full text-center shadow-xs">
-          <div className="w-14 h-14 rounded-2xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-screen bg-[#FFF7F7] py-16 px-4 flex items-center justify-center">
+        <div className="bg-white rounded-3xl border border-[#E7DADA] p-8 sm:p-10 max-w-md w-full text-center shadow-xs">
+          <div className="w-14 h-14 rounded-2xl bg-[#FFF7F7] text-[#C62828] flex items-center justify-center mx-auto mb-4">
             <Lock className="w-7 h-7" />
           </div>
-          <h2 className="text-xl font-bold text-[#17233B] mb-2">FacultyConnect Authentication</h2>
-          <p className="text-xs sm:text-sm text-[#64748B] mb-6 leading-relaxed">
+          <h2 className="text-xl font-bold text-[#252525] mb-2">FacultyConnect Authentication</h2>
+          <p className="text-xs sm:text-sm text-[#666666] mb-6 leading-relaxed">
             Please log in with your Chandigarh University credentials to book consultation slots or
             manage faculty appointment requests.
           </p>
@@ -744,7 +744,7 @@ export const AppointmentsPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F6F8FC] py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#FFF7F7] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Page Header */}
         <div className="mb-8">
@@ -753,10 +753,10 @@ export const AppointmentsPage: React.FC = () => {
               FacultyConnect Engine
             </Badge>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#17233B] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#252525] tracking-tight">
             Faculty Consultation & Office Hours
           </h1>
-          <p className="mt-2 text-sm sm:text-base text-[#64748B] leading-relaxed">
+          <p className="mt-2 text-sm sm:text-base text-[#666666] leading-relaxed">
             {user.role === 'TEACHER'
               ? 'Publish available office consultation windows and manage student academic guidance requests.'
               : 'Book 1-on-1 consultations with Chandigarh University faculty mentors for capstone projects, research guidance, and coursework assistance.'}
@@ -783,7 +783,7 @@ export const AppointmentsPage: React.FC = () => {
         )}
 
         {/* Navigation Tabs */}
-        <div className="mb-8 flex gap-2 p-1.5 bg-white rounded-2xl border border-[#E2E8F0] shadow-2xs w-fit">
+        <div className="mb-8 flex gap-2 p-1.5 bg-white rounded-2xl border border-[#E7DADA] shadow-2xs w-fit">
           {user.role === 'TEACHER' ? (
             <>
               <button
@@ -795,8 +795,8 @@ export const AppointmentsPage: React.FC = () => {
                 }}
                 className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
                   activeTab === 'requests'
-                    ? 'bg-[#3157D5] text-white shadow-xs'
-                    : 'text-[#64748B] hover:text-[#17233B]'
+                    ? 'bg-[#C62828] text-white shadow-xs'
+                    : 'text-[#666666] hover:text-[#252525]'
                 }`}
               >
                 <CalendarCheck className="w-4 h-4" /> Consultation Requests ({appointments.length})
@@ -810,8 +810,8 @@ export const AppointmentsPage: React.FC = () => {
                 }}
                 className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
                   activeTab === 'manage_slots'
-                    ? 'bg-[#3157D5] text-white shadow-xs'
-                    : 'text-[#64748B] hover:text-[#17233B]'
+                    ? 'bg-[#C62828] text-white shadow-xs'
+                    : 'text-[#666666] hover:text-[#252525]'
                 }`}
               >
                 <Calendar className="w-4 h-4" /> Manage Availability Slots
@@ -828,8 +828,8 @@ export const AppointmentsPage: React.FC = () => {
                 }}
                 className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
                   activeTab === 'my_bookings'
-                    ? 'bg-[#3157D5] text-white shadow-xs'
-                    : 'text-[#64748B] hover:text-[#17233B]'
+                    ? 'bg-[#C62828] text-white shadow-xs'
+                    : 'text-[#666666] hover:text-[#252525]'
                 }`}
               >
                 <CalendarCheck className="w-4 h-4" /> My Appointments ({appointments.length})
@@ -843,8 +843,8 @@ export const AppointmentsPage: React.FC = () => {
                 }}
                 className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
                   activeTab === 'book_slot'
-                    ? 'bg-[#3157D5] text-white shadow-xs'
-                    : 'text-[#64748B] hover:text-[#17233B]'
+                    ? 'bg-[#C62828] text-white shadow-xs'
+                    : 'text-[#666666] hover:text-[#252525]'
                 }`}
               >
                 <Plus className="w-4 h-4" /> Book New Consultation
@@ -859,17 +859,17 @@ export const AppointmentsPage: React.FC = () => {
         {user.role === 'TEACHER' && activeTab === 'requests' && (
           <div className="space-y-4">
             {loading ? (
-              <div className="py-20 flex flex-col items-center justify-center bg-white rounded-3xl border border-[#E2E8F0]">
-                <Loader2 className="w-8 h-8 text-[#3157D5] animate-spin mb-3" />
-                <p className="text-sm font-semibold text-[#17233B]">Loading consultation requests...</p>
+              <div className="py-20 flex flex-col items-center justify-center bg-white rounded-3xl border border-[#E7DADA]">
+                <Loader2 className="w-8 h-8 text-[#C62828] animate-spin mb-3" />
+                <p className="text-sm font-semibold text-[#252525]">Loading consultation requests...</p>
               </div>
             ) : appointments.length === 0 ? (
-              <div className="py-16 px-6 bg-white rounded-3xl border border-[#E2E8F0] text-center shadow-xs">
-                <div className="w-12 h-12 rounded-2xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mx-auto mb-3">
+              <div className="py-16 px-6 bg-white rounded-3xl border border-[#E7DADA] text-center shadow-xs">
+                <div className="w-12 h-12 rounded-2xl bg-[#FFF7F7] text-[#C62828] flex items-center justify-center mx-auto mb-3">
                   <Calendar className="w-6 h-6" />
                 </div>
-                <h3 className="text-lg font-bold text-[#17233B] mb-1">No Consultation Requests Yet</h3>
-                <p className="text-xs sm:text-sm text-[#64748B] max-w-md mx-auto mb-6">
+                <h3 className="text-lg font-bold text-[#252525] mb-1">No Consultation Requests Yet</h3>
+                <p className="text-xs sm:text-sm text-[#666666] max-w-md mx-auto mb-6">
                   When students request appointments for your office consultation slots, they will
                   appear here for your approval.
                 </p>
@@ -887,28 +887,28 @@ export const AppointmentsPage: React.FC = () => {
                   return (
                     <div
                       key={appt._id}
-                      className="bg-white rounded-2xl border border-[#E2E8F0] p-6 shadow-xs hover:border-[#3157D5]/40 transition-all flex flex-col gap-4"
+                      className="bg-white rounded-2xl border border-[#E7DADA] p-6 shadow-xs hover:border-[#C62828]/40 transition-all flex flex-col gap-4"
                     >
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div className="space-y-2 flex-1">
                           <div className="flex flex-wrap items-center gap-2.5">
-                            <span className="font-extrabold text-base text-[#17233B]">
+                            <span className="font-extrabold text-base text-[#252525]">
                               {appt.student?.fullName || 'Student'}
                             </span>
-                            <span className="text-xs text-[#64748B] bg-[#F1F5F9] px-2.5 py-0.5 rounded-md font-mono">
+                            <span className="text-xs text-[#666666] bg-[#E7DADA] px-2.5 py-0.5 rounded-md font-mono">
                               {appt.student?.uid}
                             </span>
                             {renderStatusBadge(appt.status)}
                           </div>
 
-                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#64748B]">
-                            <span className="flex items-center gap-1 text-[#17233B] font-semibold">
-                              <Calendar className="w-3.5 h-3.5 text-[#3157D5]" />
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#666666]">
+                            <span className="flex items-center gap-1 text-[#252525] font-semibold">
+                              <Calendar className="w-3.5 h-3.5 text-[#C62828]" />
                               {formatDateTime(appt.slot?.startTime)} - {formatTimeOnly(appt.slot?.endTime)}
                             </span>
                             <span className="flex items-center gap-1">
                               {appt.meetingMode === 'ONLINE' || appt.slot?.locationType === 'VIRTUAL_MEET' ? (
-                                <Video className="w-3.5 h-3.5 text-[#3157D5]" />
+                                <Video className="w-3.5 h-3.5 text-[#C62828]" />
                               ) : (
                                 <MapPin className="w-3.5 h-3.5 text-[#16845B]" />
                               )}
@@ -917,8 +917,8 @@ export const AppointmentsPage: React.FC = () => {
                             </span>
                           </div>
 
-                          <div className="p-3 rounded-xl bg-[#F6F8FC] border border-[#E2E8F0] text-xs text-[#17233B]">
-                            <span className="text-[#64748B] font-semibold block mb-0.5">Discussion Agenda:</span>
+                          <div className="p-3 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] text-xs text-[#252525]">
+                            <span className="text-[#666666] font-semibold block mb-0.5">Discussion Agenda:</span>
                             <p className="italic">"{appt.agenda}"</p>
                           </div>
 
@@ -1015,7 +1015,7 @@ export const AppointmentsPage: React.FC = () => {
                               onClick={() => handleOpenRescheduleModal(appt)}
                               variant="outline"
                               size="sm"
-                              className="w-full text-[#3157D5] border-[#3157D5]/30 hover:bg-[#EAF1FF]"
+                              className="w-full text-[#C62828] border-[#C62828]/30 hover:bg-[#FFF7F7]"
                               icon={<RefreshCw className="w-3.5 h-3.5" />}
                             >
                               Reschedule
@@ -1025,14 +1025,14 @@ export const AppointmentsPage: React.FC = () => {
                       </div>
 
                       {/* Consultation Meeting Link & Details Section */}
-                      <div className="p-3.5 rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                      <div className="p-3.5 rounded-xl border border-[#E7DADA] bg-[#FFF7F7] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                         <div>
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="font-bold text-[#17233B]">Meeting Format:</span>
+                            <span className="font-bold text-[#252525]">Meeting Format:</span>
                             <span
                               className={`px-2 py-0.5 rounded-md font-bold text-[11px] ${
                                 appt.meetingMode === 'ONLINE'
-                                  ? 'bg-[#EAF1FF] text-[#3157D5]'
+                                  ? 'bg-[#FFF7F7] text-[#C62828]'
                                   : 'bg-[#E6F5EF] text-[#16845B]'
                               }`}
                             >
@@ -1049,18 +1049,18 @@ export const AppointmentsPage: React.FC = () => {
                                   href={appt.meetingLink}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#3157D5] text-white font-bold hover:bg-[#2544ad] transition-all shadow-xs"
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#C62828] text-white font-bold hover:bg-[#8E1717] transition-all shadow-xs"
                                 >
                                   <Video className="w-3.5 h-3.5" />
                                   Join Video Meeting
                                   <ExternalLink className="w-3 h-3 ml-0.5" />
                                 </a>
-                                <span className="text-[11px] text-[#64748B] font-mono truncate max-w-[260px]">
+                                <span className="text-[11px] text-[#666666] font-mono truncate max-w-[260px]">
                                   {appt.meetingLink}
                                 </span>
                               </div>
                             ) : (
-                              <p className="text-[#64748B] italic text-[11px] mt-0.5">
+                              <p className="text-[#666666] italic text-[11px] mt-0.5">
                                 No video link provided yet. Add a manual Google Meet or Zoom URL below.
                               </p>
                             )
@@ -1174,17 +1174,17 @@ export const AppointmentsPage: React.FC = () => {
         {user.role === 'TEACHER' && activeTab === 'manage_slots' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Slot Creator Form */}
-            <div className="lg:col-span-5 bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs h-fit">
-              <h2 className="text-lg font-bold text-[#17233B] mb-1 flex items-center gap-2">
-                <Plus className="w-5 h-5 text-[#3157D5]" /> Create Availability Window
+            <div className="lg:col-span-5 bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs h-fit">
+              <h2 className="text-lg font-bold text-[#252525] mb-1 flex items-center gap-2">
+                <Plus className="w-5 h-5 text-[#C62828]" /> Create Availability Window
               </h2>
-              <p className="text-xs text-[#64748B] mb-6">
+              <p className="text-xs text-[#666666] mb-6">
                 Define when you are available for student academic office hours or project consultations.
               </p>
 
               <form onSubmit={handleCreateSlot} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     Consultation Date *
                   </label>
                   <input
@@ -1193,13 +1193,13 @@ export const AppointmentsPage: React.FC = () => {
                     min={new Date().toISOString().split('T')[0]}
                     value={newSlotDate}
                     onChange={(e) => setNewSlotDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] focus:border-transparent transition-all"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                    <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                       Start Time *
                     </label>
                     <input
@@ -1207,11 +1207,11 @@ export const AppointmentsPage: React.FC = () => {
                       required
                       value={newSlotStartTime}
                       onChange={(e) => setNewSlotStartTime(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] focus:border-transparent transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                    <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                       End Time *
                     </label>
                     <input
@@ -1219,19 +1219,19 @@ export const AppointmentsPage: React.FC = () => {
                       required
                       value={newSlotEndTime}
                       onChange={(e) => setNewSlotEndTime(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] focus:border-transparent transition-all"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     Consultation Mode *
                   </label>
                   <select
                     value={newSlotLocationType}
                     onChange={(e) => setNewSlotLocationType(e.target.value as any)}
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] focus:border-transparent transition-all"
                   >
                     <option value="CABIN">Faculty Cabin / Office</option>
                     <option value="VIRTUAL_MEET">Virtual Video Conference</option>
@@ -1239,7 +1239,7 @@ export const AppointmentsPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     Location Notes or Cabin Details
                   </label>
                   <input
@@ -1251,7 +1251,7 @@ export const AppointmentsPage: React.FC = () => {
                         ? 'e.g. Block 3, Cabin 402'
                         : 'e.g. Google Meet link or MS Teams details'
                     }
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] focus:border-transparent transition-all"
                   />
                 </div>
 
@@ -1275,20 +1275,20 @@ export const AppointmentsPage: React.FC = () => {
             </div>
 
             {/* List of Existing Teacher Slots */}
-            <div className="lg:col-span-7 bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
-              <h2 className="text-lg font-bold text-[#17233B] mb-1 flex items-center justify-between">
+            <div className="lg:col-span-7 bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs">
+              <h2 className="text-lg font-bold text-[#252525] mb-1 flex items-center justify-between">
                 <span>My Published Availability Slots</span>
-                <span className="text-xs font-semibold text-[#64748B]">
+                <span className="text-xs font-semibold text-[#666666]">
                   {teacherSlotsList.length} Total Slots
                 </span>
               </h2>
-              <p className="text-xs text-[#64748B] mb-6">
+              <p className="text-xs text-[#666666] mb-6">
                 Active slots are visible to students. Reserved slots cannot be deleted until the
                 associated appointment is concluded.
               </p>
 
               {teacherSlotsList.length === 0 ? (
-                <div className="py-12 text-center text-[#64748B] text-xs">
+                <div className="py-12 text-center text-[#666666] text-xs">
                   No availability slots created yet. Use the form on the left to add your first slot.
                 </div>
               ) : (
@@ -1296,11 +1296,11 @@ export const AppointmentsPage: React.FC = () => {
                   {teacherSlotsList.map((slot) => (
                     <div
                       key={slot._id}
-                      className="p-4 rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] flex items-center justify-between gap-4"
+                      className="p-4 rounded-xl border border-[#E7DADA] bg-[#FFF7F7] flex items-center justify-between gap-4"
                     >
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-[#17233B]">
+                          <span className="text-sm font-bold text-[#252525]">
                             {formatDateTime(slot.startTime)} - {formatTimeOnly(slot.endTime)}
                           </span>
                           {slot.status === 'AVAILABLE' && (
@@ -1309,21 +1309,21 @@ export const AppointmentsPage: React.FC = () => {
                             </span>
                           )}
                           {slot.status === 'RESERVED' && (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#EAF1FF] text-[#3157D5]">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FFF7F7] text-[#C62828]">
                               Booked / Reserved
                             </span>
                           )}
                           {slot.status === 'CANCELLED' && (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#F1F5F9] text-[#64748B]">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#E7DADA] text-[#666666]">
                               Cancelled
                             </span>
                           )}
                         </div>
 
-                        <div className="text-xs text-[#64748B] mt-1 flex items-center gap-3">
+                        <div className="text-xs text-[#666666] mt-1 flex items-center gap-3">
                           <span className="flex items-center gap-1">
                             {slot.locationType === 'VIRTUAL_MEET' ? (
-                              <Video className="w-3.5 h-3.5 text-[#3157D5]" />
+                              <Video className="w-3.5 h-3.5 text-[#C62828]" />
                             ) : (
                               <MapPin className="w-3.5 h-3.5 text-[#16845B]" />
                             )}
@@ -1364,17 +1364,17 @@ export const AppointmentsPage: React.FC = () => {
         {user.role === 'STUDENT' && activeTab === 'my_bookings' && (
           <div className="space-y-4">
             {loading ? (
-              <div className="py-20 flex flex-col items-center justify-center bg-white rounded-3xl border border-[#E2E8F0]">
-                <Loader2 className="w-8 h-8 text-[#3157D5] animate-spin mb-3" />
-                <p className="text-sm font-semibold text-[#17233B]">Loading your appointments...</p>
+              <div className="py-20 flex flex-col items-center justify-center bg-white rounded-3xl border border-[#E7DADA]">
+                <Loader2 className="w-8 h-8 text-[#C62828] animate-spin mb-3" />
+                <p className="text-sm font-semibold text-[#252525]">Loading your appointments...</p>
               </div>
             ) : appointments.length === 0 ? (
-              <div className="py-16 px-6 bg-white rounded-3xl border border-[#E2E8F0] text-center shadow-xs">
-                <div className="w-12 h-12 rounded-2xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mx-auto mb-3">
+              <div className="py-16 px-6 bg-white rounded-3xl border border-[#E7DADA] text-center shadow-xs">
+                <div className="w-12 h-12 rounded-2xl bg-[#FFF7F7] text-[#C62828] flex items-center justify-center mx-auto mb-3">
                   <Calendar className="w-6 h-6" />
                 </div>
-                <h3 className="text-lg font-bold text-[#17233B] mb-1">No Consultations Booked Yet</h3>
-                <p className="text-xs sm:text-sm text-[#64748B] max-w-md mx-auto mb-6">
+                <h3 className="text-lg font-bold text-[#252525] mb-1">No Consultations Booked Yet</h3>
+                <p className="text-xs sm:text-sm text-[#666666] max-w-md mx-auto mb-6">
                   You haven't requested any faculty consultation appointments yet. Browse faculty
                   availability slots to get guidance.
                 </p>
@@ -1392,29 +1392,29 @@ export const AppointmentsPage: React.FC = () => {
                   return (
                     <div
                       key={appt._id}
-                      className="bg-white rounded-2xl border border-[#E2E8F0] p-6 shadow-xs hover:border-[#3157D5]/40 transition-all flex flex-col gap-4"
+                      className="bg-white rounded-2xl border border-[#E7DADA] p-6 shadow-xs hover:border-[#C62828]/40 transition-all flex flex-col gap-4"
                     >
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div className="space-y-2 flex-1">
                           <div className="flex flex-wrap items-center gap-2.5">
-                            <span className="font-extrabold text-base text-[#17233B]">
+                            <span className="font-extrabold text-base text-[#252525]">
                               {appt.teacherProfile?.user?.fullName || 'Faculty Mentor'}
                             </span>
-                            <span className="text-xs text-[#64748B] bg-[#F1F5F9] px-2.5 py-0.5 rounded-md">
+                            <span className="text-xs text-[#666666] bg-[#E7DADA] px-2.5 py-0.5 rounded-md">
                               {appt.teacherProfile?.designation || 'Faculty'} •{' '}
                               {appt.teacherProfile?.department}
                             </span>
                             {renderStatusBadge(appt.status)}
                           </div>
 
-                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#64748B]">
-                            <span className="flex items-center gap-1 text-[#17233B] font-semibold">
-                              <Calendar className="w-3.5 h-3.5 text-[#3157D5]" />
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#666666]">
+                            <span className="flex items-center gap-1 text-[#252525] font-semibold">
+                              <Calendar className="w-3.5 h-3.5 text-[#C62828]" />
                               {formatDateTime(appt.slot?.startTime)} - {formatTimeOnly(appt.slot?.endTime)}
                             </span>
                             <span className="flex items-center gap-1">
                               {appt.meetingMode === 'ONLINE' || appt.slot?.locationType === 'VIRTUAL_MEET' ? (
-                                <Video className="w-3.5 h-3.5 text-[#3157D5]" />
+                                <Video className="w-3.5 h-3.5 text-[#C62828]" />
                               ) : (
                                 <MapPin className="w-3.5 h-3.5 text-[#16845B]" />
                               )}
@@ -1424,8 +1424,8 @@ export const AppointmentsPage: React.FC = () => {
                             </span>
                           </div>
 
-                          <div className="p-3 rounded-xl bg-[#F6F8FC] border border-[#E2E8F0] text-xs text-[#17233B]">
-                            <span className="text-[#64748B] font-semibold block mb-0.5">Submitted Agenda:</span>
+                          <div className="p-3 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] text-xs text-[#252525]">
+                            <span className="text-[#666666] font-semibold block mb-0.5">Submitted Agenda:</span>
                             <p className="italic">"{appt.agenda}"</p>
                           </div>
 
@@ -1450,7 +1450,7 @@ export const AppointmentsPage: React.FC = () => {
                                 onClick={() => handleOpenRescheduleModal(appt)}
                                 variant="outline"
                                 size="sm"
-                                className="w-full text-[#3157D5] border-[#3157D5]/30 hover:bg-[#EAF1FF]"
+                                className="w-full text-[#C62828] border-[#C62828]/30 hover:bg-[#FFF7F7]"
                                 icon={<RefreshCw className="w-3.5 h-3.5" />}
                               >
                                 Reschedule
@@ -1478,13 +1478,13 @@ export const AppointmentsPage: React.FC = () => {
                       </div>
 
                       {/* Consultation Meeting Link & Details Section */}
-                      <div className="p-3.5 rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] text-xs">
+                      <div className="p-3.5 rounded-xl border border-[#E7DADA] bg-[#FFF7F7] text-xs">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-bold text-[#17233B]">Meeting Format:</span>
+                          <span className="font-bold text-[#252525]">Meeting Format:</span>
                           <span
                             className={`px-2 py-0.5 rounded-md font-bold text-[11px] ${
                               appt.meetingMode === 'ONLINE'
-                                ? 'bg-[#EAF1FF] text-[#3157D5]'
+                                ? 'bg-[#FFF7F7] text-[#C62828]'
                                 : 'bg-[#E6F5EF] text-[#16845B]'
                             }`}
                           >
@@ -1501,18 +1501,18 @@ export const AppointmentsPage: React.FC = () => {
                                 href={appt.meetingLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#3157D5] text-white font-bold hover:bg-[#2544ad] transition-all shadow-xs"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#C62828] text-white font-bold hover:bg-[#8E1717] transition-all shadow-xs"
                               >
                                 <Video className="w-3.5 h-3.5" />
                                 Join Video Consultation
                                 <ExternalLink className="w-3 h-3 ml-0.5" />
                               </a>
-                              <span className="text-[11px] text-[#64748B] font-mono truncate max-w-[260px]">
+                              <span className="text-[11px] text-[#666666] font-mono truncate max-w-[260px]">
                                 {appt.meetingLink}
                               </span>
                             </div>
                           ) : (
-                            <p className="text-[#64748B] italic text-[11px] mt-0.5">
+                            <p className="text-[#666666] italic text-[11px] mt-0.5">
                               Faculty will share the Google Meet or Zoom link prior to the consultation.
                             </p>
                           )
@@ -1606,11 +1606,11 @@ export const AppointmentsPage: React.FC = () => {
         {user.role === 'STUDENT' && activeTab === 'book_slot' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Faculty Selector and Slot Chooser */}
-            <div className="lg:col-span-6 bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
-              <h2 className="text-lg font-bold text-[#17233B] mb-1 flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-[#3157D5]" /> Select Faculty Member
+            <div className="lg:col-span-6 bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs">
+              <h2 className="text-lg font-bold text-[#252525] mb-1 flex items-center gap-2">
+                <Briefcase className="w-5 h-5 text-[#C62828]" /> Select Faculty Member
               </h2>
-              <p className="text-xs text-[#64748B] mb-4">
+              <p className="text-xs text-[#666666] mb-4">
                 Choose a faculty mentor from the verified campus directory to view their open office
                 consultation hours.
               </p>
@@ -1619,7 +1619,7 @@ export const AppointmentsPage: React.FC = () => {
                 <select
                   value={selectedTeacherId}
                   onChange={(e) => setSelectedTeacherId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] focus:border-transparent transition-all"
                 >
                   <option value="" disabled>
                     -- Select Faculty Member --
@@ -1632,12 +1632,12 @@ export const AppointmentsPage: React.FC = () => {
                 </select>
               </div>
 
-              <h3 className="text-sm font-bold text-[#17233B] mb-2 flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#3157D5]" /> Available Consultation Slots
+              <h3 className="text-sm font-bold text-[#252525] mb-2 flex items-center gap-2">
+                <Clock className="w-4 h-4 text-[#C62828]" /> Available Consultation Slots
               </h3>
 
               {teacherSlots.length === 0 ? (
-                <div className="p-6 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] text-center text-xs text-[#64748B]">
+                <div className="p-6 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] text-center text-xs text-[#666666]">
                   No upcoming open consultation slots published for this faculty member right now.
                   Please select another faculty member or check back later.
                 </div>
@@ -1648,18 +1648,18 @@ export const AppointmentsPage: React.FC = () => {
                       key={slot._id}
                       className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                         selectedSlotId === slot._id
-                          ? 'border-[#3157D5] bg-[#EAF1FF]/40 shadow-xs ring-1 ring-[#3157D5]'
-                          : 'border-[#E2E8F0] bg-white hover:bg-[#F6F8FC]'
+                          ? 'border-[#C62828] bg-[#FFF7F7]/40 shadow-xs ring-1 ring-[#C62828]'
+                          : 'border-[#E7DADA] bg-white hover:bg-[#FFF7F7]'
                       }`}
                     >
                       <div>
-                        <div className="font-bold text-xs text-[#17233B]">
+                        <div className="font-bold text-xs text-[#252525]">
                           {formatDateTime(slot.startTime)} - {formatTimeOnly(slot.endTime)}
                         </div>
-                        <div className="text-[11px] text-[#64748B] flex items-center gap-2 mt-0.5">
+                        <div className="text-[11px] text-[#666666] flex items-center gap-2 mt-0.5">
                           <span className="flex items-center gap-1">
                             {slot.locationType === 'VIRTUAL_MEET' ? (
-                              <Video className="w-3 h-3 text-[#3157D5]" />
+                              <Video className="w-3 h-3 text-[#C62828]" />
                             ) : (
                               <MapPin className="w-3 h-3 text-[#16845B]" />
                             )}
@@ -1676,7 +1676,7 @@ export const AppointmentsPage: React.FC = () => {
                         value={slot._id}
                         checked={selectedSlotId === slot._id}
                         onChange={() => setSelectedSlotId(slot._id)}
-                        className="w-4 h-4 text-[#3157D5] focus:ring-[#3157D5]"
+                        className="w-4 h-4 text-[#C62828] focus:ring-[#C62828]"
                       />
                     </label>
                   ))}
@@ -1685,18 +1685,18 @@ export const AppointmentsPage: React.FC = () => {
             </div>
 
             {/* Booking Form / Agenda */}
-            <div className="lg:col-span-6 bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs h-fit">
-              <h2 className="text-lg font-bold text-[#17233B] mb-1 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-[#3157D5]" /> Consultation Agenda & Purpose
+            <div className="lg:col-span-6 bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs h-fit">
+              <h2 className="text-lg font-bold text-[#252525] mb-1 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-[#C62828]" /> Consultation Agenda & Purpose
               </h2>
-              <p className="text-xs text-[#64748B] mb-6">
+              <p className="text-xs text-[#666666] mb-6">
                 Describe the topic or specific questions you wish to discuss with the faculty member.
               </p>
 
               <form onSubmit={handleBookAppointment} className="space-y-4">
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
-                    <label className="block text-xs font-semibold text-[#17233B]">
+                    <label className="block text-xs font-semibold text-[#252525]">
                       Meeting Agenda * (Min 10 characters)
                     </label>
                     <span className="text-[11px] text-[#94A3B8]">
@@ -1711,11 +1711,11 @@ export const AppointmentsPage: React.FC = () => {
                     value={bookingAgenda}
                     onChange={(e) => setBookingAgenda(e.target.value)}
                     placeholder="e.g. Discuss my final year project architecture, review algorithm choice, and seek thesis mentorship approval."
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] focus:border-transparent transition-all"
                   />
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-[#EAF1FF]/40 border border-[#3157D5]/20 text-xs text-[#3157D5] leading-relaxed">
+                <div className="p-3.5 rounded-xl bg-[#FFF7F7]/40 border border-[#C62828]/20 text-xs text-[#C62828] leading-relaxed">
                   <strong>Notice: </strong> Appointments are subject to faculty approval. You will
                   receive real-time notifications on your status updates.
                 </div>
@@ -1746,9 +1746,9 @@ export const AppointmentsPage: React.FC = () => {
         {/* INTERACTIVE ACTION MODAL (Reject, Cancel, Complete) */}
         {/* ==================================================================== */}
         {actionModal && (
-          <div className="fixed inset-0 z-50 bg-[#17233B]/50 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl max-w-md w-full p-6 animate-in zoom-in-95 duration-150">
-              <h3 className="text-base font-bold text-[#17233B] mb-1 flex items-center gap-2">
+          <div className="fixed inset-0 z-50 bg-[#252525]/50 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xl max-w-md w-full p-6 animate-in zoom-in-95 duration-150">
+              <h3 className="text-base font-bold text-[#252525] mb-1 flex items-center gap-2">
                 {actionModal.type === 'REJECT' && <XCircle className="w-5 h-5 text-[#EF4444]" />}
                 {actionModal.type === 'CANCEL' && <CalendarX className="w-5 h-5 text-[#EF4444]" />}
                 {actionModal.type === 'COMPLETE' && <CheckCircle2 className="w-5 h-5 text-[#16845B]" />}
@@ -1759,7 +1759,7 @@ export const AppointmentsPage: React.FC = () => {
                 </span>
               </h3>
 
-              <p className="text-xs text-[#64748B] mb-4">
+              <p className="text-xs text-[#666666] mb-4">
                 {actionModal.type === 'REJECT' &&
                   'Please provide an optional reason for the student regarding why this request cannot be accommodated.'}
                 {actionModal.type === 'CANCEL' &&
@@ -1769,7 +1769,7 @@ export const AppointmentsPage: React.FC = () => {
               </p>
 
               <div className="mb-4">
-                <label className="block text-xs font-semibold text-[#17233B] mb-1">
+                <label className="block text-xs font-semibold text-[#252525] mb-1">
                   {actionModal.type === 'COMPLETE' ? 'Meeting Notes' : 'Reason (Optional)'}
                 </label>
                 <textarea
@@ -1783,11 +1783,11 @@ export const AppointmentsPage: React.FC = () => {
                       ? 'e.g. Reviewed methodology, approved dataset'
                       : 'e.g. Department committee meeting clash'
                   }
-                  className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] transition-all"
+                  className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] transition-all"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#F1F5F9]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E7DADA]">
                 <Button
                   onClick={() => setActionModal(null)}
                   variant="outline"
@@ -1827,19 +1827,19 @@ export const AppointmentsPage: React.FC = () => {
         {/* MEETING DETAILS MODAL (Faculty / Teacher) */}
         {/* ==================================================================== */}
         {meetingModal && (
-          <div className="fixed inset-0 z-50 bg-[#17233B]/50 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl max-w-md w-full p-6 animate-in zoom-in-95 duration-150">
-              <h3 className="text-base font-bold text-[#17233B] mb-1 flex items-center gap-2">
-                <Video className="w-5 h-5 text-[#3157D5]" />
+          <div className="fixed inset-0 z-50 bg-[#252525]/50 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xl max-w-md w-full p-6 animate-in zoom-in-95 duration-150">
+              <h3 className="text-base font-bold text-[#252525] mb-1 flex items-center gap-2">
+                <Video className="w-5 h-5 text-[#C62828]" />
                 Update Consultation Meeting Details
               </h3>
-              <p className="text-xs text-[#64748B] mb-4">
+              <p className="text-xs text-[#666666] mb-4">
                 Set meeting format and add manual Google Meet or Zoom link for this student consultation.
               </p>
 
               <form onSubmit={handleSaveMeetingDetails} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1">
                     Meeting Mode
                   </label>
                   <select
@@ -1850,7 +1850,7 @@ export const AppointmentsPage: React.FC = () => {
                         meetingMode: e.target.value as 'ONLINE' | 'IN_PERSON',
                       })
                     }
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] transition-all"
+                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] transition-all"
                   >
                     <option value="ONLINE">Virtual Video Conference (Google Meet / Zoom)</option>
                     <option value="IN_PERSON">In-Person (Faculty Cabin / Office)</option>
@@ -1859,7 +1859,7 @@ export const AppointmentsPage: React.FC = () => {
 
                 {meetingModal.meetingMode === 'ONLINE' && (
                   <div>
-                    <label className="block text-xs font-semibold text-[#17233B] mb-1">
+                    <label className="block text-xs font-semibold text-[#252525] mb-1">
                       Meeting Link (HTTPS URL)
                     </label>
                     <input
@@ -1869,7 +1869,7 @@ export const AppointmentsPage: React.FC = () => {
                         setMeetingModal({ ...meetingModal, meetingLink: e.target.value })
                       }
                       placeholder="https://meet.google.com/abc-defg-hij"
-                      className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] transition-all"
+                      className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] transition-all"
                     />
                     <p className="text-[11px] text-[#94A3B8] mt-1">
                       Paste your Google Meet, Zoom, or Microsoft Teams meeting link.
@@ -1878,7 +1878,7 @@ export const AppointmentsPage: React.FC = () => {
                 )}
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1">
                     Special Instructions (Optional)
                   </label>
                   <textarea
@@ -1888,11 +1888,11 @@ export const AppointmentsPage: React.FC = () => {
                       setMeetingModal({ ...meetingModal, meetingInstructions: e.target.value })
                     }
                     placeholder="e.g. Please join with your capstone presentation and report ready."
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] transition-all"
+                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] transition-all"
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#F1F5F9]">
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E7DADA]">
                   <Button
                     onClick={() => setMeetingModal(null)}
                     variant="outline"
@@ -1923,31 +1923,31 @@ export const AppointmentsPage: React.FC = () => {
         {/* RESCHEDULE PROPOSAL MODAL */}
         {/* ==================================================================== */}
         {rescheduleModal && (
-          <div className="fixed inset-0 z-50 bg-[#17233B]/50 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl max-w-lg w-full p-6 animate-in zoom-in-95 duration-150">
-              <h3 className="text-base font-bold text-[#17233B] mb-1 flex items-center gap-2">
-                <RefreshCw className="w-5 h-5 text-[#3157D5]" />
+          <div className="fixed inset-0 z-50 bg-[#252525]/50 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xl max-w-lg w-full p-6 animate-in zoom-in-95 duration-150">
+              <h3 className="text-base font-bold text-[#252525] mb-1 flex items-center gap-2">
+                <RefreshCw className="w-5 h-5 text-[#C62828]" />
                 Propose Appointment Rescheduling
               </h3>
-              <p className="text-xs text-[#64748B] mb-4">
+              <p className="text-xs text-[#666666] mb-4">
                 Select a new open consultation slot to propose moving this appointment. The other
                 participant will receive a real-time notification to accept or decline.
               </p>
 
               {rescheduleModal.loadingSlots ? (
                 <div className="py-12 flex flex-col items-center justify-center">
-                  <Loader2 className="w-6 h-6 text-[#3157D5] animate-spin mb-2" />
-                  <p className="text-xs text-[#64748B]">Loading available upcoming slots...</p>
+                  <Loader2 className="w-6 h-6 text-[#C62828] animate-spin mb-2" />
+                  <p className="text-xs text-[#666666]">Loading available upcoming slots...</p>
                 </div>
               ) : rescheduleModal.slots.length === 0 ? (
-                <div className="p-6 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] text-center text-xs text-[#64748B] my-4">
+                <div className="p-6 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] text-center text-xs text-[#666666] my-4">
                   No other open upcoming slots available right now. Please create or publish a new slot
                   first.
                 </div>
               ) : (
                 <form onSubmit={handleSubmitRescheduleProposal} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                    <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                       Select Proposed New Slot *
                     </label>
                     <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
@@ -1956,15 +1956,15 @@ export const AppointmentsPage: React.FC = () => {
                           key={slot._id}
                           className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between text-xs ${
                             rescheduleModal.selectedSlotId === slot._id
-                              ? 'border-[#3157D5] bg-[#EAF1FF]/40 ring-1 ring-[#3157D5]'
-                              : 'border-[#E2E8F0] bg-white hover:bg-[#F6F8FC]'
+                              ? 'border-[#C62828] bg-[#FFF7F7]/40 ring-1 ring-[#C62828]'
+                              : 'border-[#E7DADA] bg-white hover:bg-[#FFF7F7]'
                           }`}
                         >
                           <div>
-                            <span className="font-bold text-[#17233B] block">
+                            <span className="font-bold text-[#252525] block">
                               {formatDateTime(slot.startTime)} - {formatTimeOnly(slot.endTime)}
                             </span>
-                            <span className="text-[11px] text-[#64748B]">
+                            <span className="text-[11px] text-[#666666]">
                               {slot.locationType === 'VIRTUAL_MEET' ? 'Virtual' : 'In Cabin'}
                               {slot.locationDetails ? ` (${slot.locationDetails})` : ''}
                             </span>
@@ -1977,7 +1977,7 @@ export const AppointmentsPage: React.FC = () => {
                             onChange={() =>
                               setRescheduleModal({ ...rescheduleModal, selectedSlotId: slot._id })
                             }
-                            className="w-4 h-4 text-[#3157D5]"
+                            className="w-4 h-4 text-[#C62828]"
                           />
                         </label>
                       ))}
@@ -1985,7 +1985,7 @@ export const AppointmentsPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#17233B] mb-1">
+                    <label className="block text-xs font-semibold text-[#252525] mb-1">
                       Reason for Rescheduling (Optional)
                     </label>
                     <textarea
@@ -1995,11 +1995,11 @@ export const AppointmentsPage: React.FC = () => {
                         setRescheduleModal({ ...rescheduleModal, reason: e.target.value })
                       }
                       placeholder="e.g. Schedule clash with university lab exam."
-                      className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] transition-all"
+                      className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] transition-all"
                     />
                   </div>
 
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#F1F5F9]">
+                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E7DADA]">
                     <Button
                       onClick={() => setRescheduleModal(null)}
                       variant="outline"

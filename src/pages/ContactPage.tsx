@@ -82,7 +82,6 @@ export const ContactPage: React.FC = () => {
 
     setIsSubmitting(true);
 
-    // Simulate demo network delay
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
@@ -105,15 +104,15 @@ export const ContactPage: React.FC = () => {
   return (
     <div className="flex flex-col w-full">
       {/* Hero */}
-      <section className="pt-14 pb-16 bg-[#F6F8FC] border-b border-[#E2E8F0]">
+      <section className="pt-14 pb-16 bg-[#FFF7F7] border-b border-[#E7DADA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Badge variant="primary" size="md" className="mb-4">
             Connect With Us
           </Badge>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#17233B] tracking-tight max-w-3xl mx-auto">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#252525] tracking-tight max-w-3xl mx-auto">
             Contact University Support
           </h1>
-          <p className="mt-4 text-base sm:text-lg text-[#64748B] max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-4 text-base sm:text-lg text-[#666666] max-w-2xl mx-auto leading-relaxed">
             Have questions about student onboarding, faculty appointment setup, or project collaboration? We are here to assist.
           </p>
         </div>
@@ -125,25 +124,25 @@ export const ContactPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Left Column: Quick Links & Info */}
             <div className="flex flex-col gap-6">
-              <div className="p-6 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0]">
-                <h3 className="text-lg font-bold text-[#17233B] mb-2 flex items-center gap-2">
-                  <HelpCircle className="w-5 h-5 text-[#3157D5]" />
+              <div className="p-6 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA]">
+                <h3 className="text-lg font-bold text-[#252525] mb-2 flex items-center gap-2">
+                  <HelpCircle className="w-5 h-5 text-[#C62828]" />
                   Self-Service Support
                 </h3>
-                <p className="text-sm text-[#64748B] mb-5 leading-relaxed">
+                <p className="text-sm text-[#666666] mb-5 leading-relaxed">
                   Most common queries regarding skill verification, booking appointments, and team builder matchmaking are answered in our knowledge base.
                 </p>
 
                 <div className="space-y-3">
                   <Link
                     to="/help"
-                    className="block p-3 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#3157D5] text-sm font-semibold text-[#3157D5] transition-colors"
+                    className="block p-3 rounded-xl bg-white border border-[#E7DADA] hover:border-[#C62828] text-sm font-semibold text-[#C62828] transition-colors"
                   >
                     Browse Help Center / FAQs →
                   </Link>
                   <Link
                     to="/how-it-works"
-                    className="block p-3 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#3157D5] text-sm font-semibold text-[#17233B] transition-colors"
+                    className="block p-3 rounded-xl bg-white border border-[#E7DADA] hover:border-[#C62828] text-sm font-semibold text-[#252525] transition-colors"
                   >
                     View Role-Based Workflows →
                   </Link>
@@ -151,16 +150,16 @@ export const ContactPage: React.FC = () => {
               </div>
 
               {/* Demo Mode Notice Banner */}
-              <div className="p-5 rounded-2xl bg-[#EAF1FF]/60 border border-[#3157D5]/20 text-xs text-[#17233B] leading-relaxed">
-                <div className="flex items-center gap-2 font-bold text-[#3157D5] mb-1.5">
+              <div className="p-5 rounded-2xl bg-[#FFF7F7] border border-[#C62828]/25 text-xs text-[#252525] leading-relaxed">
+                <div className="flex items-center gap-2 font-bold text-[#C62828] mb-1.5">
                   <Info className="w-4 h-4" />
                   <span>Public Demo Notice</span>
                 </div>
                 This public frontend prototype processes and validates submissions on the client side. In this demo phase, submissions simulate server verification without dispatching external messages.
               </div>
 
-              <div className="p-6 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] text-xs text-[#64748B] space-y-2">
-                <div className="font-bold text-[#17233B] text-sm">
+              <div className="p-6 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] text-xs text-[#666666] space-y-2">
+                <div className="font-bold text-[#252525] text-sm">
                   Campus Administration
                 </div>
                 <p>Chandigarh University Knowledge Systems Initiative</p>
@@ -170,17 +169,17 @@ export const ContactPage: React.FC = () => {
 
             {/* Right Column: Contact Form */}
             <div className="lg:col-span-2">
-              <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm">
+              <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#E7DADA] shadow-sm">
                 {isSubmitted ? (
                   <div className="py-12 text-center flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-full bg-[#E6F5EF] text-[#16845B] flex items-center justify-center mb-5">
+                    <div className="w-16 h-16 rounded-full bg-[#FFF7F7] text-[#C62828] flex items-center justify-center mb-5 border border-[#C62828]/20">
                       <CheckCircle2 className="w-8 h-8" />
                     </div>
-                    <h3 className="text-2xl font-bold text-[#17233B] mb-2">
+                    <h3 className="text-2xl font-bold text-[#252525] mb-2">
                       Message Received!
                     </h3>
-                    <p className="text-sm text-[#64748B] max-w-md mx-auto mb-6 leading-relaxed">
-                      Thank you, <strong className="text-[#17233B]">{formData.fullName}</strong>. Your query regarding <em>"{formData.subject}"</em> has been logged in this demo prototype environment.
+                    <p className="text-sm text-[#666666] max-w-md mx-auto mb-6 leading-relaxed">
+                      Thank you, <strong className="text-[#252525]">{formData.fullName}</strong>. Your query regarding <em>"{formData.subject}"</em> has been logged in this demo prototype environment.
                     </p>
                     <div className="flex gap-3">
                       <Button onClick={handleReset} variant="outline" size="md">
@@ -193,11 +192,11 @@ export const ContactPage: React.FC = () => {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} noValidate className="space-y-6">
-                    <div className="border-b border-[#E2E8F0] pb-4">
-                      <h2 className="text-xl font-bold text-[#17233B]">
+                    <div className="border-b border-[#E7DADA] pb-4">
+                      <h2 className="text-xl font-bold text-[#252525]">
                         Send a Message to Support
                       </h2>
-                      <p className="text-xs text-[#64748B] mt-1">
+                      <p className="text-xs text-[#666666] mt-1">
                         Fill in your details below and our campus team will review your inquiry.
                       </p>
                     </div>
@@ -207,9 +206,9 @@ export const ContactPage: React.FC = () => {
                       <div>
                         <label
                           htmlFor="fullName"
-                          className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-2"
+                          className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-2"
                         >
-                          Full Name <span className="text-[#EF4444]">*</span>
+                          Full Name <span className="text-[#C62828]">*</span>
                         </label>
                         <input
                           type="text"
@@ -220,14 +219,14 @@ export const ContactPage: React.FC = () => {
                             setFormData({ ...formData, fullName: e.target.value })
                           }
                           placeholder="e.g. Deepak Sharma"
-                          className={`w-full px-4 py-2.5 rounded-lg border text-sm text-[#17233B] placeholder:text-[#94A3B8] transition-colors focus:outline-none ${
+                          className={`w-full px-4 py-2.5 rounded-lg border text-sm text-[#252525] placeholder:text-[#999999] transition-colors focus:outline-none ${
                             errors.fullName
-                              ? 'border-[#EF4444] bg-[#FEF2F2]'
-                              : 'border-[#E2E8F0] bg-white focus:border-[#3157D5]'
+                              ? 'border-[#C62828] bg-[#FFF1F1]'
+                              : 'border-[#E7DADA] bg-white focus:border-[#C62828]'
                           }`}
                         />
                         {errors.fullName && (
-                          <p className="mt-1.5 text-xs text-[#EF4444] flex items-center gap-1">
+                          <p className="mt-1.5 text-xs text-[#C62828] flex items-center gap-1">
                             <AlertCircle className="w-3.5 h-3.5" /> {errors.fullName}
                           </p>
                         )}
@@ -236,9 +235,9 @@ export const ContactPage: React.FC = () => {
                       <div>
                         <label
                           htmlFor="email"
-                          className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-2"
+                          className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-2"
                         >
-                          University Email <span className="text-[#EF4444]">*</span>
+                          University Email <span className="text-[#C62828]">*</span>
                         </label>
                         <input
                           type="email"
@@ -249,14 +248,14 @@ export const ContactPage: React.FC = () => {
                             setFormData({ ...formData, email: e.target.value })
                           }
                           placeholder="e.g. deepak.24bcs@cuchd.in"
-                          className={`w-full px-4 py-2.5 rounded-lg border text-sm text-[#17233B] placeholder:text-[#94A3B8] transition-colors focus:outline-none ${
+                          className={`w-full px-4 py-2.5 rounded-lg border text-sm text-[#252525] placeholder:text-[#999999] transition-colors focus:outline-none ${
                             errors.email
-                              ? 'border-[#EF4444] bg-[#FEF2F2]'
-                              : 'border-[#E2E8F0] bg-white focus:border-[#3157D5]'
+                              ? 'border-[#C62828] bg-[#FFF1F1]'
+                              : 'border-[#E7DADA] bg-white focus:border-[#C62828]'
                           }`}
                         />
                         {errors.email && (
-                          <p className="mt-1.5 text-xs text-[#EF4444] flex items-center gap-1">
+                          <p className="mt-1.5 text-xs text-[#C62828] flex items-center gap-1">
                             <AlertCircle className="w-3.5 h-3.5" /> {errors.email}
                           </p>
                         )}
@@ -268,7 +267,7 @@ export const ContactPage: React.FC = () => {
                       <div>
                         <label
                           htmlFor="userType"
-                          className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-2"
+                          className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-2"
                         >
                           User Role
                         </label>
@@ -282,7 +281,7 @@ export const ContactPage: React.FC = () => {
                               userType: e.target.value as any,
                             })
                           }
-                          className="w-full px-4 py-2.5 rounded-lg border border-[#E2E8F0] bg-white text-sm text-[#17233B] focus:border-[#3157D5] focus:outline-none"
+                          className="w-full px-4 py-2.5 rounded-lg border border-[#E7DADA] bg-white text-sm text-[#252525] focus:border-[#C62828] focus:outline-none"
                         >
                           <option value="Student">Student</option>
                           <option value="Faculty">Faculty Member</option>
@@ -293,9 +292,9 @@ export const ContactPage: React.FC = () => {
                       <div>
                         <label
                           htmlFor="subject"
-                          className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-2"
+                          className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-2"
                         >
-                          Subject <span className="text-[#EF4444]">*</span>
+                          Subject <span className="text-[#C62828]">*</span>
                         </label>
                         <input
                           type="text"
@@ -306,14 +305,14 @@ export const ContactPage: React.FC = () => {
                             setFormData({ ...formData, subject: e.target.value })
                           }
                           placeholder="e.g. Question regarding Capstone Matchmaking"
-                          className={`w-full px-4 py-2.5 rounded-lg border text-sm text-[#17233B] placeholder:text-[#94A3B8] transition-colors focus:outline-none ${
+                          className={`w-full px-4 py-2.5 rounded-lg border text-sm text-[#252525] placeholder:text-[#999999] transition-colors focus:outline-none ${
                             errors.subject
-                              ? 'border-[#EF4444] bg-[#FEF2F2]'
-                              : 'border-[#E2E8F0] bg-white focus:border-[#3157D5]'
+                              ? 'border-[#C62828] bg-[#FFF1F1]'
+                              : 'border-[#E7DADA] bg-white focus:border-[#C62828]'
                           }`}
                         />
                         {errors.subject && (
-                          <p className="mt-1.5 text-xs text-[#EF4444] flex items-center gap-1">
+                          <p className="mt-1.5 text-xs text-[#C62828] flex items-center gap-1">
                             <AlertCircle className="w-3.5 h-3.5" /> {errors.subject}
                           </p>
                         )}
@@ -324,9 +323,9 @@ export const ContactPage: React.FC = () => {
                     <div>
                       <label
                         htmlFor="message"
-                        className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-2"
+                        className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-2"
                       >
-                        Message <span className="text-[#EF4444]">*</span>
+                        Message <span className="text-[#C62828]">*</span>
                       </label>
                       <textarea
                         id="message"
@@ -337,14 +336,14 @@ export const ContactPage: React.FC = () => {
                           setFormData({ ...formData, message: e.target.value })
                         }
                         placeholder="Please elaborate on your question, issue, or feedback..."
-                        className={`w-full px-4 py-3 rounded-lg border text-sm text-[#17233B] placeholder:text-[#94A3B8] transition-colors focus:outline-none resize-none ${
+                        className={`w-full px-4 py-3 rounded-lg border text-sm text-[#252525] placeholder:text-[#999999] transition-colors focus:outline-none resize-none ${
                           errors.message
-                            ? 'border-[#EF4444] bg-[#FEF2F2]'
-                            : 'border-[#E2E8F0] bg-white focus:border-[#3157D5]'
+                            ? 'border-[#C62828] bg-[#FFF1F1]'
+                            : 'border-[#E7DADA] bg-white focus:border-[#C62828]'
                         }`}
                       />
                       {errors.message && (
-                        <p className="mt-1.5 text-xs text-[#EF4444] flex items-center gap-1">
+                        <p className="mt-1.5 text-xs text-[#C62828] flex items-center gap-1">
                           <AlertCircle className="w-3.5 h-3.5" /> {errors.message}
                         </p>
                       )}
@@ -364,13 +363,13 @@ export const ContactPage: React.FC = () => {
                               privacyConsent: e.target.checked,
                             })
                           }
-                          className="mt-1 w-4 h-4 rounded border-[#E2E8F0] text-[#3157D5] focus:ring-[#3157D5]"
+                          className="mt-1 w-4 h-4 rounded border-[#E7DADA] text-[#C62828] focus:ring-[#C62828]"
                         />
-                        <span className="text-xs text-[#64748B] leading-relaxed">
+                        <span className="text-xs text-[#666666] leading-relaxed">
                           I acknowledge that this contact request is handled in accordance with the university platform{' '}
                           <Link
                             to="/privacy"
-                            className="text-[#3157D5] underline hover:text-[#2546b5]"
+                            className="text-[#C62828] underline hover:text-[#8E1717]"
                           >
                             Privacy Policy
                           </Link>
@@ -378,7 +377,7 @@ export const ContactPage: React.FC = () => {
                         </span>
                       </label>
                       {errors.privacyConsent && (
-                        <p className="mt-1 text-xs text-[#EF4444] flex items-center gap-1">
+                        <p className="mt-1 text-xs text-[#C62828] flex items-center gap-1">
                           <AlertCircle className="w-3.5 h-3.5" /> {errors.privacyConsent}
                         </p>
                       )}

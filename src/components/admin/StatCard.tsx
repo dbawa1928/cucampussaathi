@@ -18,9 +18,9 @@ export const StatCard: React.FC<StatCardProps> = ({
 }) => {
   const variantStyles = {
     primary: {
-      bg: 'bg-[#EAF1FF]',
-      text: 'text-[#3157D5]',
-      border: 'hover:border-[#3157D5]/40',
+      bg: 'bg-[#FFF7F7] border border-[#E7DADA]',
+      text: 'text-[#C62828]',
+      border: 'hover:border-[#C62828]/40',
     },
     success: {
       bg: 'bg-[#E6F5EF]',
@@ -34,28 +34,28 @@ export const StatCard: React.FC<StatCardProps> = ({
     },
     danger: {
       bg: 'bg-[#FEF2F2]',
-      text: 'text-[#EF4444]',
-      border: 'hover:border-[#EF4444]/40',
+      text: 'text-[#C62828]',
+      border: 'hover:border-[#C62828]/40',
     },
     neutral: {
-      bg: 'bg-[#F1F5F9]',
-      text: 'text-[#475569]',
-      border: 'hover:border-[#64748B]/40',
+      bg: 'bg-[#FFF7F7]',
+      text: 'text-[#666666]',
+      border: 'hover:border-[#C62828]/20',
     },
   }[variant];
 
   return (
     <div
-      className={`p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs transition-all ${variantStyles.border}`}
+      className={`p-5 rounded-2xl bg-white border border-[#E7DADA] shadow-xs transition-all ${variantStyles.border}`}
     >
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold text-[#64748B]">{title}</span>
+        <span className="text-xs font-semibold text-[#666666]">{title}</span>
         <div className={`w-9 h-9 rounded-xl ${variantStyles.bg} ${variantStyles.text} flex items-center justify-center`}>
           <Icon className="w-5 h-5" />
         </div>
       </div>
-      <div className="text-2xl font-extrabold text-[#17233B] tracking-tight">{value}</div>
-      {subtitle && <p className="text-[11px] text-[#94A3B8] mt-1">{subtitle}</p>}
+      <div className="text-2xl font-extrabold text-[#252525] tracking-tight">{value}</div>
+      {subtitle && <p className="text-[11px] text-[#666666] mt-1">{subtitle}</p>}
     </div>
   );
 };

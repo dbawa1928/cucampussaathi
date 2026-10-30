@@ -30,7 +30,6 @@ interface DirectoryMember {
   fullName: string;
   role: 'STUDENT' | 'TEACHER';
   department: string;
-  // Student fields
   course?: string;
   semester?: number;
   bio?: string;
@@ -41,7 +40,6 @@ interface DirectoryMember {
     portfolio?: string;
   };
   privacyLevel?: 'PUBLIC' | 'CAMPUS_ONLY' | 'PRIVATE';
-  // Teacher fields
   designation?: string;
   researchDomains?: string[];
   officeLocation?: string;
@@ -146,7 +144,7 @@ export const DirectoryPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F8FC] py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#FFF7F7] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-8 text-center max-w-3xl mx-auto">
@@ -155,33 +153,33 @@ export const DirectoryPage: React.FC = () => {
               Privacy-Aware Campus Network
             </Badge>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#17233B] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#252525] tracking-tight">
             CU Campus Directory & Peer Mentors
           </h1>
-          <p className="mt-2 text-sm sm:text-base text-[#64748B] leading-relaxed">
+          <p className="mt-2 text-sm sm:text-base text-[#666666] leading-relaxed">
             Discover student mentors, project collaborators, and distinguished faculty across
             Chandigarh University departments.
           </p>
 
           {/* Privacy status banner */}
-          <div className="mt-4 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#E2E8F0] shadow-xs text-[#64748B]">
+          <div className="mt-4 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#E7DADA] shadow-xs text-[#666666]">
             {user ? (
               <>
-                <ShieldCheck className="w-4 h-4 text-[#16845B]" />
-                <span className="text-[#17233B]">
+                <ShieldCheck className="w-4 h-4 text-[#C62828]" />
+                <span className="text-[#252525]">
                   Authenticated as <strong>{user.fullName}</strong>
                 </span>
-                <span className="text-[#16845B] bg-[#E6F5EF] px-2 py-0.5 rounded-full text-[10px] font-bold">
+                <span className="text-[#C62828] bg-[#FFF7F7] px-2 py-0.5 rounded-full text-[10px] font-bold border border-[#C62828]/20">
                   Full Campus Access
                 </span>
               </>
             ) : (
               <>
-                <Globe className="w-4 h-4 text-[#3157D5]" />
+                <Globe className="w-4 h-4 text-[#C62828]" />
                 <span>Viewing Public Profiles Only.</span>
                 <Link
                   to="/login"
-                  className="text-[#3157D5] hover:underline font-bold ml-1 inline-flex items-center gap-1"
+                  className="text-[#C62828] hover:underline font-bold ml-1 inline-flex items-center gap-1"
                 >
                   Sign In for Campus Network &rarr;
                 </Link>
@@ -191,18 +189,18 @@ export const DirectoryPage: React.FC = () => {
         </div>
 
         {/* Filter Controls Card */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs mb-8">
+        <div className="bg-white rounded-2xl border border-[#E7DADA] p-5 shadow-xs mb-8">
           <form onSubmit={handleSearchSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
               {/* Keyword Search */}
               <div className="md:col-span-5 relative">
-                <Search className="w-4 h-4 text-[#94A3B8] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-[#8E1717]/50 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search by name, skill, course, or topic..."
-                  className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                 />
               </div>
 
@@ -214,7 +212,7 @@ export const DirectoryPage: React.FC = () => {
                     setDepartmentFilter(e.target.value);
                     setPage(1);
                   }}
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all text-[#17233B]"
+                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                 >
                   {DEPARTMENTS.map((dept) => (
                     <option key={dept} value={dept}>
@@ -239,7 +237,7 @@ export const DirectoryPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleResetFilters}
-                    className="p-2.5 rounded-xl border border-[#E2E8F0] hover:bg-[#F6F8FC] text-[#64748B] hover:text-[#17233B] transition-colors"
+                    className="p-2.5 rounded-xl border border-[#E7DADA] hover:bg-[#FFF7F7] text-[#666666] hover:text-[#252525] transition-colors cursor-pointer"
                     title="Clear filters"
                   >
                     <RefreshCw className="w-4 h-4" />
@@ -249,9 +247,9 @@ export const DirectoryPage: React.FC = () => {
             </div>
 
             {/* Filter Pills Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#F1F5F9] text-xs">
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#E7DADA] text-xs">
               <div className="flex items-center gap-1.5">
-                <span className="text-[#64748B] font-semibold flex items-center gap-1 mr-1">
+                <span className="text-[#666666] font-semibold flex items-center gap-1 mr-1">
                   <Filter className="w-3.5 h-3.5" /> Filter Role:
                 </span>
                 {(['all', 'student', 'teacher'] as const).map((r) => (
@@ -264,8 +262,8 @@ export const DirectoryPage: React.FC = () => {
                     }}
                     className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer capitalize ${
                       roleFilter === r
-                        ? 'bg-[#3157D5] text-white shadow-xs'
-                        : 'bg-[#F6F8FC] text-[#64748B] hover:text-[#17233B] hover:bg-[#EAF1FF]'
+                        ? 'bg-[#C62828] text-white shadow-xs'
+                        : 'bg-[#FFF7F7] text-[#666666] hover:text-[#252525] hover:bg-white border border-[#E7DADA]'
                     }`}
                   >
                     {r === 'all' ? 'All Roles' : r === 'student' ? 'Students' : 'Faculty'}
@@ -273,8 +271,8 @@ export const DirectoryPage: React.FC = () => {
                 ))}
               </div>
 
-              <div className="text-[#64748B]">
-                Found <strong className="text-[#17233B]">{totalCount}</strong> verified members
+              <div className="text-[#666666]">
+                Found <strong className="text-[#252525]">{totalCount}</strong> verified members
               </div>
             </div>
           </form>
@@ -283,26 +281,26 @@ export const DirectoryPage: React.FC = () => {
         {/* Directory Content States */}
         {loading ? (
           <div className="py-20 flex flex-col items-center justify-center text-center">
-            <Loader2 className="w-8 h-8 text-[#3157D5] animate-spin mb-3" />
-            <p className="text-sm font-semibold text-[#17233B]">Loading campus directory...</p>
-            <p className="text-xs text-[#64748B] mt-1">Applying privacy filters and query parameters</p>
+            <Loader2 className="w-8 h-8 text-[#C62828] animate-spin mb-3" />
+            <p className="text-sm font-semibold text-[#252525]">Loading campus directory...</p>
+            <p className="text-xs text-[#666666] mt-1">Applying privacy filters and query parameters</p>
           </div>
         ) : error ? (
-          <div className="p-6 rounded-2xl bg-white border border-[#FCA5A5] shadow-xs text-center max-w-lg mx-auto">
-            <AlertCircle className="w-8 h-8 text-[#EF4444] mx-auto mb-2" />
-            <h3 className="text-base font-bold text-[#17233B] mb-1">Failed to Load Directory</h3>
-            <p className="text-xs text-[#64748B] mb-4">{error}</p>
+          <div className="p-6 rounded-2xl bg-white border border-[#C62828]/40 shadow-xs text-center max-w-lg mx-auto">
+            <AlertCircle className="w-8 h-8 text-[#C62828] mx-auto mb-2" />
+            <h3 className="text-base font-bold text-[#252525] mb-1">Failed to Load Directory</h3>
+            <p className="text-xs text-[#666666] mb-4">{error}</p>
             <Button onClick={() => fetchDirectory()} variant="outline" size="sm">
               Retry Connection
             </Button>
           </div>
         ) : members.length === 0 ? (
-          <div className="py-16 px-6 bg-white rounded-3xl border border-[#E2E8F0] text-center max-w-xl mx-auto shadow-xs">
-            <div className="w-12 h-12 rounded-2xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mx-auto mb-3">
+          <div className="py-16 px-6 bg-white rounded-3xl border border-[#E7DADA] text-center max-w-xl mx-auto shadow-xs">
+            <div className="w-12 h-12 rounded-2xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center mx-auto mb-3">
               <BookOpen className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-[#17233B] mb-1">No Campus Members Found</h3>
-            <p className="text-xs text-[#64748B] max-w-md mx-auto mb-6 leading-relaxed">
+            <h3 className="text-lg font-bold text-[#252525] mb-1">No Campus Members Found</h3>
+            <p className="text-xs text-[#666666] max-w-md mx-auto mb-6 leading-relaxed">
               We couldn't find any profiles matching your search criteria. Try modifying your search
               keywords or clearing the applied filters.
             </p>
@@ -317,7 +315,7 @@ export const DirectoryPage: React.FC = () => {
               {members.map((member) => (
                 <div
                   key={member.profileId || member.id}
-                  className="bg-white rounded-2xl border border-[#E2E8F0] p-6 shadow-xs hover:shadow-md hover:border-[#3157D5]/40 transition-all flex flex-col justify-between"
+                  className="bg-white rounded-2xl border border-[#E7DADA] p-6 shadow-xs hover:shadow-md hover:border-[#C62828]/40 transition-all flex flex-col justify-between"
                 >
                   <div>
                     {/* Top Header Card */}
@@ -326,17 +324,17 @@ export const DirectoryPage: React.FC = () => {
                         <div
                           className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-extrabold ${
                             member.role === 'TEACHER'
-                              ? 'bg-[#E6F5EF] text-[#16845B] border border-[#16845B]/20'
-                              : 'bg-[#EAF1FF] text-[#3157D5] border border-[#3157D5]/20'
+                              ? 'bg-[#FFF7F7] text-[#8E1717] border border-[#8E1717]/20'
+                              : 'bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20'
                           }`}
                         >
                           {member.fullName.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <h3 className="text-base font-bold text-[#17233B] leading-tight">
+                          <h3 className="text-base font-bold text-[#252525] leading-tight">
                             {member.fullName}
                           </h3>
-                          <p className="text-xs text-[#64748B] mt-0.5">
+                          <p className="text-xs text-[#666666] mt-0.5">
                             {member.role === 'TEACHER'
                               ? member.designation || 'Faculty Member'
                               : member.course
@@ -349,8 +347,8 @@ export const DirectoryPage: React.FC = () => {
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                           member.role === 'TEACHER'
-                            ? 'bg-[#E6F5EF] text-[#16845B]'
-                            : 'bg-[#EAF1FF] text-[#3157D5]'
+                            ? 'bg-[#FFF7F7] text-[#8E1717] border border-[#8E1717]/20'
+                            : 'bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20'
                         }`}
                       >
                         {member.role}
@@ -359,11 +357,11 @@ export const DirectoryPage: React.FC = () => {
 
                     {/* Department Tag */}
                     <div className="mb-3">
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#475569] bg-[#F1F5F9] px-2.5 py-0.5 rounded-md">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#252525] bg-[#FFF7F7] border border-[#E7DADA] px-2.5 py-0.5 rounded-md">
                         {member.role === 'TEACHER' ? (
-                          <Briefcase className="w-3 h-3 text-[#64748B]" />
+                          <Briefcase className="w-3 h-3 text-[#C62828]" />
                         ) : (
-                          <GraduationCap className="w-3 h-3 text-[#64748B]" />
+                          <GraduationCap className="w-3 h-3 text-[#C62828]" />
                         )}
                         {member.department}
                       </span>
@@ -371,21 +369,21 @@ export const DirectoryPage: React.FC = () => {
 
                     {/* Bio or Office Location */}
                     {member.role === 'TEACHER' && member.officeLocation && (
-                      <p className="text-xs text-[#64748B] flex items-center gap-1.5 mb-3">
-                        <MapPin className="w-3.5 h-3.5 text-[#3157D5] shrink-0" />
+                      <p className="text-xs text-[#666666] flex items-center gap-1.5 mb-3">
+                        <MapPin className="w-3.5 h-3.5 text-[#C62828] shrink-0" />
                         <span>{member.officeLocation}</span>
                       </p>
                     )}
 
                     {member.role === 'STUDENT' && member.bio && (
-                      <p className="text-xs text-[#475569] mb-4 line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-[#666666] mb-4 line-clamp-2 leading-relaxed">
                         {member.bio}
                       </p>
                     )}
 
                     {/* Skills or Research Domains */}
                     <div className="mb-4">
-                      <p className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mb-1.5">
+                      <p className="text-[11px] font-bold text-[#8E1717] uppercase tracking-wider mb-1.5">
                         {member.role === 'TEACHER' ? 'Research Domains' : 'Skills & Technologies'}
                       </p>
                       <div className="flex flex-wrap gap-1.5">
@@ -393,7 +391,7 @@ export const DirectoryPage: React.FC = () => {
                           ? member.researchDomains.slice(0, 4).map((d) => (
                               <span
                                 key={d}
-                                className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-[#E6F5EF] text-[#16845B]"
+                                className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-[#FFF7F7] text-[#8E1717] border border-[#8E1717]/20"
                               >
                                 {d}
                               </span>
@@ -404,7 +402,7 @@ export const DirectoryPage: React.FC = () => {
                           ? member.skills.slice(0, 5).map((s) => (
                               <span
                                 key={s}
-                                className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-[#F1F5F9] text-[#17233B] border border-[#E2E8F0]"
+                                className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-[#FFF7F7] text-[#252525] border border-[#E7DADA]"
                               >
                                 {s}
                               </span>
@@ -412,7 +410,7 @@ export const DirectoryPage: React.FC = () => {
                           : null}
 
                         {(!member.skills?.length && !member.researchDomains?.length) && (
-                          <span className="text-[11px] text-[#94A3B8] italic">No skills listed yet</span>
+                          <span className="text-[11px] text-[#999999] italic">No skills listed yet</span>
                         )}
                       </div>
                     </div>
@@ -422,7 +420,7 @@ export const DirectoryPage: React.FC = () => {
                       <div className="mb-3">
                         <Link
                           to={`/appointments?teacherId=${member.profileId}&teacherName=${encodeURIComponent(member.fullName)}`}
-                          className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-[#EAF1FF] text-[#3157D5] hover:bg-[#3157D5] hover:text-white transition-all border border-[#3157D5]/20 shadow-2xs"
+                          className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-[#FFF7F7] text-[#C62828] hover:bg-[#C62828] hover:text-white transition-all border border-[#C62828]/25 shadow-2xs"
                         >
                           <Calendar className="w-3.5 h-3.5" />
                           <span>Book Consultation</span>
@@ -432,22 +430,22 @@ export const DirectoryPage: React.FC = () => {
                   </div>
 
                   {/* Card Bottom / Social Links */}
-                  <div className="pt-3 border-t border-[#F1F5F9] flex items-center justify-between text-xs text-[#64748B]">
+                  <div className="pt-3 border-t border-[#E7DADA] flex items-center justify-between text-xs text-[#666666]">
                     {/* Privacy indicator */}
                     <div className="flex items-center gap-1 text-[11px]">
                       {member.privacyLevel === 'PUBLIC' ? (
                         <>
-                          <Globe className="w-3 h-3 text-[#16845B]" />
+                          <Globe className="w-3 h-3 text-[#C62828]" />
                           <span>Public</span>
                         </>
                       ) : member.privacyLevel === 'CAMPUS_ONLY' ? (
                         <>
-                          <ShieldCheck className="w-3 h-3 text-[#3157D5]" />
+                          <ShieldCheck className="w-3 h-3 text-[#C62828]" />
                           <span>Campus Only</span>
                         </>
                       ) : (
                         <>
-                          <Lock className="w-3 h-3 text-[#64748B]" />
+                          <Lock className="w-3 h-3 text-[#666666]" />
                           <span>Confidential</span>
                         </>
                       )}
@@ -461,7 +459,7 @@ export const DirectoryPage: React.FC = () => {
                             href={member.socialLinks.github}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#64748B] hover:text-[#17233B] transition-colors"
+                            className="text-[#666666] hover:text-[#252525] transition-colors"
                             title="GitHub Profile"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
@@ -472,7 +470,7 @@ export const DirectoryPage: React.FC = () => {
                             href={member.socialLinks.linkedin}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#64748B] hover:text-[#3157D5] transition-colors"
+                            className="text-[#666666] hover:text-[#C62828] transition-colors"
                             title="LinkedIn Profile"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
@@ -483,7 +481,7 @@ export const DirectoryPage: React.FC = () => {
                             href={member.socialLinks.portfolio}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#64748B] hover:text-[#16845B] transition-colors"
+                            className="text-[#666666] hover:text-[#8E1717] transition-colors"
                             title="Portfolio Link"
                           >
                             <Sparkles className="w-3.5 h-3.5" />
@@ -508,9 +506,9 @@ export const DirectoryPage: React.FC = () => {
                 >
                   Previous
                 </Button>
-                <span className="text-xs text-[#64748B] px-3 font-semibold">
-                  Page <strong className="text-[#17233B]">{page}</strong> of{' '}
-                  <strong className="text-[#17233B]">{totalPages}</strong>
+                <span className="text-xs text-[#666666] px-3 font-semibold">
+                  Page <strong className="text-[#252525]">{page}</strong> of{' '}
+                  <strong className="text-[#252525]">{totalPages}</strong>
                 </span>
                 <Button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}

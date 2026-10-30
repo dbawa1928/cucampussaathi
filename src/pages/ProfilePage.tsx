@@ -111,7 +111,6 @@ export const ProfilePage: React.FC = () => {
             isAcceptingBookings: p.isAcceptingBookings !== undefined ? p.isAcceptingBookings : true,
           });
         } else {
-          // Pre-populate department from user
           setTeacherForm((prev) => ({ ...prev, department: user.department }));
         }
       }
@@ -148,7 +147,7 @@ export const ProfilePage: React.FC = () => {
     }));
   };
 
-  // Domain tag handlers
+  // Research domain tag handlers
   const handleAddDomain = () => {
     const trimmed = domainInput.trim();
     if (!trimmed) return;
@@ -170,7 +169,7 @@ export const ProfilePage: React.FC = () => {
     }));
   };
 
-  // Form submit handler
+  // Submit student form
   const handleStudentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -178,7 +177,7 @@ export const ProfilePage: React.FC = () => {
     setSuccessMessage('');
 
     try {
-      const res = await apiClient.put('/users/profile/student', studentForm);
+      const res = await apiClient.put<ApiResponse<{ profile: any }>>('/users/profile/student', studentForm);
       if (res.success) {
         setSuccessMessage('Student profile updated successfully in MongoDB Atlas.');
       }
@@ -189,6 +188,7 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
+  // Submit teacher form
   const handleTeacherSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -196,7 +196,7 @@ export const ProfilePage: React.FC = () => {
     setSuccessMessage('');
 
     try {
-      const res = await apiClient.put('/users/profile/teacher', teacherForm);
+      const res = await apiClient.put<ApiResponse<{ profile: any }>>('/users/profile/teacher', teacherForm);
       if (res.success) {
         setSuccessMessage('Faculty profile updated successfully in MongoDB Atlas.');
       }
@@ -210,21 +210,21 @@ export const ProfilePage: React.FC = () => {
   // Unauthenticated Guard
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#F6F8FC] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#3157D5] animate-spin" />
+      <div className="min-h-screen bg-[#FFF7F7] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[#C62828] animate-spin" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#F6F8FC] py-16 px-4 flex items-center justify-center">
-        <div className="bg-white rounded-3xl border border-[#E2E8F0] p-8 sm:p-10 max-w-md w-full text-center shadow-xs">
-          <div className="w-14 h-14 rounded-2xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-screen bg-[#FFF7F7] py-16 px-4 flex items-center justify-center">
+        <div className="bg-white rounded-3xl border border-[#E7DADA] p-8 sm:p-10 max-w-md w-full text-center shadow-xs">
+          <div className="w-14 h-14 rounded-2xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/25 flex items-center justify-center mx-auto mb-4">
             <Lock className="w-7 h-7" />
           </div>
-          <h2 className="text-xl font-bold text-[#17233B] mb-2">Authentication Required</h2>
-          <p className="text-xs sm:text-sm text-[#64748B] mb-6 leading-relaxed">
+          <h2 className="text-xl font-bold text-[#252525] mb-2">Authentication Required</h2>
+          <p className="text-xs sm:text-sm text-[#666666] mb-6 leading-relaxed">
             Please sign in with your Chandigarh University credentials to access and manage your
             profile settings.
           </p>
@@ -237,29 +237,29 @@ export const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F6F8FC] py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#FFF7F7] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Top Header Card */}
-        <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#F1F5F9]">
+        <div className="bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#E7DADA]">
             <div className="flex items-center gap-4">
               <div
                 className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-extrabold ${
                   user.role === 'TEACHER'
-                    ? 'bg-[#E6F5EF] text-[#16845B]'
+                    ? 'bg-[#FFF7F7] text-[#8E1717] border border-[#8E1717]/25'
                     : user.role === 'ADMIN'
-                    ? 'bg-[#FFF7ED] text-[#C2410C]'
-                    : 'bg-[#EAF1FF] text-[#3157D5]'
+                    ? 'bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/25'
+                    : 'bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/25'
                 }`}
               >
                 {user.fullName.charAt(0).toUpperCase()}
               </div>
               <div>
-                <h1 className="text-xl sm:text-2xl font-extrabold text-[#17233B]">
+                <h1 className="text-xl sm:text-2xl font-extrabold text-[#252525]">
                   {user.fullName}
                 </h1>
-                <p className="text-xs sm:text-sm text-[#64748B] flex items-center gap-2 mt-0.5">
-                  <Mail className="w-3.5 h-3.5" /> {user.email} • UID: <strong>{user.uid}</strong>
+                <p className="text-xs sm:text-sm text-[#666666] flex items-center gap-2 mt-0.5">
+                  <Mail className="w-3.5 h-3.5 text-[#C62828]" /> {user.email} • UID: <strong>{user.uid}</strong>
                 </p>
               </div>
             </div>
@@ -268,10 +268,10 @@ export const ProfilePage: React.FC = () => {
               <span
                 className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
                   user.role === 'TEACHER'
-                    ? 'bg-[#E6F5EF] text-[#16845B]'
+                    ? 'bg-[#FFF7F7] text-[#8E1717] border border-[#8E1717]/25'
                     : user.role === 'ADMIN'
-                    ? 'bg-[#FFF7ED] text-[#C2410C]'
-                    : 'bg-[#EAF1FF] text-[#3157D5]'
+                    ? 'bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/25'
+                    : 'bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/25'
                 }`}
               >
                 {user.role}
@@ -285,23 +285,23 @@ export const ProfilePage: React.FC = () => {
           {/* Read-Only University Metadata Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 text-xs">
             <div>
-              <span className="text-[#64748B] block">Academic Dept</span>
-              <span className="font-semibold text-[#17233B]">{user.department}</span>
+              <span className="text-[#666666] block">Academic Dept</span>
+              <span className="font-semibold text-[#252525]">{user.department}</span>
             </div>
             <div>
-              <span className="text-[#64748B] block">Campus UID</span>
-              <span className="font-mono font-bold text-[#17233B]">{user.uid}</span>
+              <span className="text-[#666666] block">Campus UID</span>
+              <span className="font-mono font-bold text-[#252525]">{user.uid}</span>
             </div>
             <div>
-              <span className="text-[#64748B] block">Verification</span>
+              <span className="text-[#666666] block">Verification</span>
               <span
                 className={`font-semibold inline-flex items-center gap-1 ${
-                  user.isVerified ? 'text-[#16845B]' : 'text-[#64748B]'
+                  user.isVerified ? 'text-[#8E1717]' : 'text-[#666666]'
                 }`}
               >
                 {user.isVerified ? (
                   <>
-                    <CheckCircle2 className="w-3 h-3 text-[#16845B]" /> Verified Campus ID
+                    <CheckCircle2 className="w-3 h-3 text-[#8E1717]" /> Verified Campus ID
                   </>
                 ) : (
                   'Pending Official Token'
@@ -309,26 +309,26 @@ export const ProfilePage: React.FC = () => {
               </span>
             </div>
             <div>
-              <span className="text-[#64748B] block">Security Role</span>
-              <span className="font-semibold text-[#17233B]">{user.role} Protected</span>
+              <span className="text-[#666666] block">Security Role</span>
+              <span className="font-semibold text-[#252525]">{user.role} Protected</span>
             </div>
           </div>
         </div>
 
         {/* Feedback Banners */}
         {apiError && (
-          <div className="mb-6 p-4 rounded-2xl bg-[#FEF2F2] border border-[#FCA5A5] flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-[#EF4444] shrink-0 mt-0.5" />
-            <div className="text-xs sm:text-sm text-[#991B1B]">
+          <div className="mb-6 p-4 rounded-2xl bg-[#FFF1F1] border border-[#C62828]/30 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-[#C62828] shrink-0 mt-0.5" />
+            <div className="text-xs sm:text-sm text-[#C62828]">
               <strong className="font-bold">Error: </strong> {apiError}
             </div>
           </div>
         )}
 
         {successMessage && (
-          <div className="mb-6 p-4 rounded-2xl bg-[#E6F5EF] border border-[#16845B]/30 flex items-start gap-3">
-            <CheckCircle2 className="w-5 h-5 text-[#16845B] shrink-0 mt-0.5" />
-            <div className="text-xs sm:text-sm text-[#16845B]">
+          <div className="mb-6 p-4 rounded-2xl bg-[#FFF7F7] border border-[#8E1717]/30 flex items-start gap-3">
+            <CheckCircle2 className="w-5 h-5 text-[#8E1717] shrink-0 mt-0.5" />
+            <div className="text-xs sm:text-sm text-[#8E1717]">
               <strong className="font-bold">Saved: </strong> {successMessage}
             </div>
           </div>
@@ -336,26 +336,26 @@ export const ProfilePage: React.FC = () => {
 
         {/* Loading Spinner */}
         {loading ? (
-          <div className="py-20 flex flex-col items-center justify-center bg-white rounded-3xl border border-[#E2E8F0]">
-            <Loader2 className="w-8 h-8 text-[#3157D5] animate-spin mb-3" />
-            <p className="text-sm font-semibold text-[#17233B]">Loading profile records...</p>
+          <div className="py-20 flex flex-col items-center justify-center bg-white rounded-3xl border border-[#E7DADA]">
+            <Loader2 className="w-8 h-8 text-[#C62828] animate-spin mb-3" />
+            <p className="text-sm font-semibold text-[#252525]">Loading profile records...</p>
           </div>
         ) : user.role === 'STUDENT' ? (
           /* ==================================================================== */
           /* STUDENT PROFILE FORM */
           /* ==================================================================== */
           <form onSubmit={handleStudentSubmit} className="space-y-6">
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
-              <h2 className="text-lg font-bold text-[#17233B] mb-1 flex items-center gap-2">
-                <GraduationCap className="w-5 h-5 text-[#3157D5]" /> Academic Information
+            <div className="bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs">
+              <h2 className="text-lg font-bold text-[#252525] mb-1 flex items-center gap-2">
+                <GraduationCap className="w-5 h-5 text-[#C62828]" /> Academic Information
               </h2>
-              <p className="text-xs text-[#64748B] mb-6">
+              <p className="text-xs text-[#666666] mb-6">
                 Your enrolled degree program and current semester level at Chandigarh University.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     Enrolled Degree / Course *
                   </label>
                   <input
@@ -364,12 +364,12 @@ export const ProfilePage: React.FC = () => {
                     value={studentForm.course}
                     onChange={(e) => setStudentForm({ ...studentForm, course: e.target.value })}
                     placeholder="e.g. B.Tech Computer Science & Engineering"
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     Current Semester (1-8) *
                   </label>
                   <select
@@ -377,7 +377,7 @@ export const ProfilePage: React.FC = () => {
                     onChange={(e) =>
                       setStudentForm({ ...studentForm, semester: parseInt(e.target.value, 10) })
                     }
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                   >
                     {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
                       <option key={sem} value={sem}>
@@ -389,10 +389,10 @@ export const ProfilePage: React.FC = () => {
 
                 <div className="sm:col-span-2">
                   <div className="flex justify-between items-center mb-1.5">
-                    <label className="block text-xs font-semibold text-[#17233B]">
+                    <label className="block text-xs font-semibold text-[#252525]">
                       Student Biography & Collaboration Goals
                     </label>
-                    <span className="text-[11px] text-[#94A3B8]">
+                    <span className="text-[11px] text-[#999999]">
                       {studentForm.bio.length} / 500 characters
                     </span>
                   </div>
@@ -402,18 +402,18 @@ export const ProfilePage: React.FC = () => {
                     value={studentForm.bio}
                     onChange={(e) => setStudentForm({ ...studentForm, bio: e.target.value })}
                     placeholder="Briefly introduce your academic interests, hackathons, open-source work, or peer study goals..."
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                   />
                 </div>
               </div>
             </div>
 
             {/* Skills & Technologies */}
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
-              <h2 className="text-lg font-bold text-[#17233B] mb-1 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#3157D5]" /> Skills & Technologies
+            <div className="bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs">
+              <h2 className="text-lg font-bold text-[#252525] mb-1 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-[#C62828]" /> Skills & Technologies
               </h2>
-              <p className="text-xs text-[#64748B] mb-4">
+              <p className="text-xs text-[#666666] mb-4">
                 Add skills to help fellow students and faculty find you for peer collaboration and
                 mentorship.
               </p>
@@ -430,7 +430,7 @@ export const ProfilePage: React.FC = () => {
                     }
                   }}
                   placeholder="e.g. React, Python, Cloud, UI/UX (Press Enter or click Add)"
-                  className="flex-1 px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                  className="flex-1 px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                 />
                 <Button
                   type="button"
@@ -444,25 +444,25 @@ export const ProfilePage: React.FC = () => {
               </div>
 
               {/* Tag Cloud */}
-              <div className="flex flex-wrap gap-2 min-h-[44px] p-3 rounded-xl bg-[#F6F8FC] border border-[#E2E8F0]">
+              <div className="flex flex-wrap gap-2 min-h-[44px] p-3 rounded-xl bg-[#FFF7F7] border border-[#E7DADA]">
                 {studentForm.skills.length > 0 ? (
                   studentForm.skills.map((skill) => (
                     <span
                       key={skill}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-white border border-[#E2E8F0] text-[#17233B] shadow-2xs"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-white border border-[#E7DADA] text-[#252525] shadow-2xs"
                     >
                       {skill}
                       <button
                         type="button"
                         onClick={() => handleRemoveSkill(skill)}
-                        className="text-[#94A3B8] hover:text-[#EF4444] transition-colors"
+                        className="text-[#666666] hover:text-[#C62828] transition-colors cursor-pointer"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
                     </span>
                   ))
                 ) : (
-                  <span className="text-xs text-[#94A3B8] italic my-auto">
+                  <span className="text-xs text-[#999999] italic my-auto">
                     No skills added yet. Type a skill above and press Enter.
                   </span>
                 )}
@@ -470,17 +470,17 @@ export const ProfilePage: React.FC = () => {
             </div>
 
             {/* Social & Portfolio Links */}
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
-              <h2 className="text-lg font-bold text-[#17233B] mb-1 flex items-center gap-2">
-                <Globe className="w-5 h-5 text-[#3157D5]" /> Social & Portfolio Links
+            <div className="bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs">
+              <h2 className="text-lg font-bold text-[#252525] mb-1 flex items-center gap-2">
+                <Globe className="w-5 h-5 text-[#C62828]" /> Social & Portfolio Links
               </h2>
-              <p className="text-xs text-[#64748B] mb-6">
+              <p className="text-xs text-[#666666] mb-6">
                 Optionally showcase your verified professional URLs (must begin with http:// or https://).
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     GitHub URL
                   </label>
                   <input
@@ -493,12 +493,12 @@ export const ProfilePage: React.FC = () => {
                       })
                     }
                     placeholder="https://github.com/yourhandle"
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     LinkedIn URL
                   </label>
                   <input
@@ -511,12 +511,12 @@ export const ProfilePage: React.FC = () => {
                       })
                     }
                     placeholder="https://linkedin.com/in/yourhandle"
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     Portfolio / Website
                   </label>
                   <input
@@ -529,18 +529,18 @@ export const ProfilePage: React.FC = () => {
                       })
                     }
                     placeholder="https://yourportfolio.dev"
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                   />
                 </div>
               </div>
             </div>
 
             {/* Privacy Controls */}
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
-              <h2 className="text-lg font-bold text-[#17233B] mb-1 flex items-center gap-2">
-                <Shield className="w-5 h-5 text-[#3157D5]" /> Profile Privacy Level
+            <div className="bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs">
+              <h2 className="text-lg font-bold text-[#252525] mb-1 flex items-center gap-2">
+                <Shield className="w-5 h-5 text-[#C62828]" /> Profile Privacy Level
               </h2>
-              <p className="text-xs text-[#64748B] mb-4">
+              <p className="text-xs text-[#666666] mb-4">
                 Control who can view your profile and skills in the university directory.
               </p>
 
@@ -566,13 +566,13 @@ export const ProfilePage: React.FC = () => {
                     key={item.level}
                     className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
                       studentForm.privacyLevel === item.level
-                        ? 'border-[#3157D5] bg-[#EAF1FF]/40 shadow-xs'
-                        : 'border-[#E2E8F0] hover:bg-[#F6F8FC]'
+                        ? 'border-[#C62828] bg-[#FFF7F7] shadow-xs'
+                        : 'border-[#E7DADA] hover:bg-[#FFF7F7]'
                     }`}
                   >
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="font-bold text-xs text-[#17233B]">{item.title}</span>
+                        <span className="font-bold text-xs text-[#252525]">{item.title}</span>
                         <input
                           type="radio"
                           name="privacyLevel"
@@ -581,10 +581,10 @@ export const ProfilePage: React.FC = () => {
                           onChange={() =>
                             setStudentForm({ ...studentForm, privacyLevel: item.level as any })
                           }
-                          className="w-4 h-4 text-[#3157D5] focus:ring-[#3157D5]"
+                          className="w-4 h-4 text-[#C62828] focus:ring-[#C62828]"
                         />
                       </div>
-                      <p className="text-[11px] text-[#64748B] leading-relaxed">{item.desc}</p>
+                      <p className="text-[11px] text-[#666666] leading-relaxed">{item.desc}</p>
                     </div>
                   </label>
                 ))}
@@ -615,17 +615,17 @@ export const ProfilePage: React.FC = () => {
           /* TEACHER PROFILE FORM */
           /* ==================================================================== */
           <form onSubmit={handleTeacherSubmit} className="space-y-6">
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
-              <h2 className="text-lg font-bold text-[#17233B] mb-1 flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-[#16845B]" /> Faculty Appointment & Office
+            <div className="bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs">
+              <h2 className="text-lg font-bold text-[#252525] mb-1 flex items-center gap-2">
+                <Briefcase className="w-5 h-5 text-[#8E1717]" /> Faculty Appointment & Office
               </h2>
-              <p className="text-xs text-[#64748B] mb-6">
+              <p className="text-xs text-[#666666] mb-6">
                 Your faculty designation and physical office consultation location.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     Academic Designation *
                   </label>
                   <input
@@ -636,12 +636,12 @@ export const ProfilePage: React.FC = () => {
                       setTeacherForm({ ...teacherForm, designation: e.target.value })
                     }
                     placeholder="e.g. Associate Professor, HOD, Assistant Professor"
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     Academic Department *
                   </label>
                   <input
@@ -652,12 +652,12 @@ export const ProfilePage: React.FC = () => {
                       setTeacherForm({ ...teacherForm, department: e.target.value })
                     }
                     placeholder="e.g. Computer Science & Engineering"
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                   />
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     Office / Cabin Location *
                   </label>
                   <input
@@ -668,18 +668,18 @@ export const ProfilePage: React.FC = () => {
                       setTeacherForm({ ...teacherForm, officeLocation: e.target.value })
                     }
                     placeholder="e.g. Academic Block 3, Cabin 402, Faculty Wing"
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                   />
                 </div>
               </div>
             </div>
 
             {/* Research Domains */}
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
-              <h2 className="text-lg font-bold text-[#17233B] mb-1 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#16845B]" /> Research Domains & Specializations
+            <div className="bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs">
+              <h2 className="text-lg font-bold text-[#252525] mb-1 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-[#8E1717]" /> Research Domains & Specializations
               </h2>
-              <p className="text-xs text-[#64748B] mb-4">
+              <p className="text-xs text-[#666666] mb-4">
                 Research areas and specialized subjects for thesis guidance and student projects.
               </p>
 
@@ -695,7 +695,7 @@ export const ProfilePage: React.FC = () => {
                     }
                   }}
                   placeholder="e.g. Natural Language Processing, Computer Vision (Press Enter or Add)"
-                  className="flex-1 px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                  className="flex-1 px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                 />
                 <Button
                   type="button"
@@ -708,25 +708,25 @@ export const ProfilePage: React.FC = () => {
                 </Button>
               </div>
 
-              <div className="flex flex-wrap gap-2 min-h-[44px] p-3 rounded-xl bg-[#F6F8FC] border border-[#E2E8F0]">
+              <div className="flex flex-wrap gap-2 min-h-[44px] p-3 rounded-xl bg-[#FFF7F7] border border-[#E7DADA]">
                 {teacherForm.researchDomains.length > 0 ? (
                   teacherForm.researchDomains.map((domain) => (
                     <span
                       key={domain}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-[#E6F5EF] text-[#16845B] border border-[#16845B]/20 shadow-2xs"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-white text-[#8E1717] border border-[#8E1717]/25 shadow-2xs"
                     >
                       {domain}
                       <button
                         type="button"
                         onClick={() => handleRemoveDomain(domain)}
-                        className="text-[#16845B] hover:text-[#EF4444] transition-colors"
+                        className="text-[#8E1717] hover:text-[#C62828] transition-colors cursor-pointer"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
                     </span>
                   ))
                 ) : (
-                  <span className="text-xs text-[#94A3B8] italic my-auto">
+                  <span className="text-xs text-[#999999] italic my-auto">
                     No research domains added yet. Type a domain above and press Enter.
                   </span>
                 )}
@@ -734,17 +734,17 @@ export const ProfilePage: React.FC = () => {
             </div>
 
             {/* Consultation Preferences */}
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
-              <h2 className="text-lg font-bold text-[#17233B] mb-1 flex items-center gap-2">
-                <Clock className="w-5 h-5 text-[#16845B]" /> Consultation & Booking Preferences
+            <div className="bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs">
+              <h2 className="text-lg font-bold text-[#252525] mb-1 flex items-center gap-2">
+                <Clock className="w-5 h-5 text-[#8E1717]" /> Consultation & Booking Preferences
               </h2>
-              <p className="text-xs text-[#64748B] mb-6">
+              <p className="text-xs text-[#666666] mb-6">
                 Define your consultation frequency and maximum daily appointment capacity.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     Booking Schedule Preference
                   </label>
                   <select
@@ -752,7 +752,7 @@ export const ProfilePage: React.FC = () => {
                     onChange={(e) =>
                       setTeacherForm({ ...teacherForm, bookingPreference: e.target.value })
                     }
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                   >
                     <option value="WEEKLY_OFFICE_HOURS">Weekly Office Hours</option>
                     <option value="BIWEEKLY_SLOTS">Bi-Weekly Consultation</option>
@@ -761,7 +761,7 @@ export const ProfilePage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#17233B] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
                     Max Daily Consultation Slots (1-16)
                   </label>
                   <input
@@ -775,25 +775,25 @@ export const ProfilePage: React.FC = () => {
                         maxDailySlots: parseInt(e.target.value, 10) || 4,
                       })
                     }
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
                   />
                 </div>
 
                 <div className="sm:col-span-2 pt-2">
-                  <label className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] cursor-pointer">
+                  <label className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] cursor-pointer">
                     <input
                       type="checkbox"
                       checked={teacherForm.isAcceptingBookings}
                       onChange={(e) =>
                         setTeacherForm({ ...teacherForm, isAcceptingBookings: e.target.checked })
                       }
-                      className="w-4 h-4 text-[#16845B] rounded focus:ring-[#16845B]"
+                      className="w-4 h-4 text-[#8E1717] rounded focus:ring-[#8E1717]"
                     />
                     <div>
-                      <span className="text-xs font-bold text-[#17233B] block">
+                      <span className="text-xs font-bold text-[#252525] block">
                         Accepting Student Consultations
                       </span>
-                      <span className="text-[11px] text-[#64748B]">
+                      <span className="text-[11px] text-[#666666]">
                         Allow students to view your availability and request appointments during
                         office hours.
                       </span>
@@ -826,14 +826,14 @@ export const ProfilePage: React.FC = () => {
           /* ==================================================================== */
           /* ADMIN PROFILE CARD */
           /* ==================================================================== */
-          <div className="bg-white rounded-3xl border border-[#E2E8F0] p-8 text-center shadow-xs">
-            <div className="w-14 h-14 rounded-2xl bg-[#FFF7ED] text-[#C2410C] flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white rounded-3xl border border-[#E7DADA] p-8 text-center shadow-xs">
+            <div className="w-14 h-14 rounded-2xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/25 flex items-center justify-center mx-auto mb-4">
               <Shield className="w-7 h-7" />
             </div>
-            <h2 className="text-lg font-bold text-[#17233B] mb-2">
+            <h2 className="text-lg font-bold text-[#252525] mb-2">
               University System Administration
             </h2>
-            <p className="text-xs sm:text-sm text-[#64748B] max-w-lg mx-auto mb-6 leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#666666] max-w-lg mx-auto mb-6 leading-relaxed">
               Your account possesses elevated administrative authority over campus security, user
               roles, and directory configurations.
             </p>

@@ -26,20 +26,20 @@ export const PrivacyPage: React.FC = () => {
   return (
     <div className="flex flex-col w-full bg-[#FFFFFF]">
       {/* Header */}
-      <section className="pt-14 pb-14 bg-[#F6F8FC] border-b border-[#E2E8F0]">
+      <section className="pt-14 pb-14 bg-[#FFF7F7] border-b border-[#E7DADA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Badge variant="primary" size="md" className="mb-3">
             Legal Information
           </Badge>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#17233B] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#252525] tracking-tight">
             Privacy Policy
           </h1>
-          <p className="mt-2 text-sm text-[#64748B]">
+          <p className="mt-2 text-sm text-[#666666]">
             Last updated: October 2026 • Document Version 1.0 (Draft For Institutional Review)
           </p>
 
           {/* Draft Notice Banner */}
-          <div className="mt-6 p-4 rounded-xl bg-[#FFF7ED] border border-[#C2410C]/20 text-xs text-[#C2410C] flex items-start gap-3 max-w-3xl">
+          <div className="mt-6 p-4 rounded-xl bg-[#FFF7F7] border border-[#C62828]/25 text-xs text-[#C62828] flex items-start gap-3 max-w-3xl">
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
             <p className="leading-relaxed">
               <strong>Draft Document Notice:</strong> This privacy document constitutes a proposed institutional policy framework designed for university review prior to final production deployment. It outlines anticipated data handling practices without asserting certified statutory audit guarantees.
@@ -54,8 +54,8 @@ export const PrivacyPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
             {/* Table of Contents Sticky Sidebar */}
             <aside className="lg:col-span-1 hidden lg:block">
-              <div className="sticky top-24 p-5 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] max-h-[calc(100vh-120px)] overflow-y-auto">
-                <h3 className="text-xs font-bold text-[#17233B] uppercase tracking-wider mb-3">
+              <div className="sticky top-24 p-5 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] max-h-[calc(100vh-120px)] overflow-y-auto">
+                <h3 className="text-xs font-bold text-[#252525] uppercase tracking-wider mb-3">
                   Table of Contents
                 </h3>
                 <nav className="space-y-1">
@@ -63,7 +63,7 @@ export const PrivacyPage: React.FC = () => {
                     <a
                       key={s.id}
                       href={`#${s.id}`}
-                      className="block py-1.5 px-2 rounded-lg text-xs text-[#64748B] hover:text-[#3157D5] hover:bg-white transition-colors"
+                      className="block py-1.5 px-2 rounded-lg text-xs text-[#666666] hover:text-[#C62828] hover:bg-white transition-colors"
                     >
                       {s.num}. {s.title}
                     </a>
@@ -73,149 +73,149 @@ export const PrivacyPage: React.FC = () => {
             </aside>
 
             {/* Main Policy Body */}
-            <article className="lg:col-span-3 prose prose-slate max-w-none text-sm text-[#17233B] leading-relaxed space-y-10">
+            <article className="lg:col-span-3 prose prose-slate max-w-none text-sm text-[#252525] leading-relaxed space-y-10">
               <section id="sec-1" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   1. Introduction
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   Welcome to <strong>CUCampusSaathi</strong>. This Privacy Policy outlines how our university collaboration network collects, uses, handles, and protects information submitted by students, faculty members, and institutional administrators who utilize our web platform.
                 </p>
               </section>
 
               <section id="sec-2" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   2. Information We Collect
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   We collect information strictly necessary to facilitate academic networking, project team matching, appointment booking, and AI document tutoring services. Information is submitted directly by users or derived from interactions within authorized platform tools.
                 </p>
               </section>
 
               <section id="sec-3" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   3. Account and Profile Information
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   When registering, users provide their full name, university email address, university identifier (UID or Faculty ID), department affiliation, and relevant academic course or faculty designation. This data establishes identity within our university community.
                 </p>
               </section>
 
               <section id="sec-4" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   4. Student Skills and Project Information
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   Students may record technical skills, programming languages, academic project descriptions, and portfolio links. This data populates the AI SkillGraph and enables team matchmaking. Users control visibility settings for their individual profiles.
                 </p>
               </section>
 
               <section id="sec-5" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   5. Faculty Profiles and Appointment Data
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   Faculty profiles display designated academic research areas, course assignments, office cabin coordinates, and consultation slot schedules. Appointment records log discussion agendas, reservation statuses, and rescheduling notes for mutual accountability.
                 </p>
               </section>
 
               <section id="sec-6" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   6. Uploaded Documents and AI Processing
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   Documents uploaded to the AI Document Tutor (such as lecture slide PDFs and syllabus notes) are processed solely to create local semantic embeddings for conceptual doubt resolution. Documents remain the intellectual property of their owners and are not utilized to train public foundation models.
                 </p>
               </section>
 
               <section id="sec-7" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   7. How Information Is Used
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   Information is used to operate core features, match students with complementary collaborators, schedule consultations, recommend study resources, and provide aggregated, anonymized analytics to university leadership.
                 </p>
               </section>
 
               <section id="sec-8" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   8. Information Sharing
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   We do not sell, rent, or monetize campus information to commercial advertisers. Information is visible only to authorized peers, mentors, and administrators in accordance with platform privacy permissions.
                 </p>
               </section>
 
               <section id="sec-9" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   9. Data Storage and Security
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   The platform uses standard encryption protocols in transit and rests behind institutional access firewalls. Passwords and sensitive authentication tokens are hashed using secure cryptographic functions.
                 </p>
               </section>
 
               <section id="sec-10" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   10. Data Retention
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   Account data is retained for the duration of the student's or faculty member's active university tenure. Users may request account deactivation or export of their verified skill portfolio upon graduation.
                 </p>
               </section>
 
               <section id="sec-11" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   11. Third-Party Services
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   Where third-party services are utilized (such as university single-sign-on or cloud hosting infrastructure), their operation is strictly governed by institutional data protection agreements.
                 </p>
               </section>
 
               <section id="sec-12" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   12. Cookies
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   Essential session cookies are utilized to preserve user login states and interface preferences. No third-party behavioral advertising cookies are deployed on CUCampusSaathi.
                 </p>
               </section>
 
               <section id="sec-13" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   13. User Choices and Data Rights
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   Users have the right to inspect their personal profile records, update their academic credentials, modify skill privacy levels, and request deletion of their uploaded study materials.
                 </p>
               </section>
 
               <section id="sec-14" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   14. Children's Privacy
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   CUCampusSaathi is designed solely for enrolled university students and faculty members. It is not directed toward individuals under the age of 16.
                 </p>
               </section>
 
               <section id="sec-15" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   15. Policy Updates
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   Periodic updates may be introduced to reflect new educational features or regulatory adjustments. Notice of meaningful policy revisions will be prominently communicated across the platform.
                 </p>
               </section>
 
               <section id="sec-16" className="scroll-mt-28">
-                <h2 className="text-xl font-bold text-[#17233B] pb-2 border-b border-[#E2E8F0]">
+                <h2 className="text-xl font-bold text-[#252525] pb-2 border-b border-[#E7DADA]">
                   16. Contact Information
                 </h2>
-                <p className="mt-3 text-[#64748B]">
+                <p className="mt-3 text-[#666666]">
                   For questions or comments regarding this draft privacy statement, please utilize the{' '}
-                  <a href="/contact" className="text-[#3157D5] underline">
+                  <a href="/contact" className="text-[#C62828] underline">
                     Contact Us
                   </a>{' '}
                   page to reach the campus platform administration.

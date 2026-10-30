@@ -39,7 +39,7 @@ body {
   padding: 0;
   min-height: 100vh;
   background-color: #FFFFFF;
-  color: #17233B;
+  color: #252525;
   overflow-x: hidden;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
@@ -67,14 +67,14 @@ textarea:focus-visible {
 }
 
 ::-webkit-scrollbar-track {
-  background: #F6F8FC;
+  background: #FFF7F7;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #E7DADA;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: #C62828;
 }

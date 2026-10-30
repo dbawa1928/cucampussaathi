@@ -24,15 +24,15 @@ export const AboutPage: React.FC = () => {
   return (
     <div className="flex flex-col w-full">
       {/* 1. HERO SECTION */}
-      <section className="pt-14 pb-18 bg-[#F6F8FC] border-b border-[#E2E8F0]">
+      <section className="pt-14 pb-18 bg-[#FFF7F7] border-b border-[#E7DADA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Badge variant="primary" size="md" className="mb-4">
             About CUCampusSaathi
           </Badge>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#17233B] tracking-tight max-w-3xl mx-auto">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#252525] tracking-tight max-w-3xl mx-auto">
             Bridging Campus Knowledge, Talent & Mentorship
           </h1>
-          <p className="mt-5 text-base sm:text-lg text-[#64748B] max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-5 text-base sm:text-lg text-[#666666] max-w-2xl mx-auto leading-relaxed">
             An intelligent university initiative created to connect student ambition with faculty guidance and peer collaboration.
           </p>
         </div>
@@ -43,54 +43,54 @@ export const AboutPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <span className="text-xs font-bold text-[#3157D5] uppercase tracking-wider">
+              <span className="text-xs font-bold text-[#C62828] uppercase tracking-wider">
                 Our Genesis
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#17233B] tracking-tight mt-2 mb-4">
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#252525] tracking-tight mt-2 mb-4">
                 What is CUCampusSaathi?
               </h2>
-              <p className="text-sm sm:text-base text-[#64748B] leading-relaxed mb-4">
+              <p className="text-sm sm:text-base text-[#666666] leading-relaxed mb-4">
                 Universities house exceptional diversity of thought, technical capability, and scholarly expertise. Yet, much of this potential remains siloed inside individual lecture halls, batch sections, and departmental floors.
               </p>
-              <p className="text-sm sm:text-base text-[#64748B] leading-relaxed mb-6">
+              <p className="text-sm sm:text-base text-[#666666] leading-relaxed mb-6">
                 <strong>CUCampusSaathi</strong> was conceived as a centralized, AI-powered collaboration network that brings transparent discovery to university life—enabling students to identify mentors, form balanced cross-disciplinary project teams, interact with their course documents, and schedule dedicated faculty consultations without organizational friction.
               </p>
 
-              <div className="p-4 rounded-xl bg-[#F6F8FC] border border-[#E2E8F0]">
-                <h4 className="text-xs font-bold text-[#17233B] uppercase tracking-wider mb-2">
+              <div className="p-4 rounded-xl bg-[#FFF7F7] border border-[#E7DADA]">
+                <h4 className="text-xs font-bold text-[#252525] uppercase tracking-wider mb-2">
                   Key Campus Objectives
                 </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#17233B]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#252525]">
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#16845B]" /> Eliminate skill fragmentation
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#C62828]" /> Eliminate skill fragmentation
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#16845B]" /> Streamline teacher booking
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#C62828]" /> Streamline teacher booking
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#16845B]" /> Grounded AI document learning
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#C62828]" /> Grounded AI document learning
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#16845B]" /> Verifiable student credentials
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#C62828]" /> Verifiable student credentials
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="p-8 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] shadow-xs">
-              <span className="text-xs font-bold text-[#C2410C] uppercase tracking-wider">
+            <div className="p-8 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] shadow-xs">
+              <span className="text-xs font-bold text-[#8E1717] uppercase tracking-wider">
                 The Core Challenge
               </span>
-              <h3 className="text-xl font-bold text-[#17233B] mt-2 mb-3">
+              <h3 className="text-xl font-bold text-[#252525] mt-2 mb-3">
                 The Problem We Are Solving
               </h3>
-              <p className="text-sm text-[#64748B] leading-relaxed mb-4">
+              <p className="text-sm text-[#666666] leading-relaxed mb-4">
                 Currently, students struggle to find peers outside their immediate friend circles who have complementary technical proficiencies for hackathons, research publications, or capstone projects.
               </p>
-              <p className="text-sm text-[#64748B] leading-relaxed mb-4">
+              <p className="text-sm text-[#666666] leading-relaxed mb-4">
                 At the same time, faculty members receive hundreds of ad-hoc emails and corridor queries for doubts and appointment bookings, causing scheduling bottlenecks and missed mentorship opportunities.
               </p>
-              <div className="p-4 rounded-lg bg-white border border-[#E2E8F0] text-xs text-[#17233B] font-medium leading-relaxed">
+              <div className="p-4 rounded-lg bg-white border border-[#E7DADA] text-xs text-[#252525] font-medium leading-relaxed">
                 "CUCampusSaathi replaces disjointed WhatsApp groups and random email chains with an organized, verified academic ecosystem."
               </div>
             </div>
@@ -99,7 +99,7 @@ export const AboutPage: React.FC = () => {
       </section>
 
       {/* 4. MISSION & 5. VISION */}
-      <section className="py-20 bg-[#F6F8FC] border-y border-[#E2E8F0]">
+      <section className="py-20 bg-[#FFF7F7] border-y border-[#E7DADA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             badge="Guiding North Star"
@@ -108,36 +108,36 @@ export const AboutPage: React.FC = () => {
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Mission Box */}
-            <div className="p-8 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+            <div className="p-8 rounded-2xl bg-white border border-[#E7DADA] shadow-xs flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 rounded-xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mb-5">
+                <div className="w-12 h-12 rounded-xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center mb-5">
                   <Target className="w-6 h-6" />
                 </div>
-                <span className="text-xs font-bold text-[#3157D5] uppercase tracking-wider">
+                <span className="text-xs font-bold text-[#C62828] uppercase tracking-wider">
                   Our Mission
                 </span>
-                <h3 className="text-xl font-bold text-[#17233B] mt-1 mb-4">
+                <h3 className="text-xl font-bold text-[#252525] mt-1 mb-4">
                   Democratizing Knowledge & Opportunity
                 </h3>
-                <blockquote className="text-base text-[#17233B] font-medium italic border-l-4 border-[#3157D5] pl-4 py-1 leading-relaxed">
+                <blockquote className="text-base text-[#252525] font-medium italic border-l-4 border-[#C62828] pl-4 py-1 leading-relaxed">
                   "To make campus knowledge, academic guidance, and student talent more accessible by connecting people, learning resources, and opportunities through one intelligent platform."
                 </blockquote>
               </div>
             </div>
 
             {/* Vision Box */}
-            <div className="p-8 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+            <div className="p-8 rounded-2xl bg-white border border-[#E7DADA] shadow-xs flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 rounded-xl bg-[#E6F5EF] text-[#16845B] flex items-center justify-center mb-5">
+                <div className="w-12 h-12 rounded-xl bg-[#FFF7F7] text-[#8E1717] border border-[#8E1717]/20 flex items-center justify-center mb-5">
                   <Compass className="w-6 h-6" />
                 </div>
-                <span className="text-xs font-bold text-[#16845B] uppercase tracking-wider">
+                <span className="text-xs font-bold text-[#8E1717] uppercase tracking-wider">
                   Our Vision
                 </span>
-                <h3 className="text-xl font-bold text-[#17233B] mt-1 mb-4">
+                <h3 className="text-xl font-bold text-[#252525] mt-1 mb-4">
                   Cultivating Connected Learning Communities
                 </h3>
-                <blockquote className="text-base text-[#17233B] font-medium italic border-l-4 border-[#16845B] pl-4 py-1 leading-relaxed">
+                <blockquote className="text-base text-[#252525] font-medium italic border-l-4 border-[#8E1717] pl-4 py-1 leading-relaxed">
                   "To help universities create connected learning communities where students discover expertise, faculty support learning effectively, and promising ideas become collaborative projects."
                 </blockquote>
               </div>
@@ -182,16 +182,16 @@ export const AboutPage: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className="p-6 rounded-xl bg-[#F6F8FC] border border-[#E2E8F0] shadow-xs flex flex-col justify-between"
+                  className="p-6 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] shadow-xs flex flex-col justify-between"
                 >
                   <div>
-                    <div className="w-10 h-10 rounded-lg bg-white border border-[#E2E8F0] text-[#3157D5] flex items-center justify-center mb-4">
+                    <div className="w-10 h-10 rounded-lg bg-white border border-[#E7DADA] text-[#C62828] flex items-center justify-center mb-4">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <h3 className="text-base font-bold text-[#17233B] mb-2">
+                    <h3 className="text-base font-bold text-[#252525] mb-2">
                       {principle.title}
                     </h3>
-                    <p className="text-sm text-[#64748B] leading-relaxed">
+                    <p className="text-sm text-[#666666] leading-relaxed">
                       {principle.desc}
                     </p>
                   </div>
@@ -203,7 +203,7 @@ export const AboutPage: React.FC = () => {
       </section>
 
       {/* 7. MEET THE TEAM */}
-      <section className="py-20 bg-[#F6F8FC] border-y border-[#E2E8F0]">
+      <section className="py-20 bg-[#FFF7F7] border-y border-[#E7DADA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             badge="Leadership & Core Contributors"
@@ -217,7 +217,7 @@ export const AboutPage: React.FC = () => {
             ))}
           </div>
 
-          <div className="mt-8 text-center text-xs text-[#64748B]">
+          <div className="mt-8 text-center text-xs text-[#666666]">
             All team members are active undergraduate contributors representing Chandigarh University engineering batches.
           </div>
         </div>
@@ -275,21 +275,21 @@ export const AboutPage: React.FC = () => {
               return (
                 <div
                   key={pillar.num}
-                  className="p-6 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-between"
+                  className="p-6 rounded-xl bg-white border border-[#E7DADA] shadow-xs flex flex-col justify-between hover:border-[#C62828]/40 transition-colors"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 rounded-lg bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center">
                         <Icon className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-[#64748B] px-2 py-0.5 rounded bg-[#F6F8FC] border border-[#E2E8F0]">
+                      <span className="text-xs font-bold text-[#666666] px-2 py-0.5 rounded bg-[#FFF7F7] border border-[#E7DADA]">
                         Pillar 0{pillar.num}
                       </span>
                     </div>
-                    <h3 className="text-base font-bold text-[#17233B] mb-2">
+                    <h3 className="text-base font-bold text-[#252525] mb-2">
                       {pillar.title}
                     </h3>
-                    <p className="text-sm text-[#64748B] leading-relaxed">
+                    <p className="text-sm text-[#666666] leading-relaxed">
                       {pillar.desc}
                     </p>
                   </div>
@@ -301,12 +301,12 @@ export const AboutPage: React.FC = () => {
       </section>
 
       {/* 9. FINAL CTA */}
-      <section className="py-20 bg-[#F6F8FC] border-t border-[#E2E8F0]">
+      <section className="py-20 bg-[#FFF7F7] border-t border-[#E7DADA]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#17233B]">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#252525]">
             Collaborate With Your Campus Peers Today
           </h2>
-          <p className="mt-3 text-base text-[#64748B] max-w-xl mx-auto">
+          <p className="mt-3 text-base text-[#666666] max-w-xl mx-auto">
             Get started in minutes with your university credentials and explore what your campus is building.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5">

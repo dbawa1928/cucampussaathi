@@ -21,19 +21,19 @@ export const Badge: React.FC<BadgeProps> = ({
   };
 
   const variantClasses = {
-    primary: 'bg-[#EAF1FF] text-[#3157D5] border border-[#3157D5]/20',
-    secondary: 'bg-[#F1F5F9] text-[#475569] border border-[#E2E8F0]',
+    primary: 'bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20',
+    secondary: 'bg-[#FFF7F7] text-[#666666] border border-[#E7DADA]',
     success: 'bg-[#E6F5EF] text-[#16845B] border border-[#16845B]/20',
     warning: 'bg-[#FFF7ED] text-[#C2410C] border border-[#C2410C]/20',
-    neutral: 'bg-white text-[#17233B] border border-[#E2E8F0] shadow-xs',
+    neutral: 'bg-white text-[#252525] border border-[#E7DADA] shadow-xs',
   };
 
   const dotColors = {
-    primary: 'bg-[#3157D5]',
-    secondary: 'bg-[#64748B]',
+    primary: 'bg-[#C62828]',
+    secondary: 'bg-[#666666]',
     success: 'bg-[#16845B]',
     warning: 'bg-[#C2410C]',
-    neutral: 'bg-[#17233B]',
+    neutral: 'bg-[#252525]',
   };
 
   return (

@@ -113,7 +113,6 @@ export const DashboardPage: React.FC = () => {
       setLoadingData(true);
       try {
         if (user.role === 'ADMIN') {
-          // Fetch Admin Dashboard Overview & Recent Registered Users
           const [overviewRes, studentsRes, teachersRes] = await Promise.all([
             apiClient.get<ApiResponse<any>>('/admin/dashboard').catch(() => null),
             apiClient.get<ApiResponse<any>>('/admin/students?limit=6').catch(() => null),
@@ -124,7 +123,6 @@ export const DashboardPage: React.FC = () => {
           if (studentsRes?.data?.students) setRecentStudents(studentsRes.data.students);
           if (teachersRes?.data?.teachers) setRecentTeachers(teachersRes.data.teachers);
         } else {
-          // Fetch Student / Teacher Profile
           if (user.role === 'STUDENT') {
             const profileRes = await apiClient
               .get<ApiResponse<{ profile: StudentProfile }>>('/users/profile/student')
@@ -141,7 +139,6 @@ export const DashboardPage: React.FC = () => {
             }
           }
 
-          // Fetch Appointments for Student / Teacher
           const appRes = await apiClient
             .get<ApiResponse<{ appointments: AppointmentItem[] }>>('/appointments')
             .catch(() => null);
@@ -165,56 +162,45 @@ export const DashboardPage: React.FC = () => {
 
   if (authLoading || loadingData || !user) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[60vh] bg-[#F6F8FC]">
+      <div className="flex-1 flex items-center justify-center min-h-[60vh] bg-[#FFF7F7]">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-3 border-[#3157D5] border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm font-semibold text-[#64748B]">Loading your dashboard...</p>
+          <div className="w-10 h-10 border-3 border-[#C62828] border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm font-semibold text-[#666666]">Loading your dashboard...</p>
         </div>
       </div>
     );
   }
 
-  // Filter upcoming appointments for Student / Teacher
   const upcomingAppointments = appointments
     .filter((a) => ['PENDING', 'CONFIRMED', 'RESCHEDULED'].includes(a.status))
     .slice(0, 3);
 
   return (
-    <div className="flex-1 bg-[#F6F8FC] py-8 sm:py-10">
+    <div className="flex-1 bg-[#FFF7F7] py-8 sm:py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Top Welcome & User Profile Card */}
-        <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xs p-6 sm:p-8 relative overflow-hidden">
-          {/* Subtle background decoration */}
-          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-gradient-to-br from-[#EAF1FF] to-transparent rounded-full pointer-events-none opacity-60" />
+        <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xs p-6 sm:p-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-gradient-to-br from-[#FFF7F7] to-transparent rounded-full pointer-events-none opacity-80" />
 
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
             <div className="flex items-center gap-5">
               <div
                 className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl font-black shadow-md shrink-0 text-white ${
                   user.role === 'ADMIN'
-                    ? 'bg-gradient-to-br from-[#3157D5] to-[#1E3A8A]'
+                    ? 'bg-gradient-to-br from-[#C62828] to-[#8E1717]'
                     : user.role === 'TEACHER'
-                    ? 'bg-gradient-to-br from-[#16845B] to-[#0d543a]'
-                    : 'bg-gradient-to-br from-[#3157D5] to-[#2544ad]'
+                    ? 'bg-gradient-to-br from-[#8E1717] to-[#701212]'
+                    : 'bg-gradient-to-br from-[#C62828] to-[#8E1717]'
                 }`}
               >
                 {user.fullName.charAt(0).toUpperCase()}
               </div>
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
+                  <span className="text-xs font-semibold text-[#666666] uppercase tracking-wider">
                     {getGreeting()},
                   </span>
-                  <Badge
-                    variant={
-                      user.role === 'ADMIN'
-                        ? 'warning'
-                        : user.role === 'TEACHER'
-                        ? 'success'
-                        : 'primary'
-                    }
-                    size="sm"
-                  >
+                  <Badge variant="primary" size="sm">
                     {user.role === 'ADMIN'
                       ? 'Administrator'
                       : user.role === 'TEACHER'
@@ -222,41 +208,41 @@ export const DashboardPage: React.FC = () => {
                       : 'Student'}
                   </Badge>
                   {user.role === 'ADMIN' ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#3157D5] bg-[#EAF1FF] px-2.5 py-0.5 rounded-full border border-[#3157D5]/20">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#C62828] bg-[#FFF7F7] px-2.5 py-0.5 rounded-full border border-[#C62828]/25">
                       <ShieldCheck className="w-3 h-3" />
                       Platform Authority
                     </span>
                   ) : user.isVerified ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#16845B] bg-[#E6F5EF] px-2 py-0.5 rounded-full border border-[#16845B]/20">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8E1717] bg-[#FFF7F7] px-2 py-0.5 rounded-full border border-[#8E1717]/25">
                       <CheckCircle2 className="w-3 h-3" />
                       Verified
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#D97706] bg-[#FEF3C7] px-2 py-0.5 rounded-full border border-[#D97706]/20">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8E1717] bg-[#FFF7F7] px-2 py-0.5 rounded-full border border-[#8E1717]/25">
                       <AlertCircle className="w-3 h-3" />
                       Pending Verification
                     </span>
                   )}
                 </div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#17233B] tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#252525] tracking-tight">
                   {user.fullName}
                 </h1>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#64748B]">
-                  <span>UID: <strong className="text-[#17233B]">{user.uid}</strong></span>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#666666]">
+                  <span>UID: <strong className="text-[#252525]">{user.uid}</strong></span>
                   <span>•</span>
-                  <span>Dept: <strong className="text-[#17233B]">{user.department}</strong></span>
+                  <span>Dept: <strong className="text-[#252525]">{user.department}</strong></span>
                   <span>•</span>
-                  <span>Email: <strong className="text-[#17233B]">{user.email}</strong></span>
+                  <span>Email: <strong className="text-[#252525]">{user.email}</strong></span>
                   {user.role === 'STUDENT' && studentProfile?.course && (
                     <>
                       <span>•</span>
-                      <span>Course: <strong className="text-[#3157D5]">{studentProfile.course} (Sem {studentProfile.semester || 1})</strong></span>
+                      <span>Course: <strong className="text-[#C62828]">{studentProfile.course} (Sem {studentProfile.semester || 1})</strong></span>
                     </>
                   )}
                   {user.role === 'TEACHER' && teacherProfile?.designation && (
                     <>
                       <span>•</span>
-                      <span>Title: <strong className="text-[#16845B]">{teacherProfile.designation}</strong></span>
+                      <span>Title: <strong className="text-[#8E1717]">{teacherProfile.designation}</strong></span>
                     </>
                   )}
                 </div>
@@ -327,13 +313,13 @@ export const DashboardPage: React.FC = () => {
             {/* Admin Key Metrics */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-bold text-[#17233B] flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-[#3157D5]" />
+                <h2 className="text-lg font-bold text-[#252525] flex items-center gap-2">
+                  <Activity className="w-5 h-5 text-[#C62828]" />
                   <span>Campus Platform Overview</span>
                 </h2>
                 <Link
                   to="/admin?tab=analytics"
-                  className="text-xs font-bold text-[#3157D5] hover:underline flex items-center gap-1"
+                  className="text-xs font-bold text-[#C62828] hover:underline flex items-center gap-1"
                 >
                   <span>Detailed Analytics</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -344,20 +330,20 @@ export const DashboardPage: React.FC = () => {
                 {/* 1. Total Students */}
                 <Link
                   to="/admin?tab=students"
-                  className="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs hover:border-[#3157D5]/40 hover:shadow-md transition-all group"
+                  className="bg-white rounded-2xl border border-[#E7DADA] p-5 shadow-xs hover:border-[#C62828]/40 hover:shadow-md transition-all group"
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
+                    <span className="text-xs font-semibold text-[#666666] uppercase tracking-wider">
                       Total Students
                     </span>
-                    <div className="w-10 h-10 rounded-xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className="w-10 h-10 rounded-xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center group-hover:scale-105 transition-transform">
                       <GraduationCap className="w-5 h-5" />
                     </div>
                   </div>
-                  <div className="text-3xl font-extrabold text-[#17233B]">
+                  <div className="text-3xl font-extrabold text-[#252525]">
                     {adminOverview?.users?.totalStudents ?? 0}
                   </div>
-                  <p className="text-xs text-[#16845B] mt-1 font-medium flex items-center gap-1">
+                  <p className="text-xs text-[#8E1717] mt-1 font-medium flex items-center gap-1">
                     <span>Active Campus Enrollees</span>
                   </p>
                 </Link>
@@ -365,20 +351,20 @@ export const DashboardPage: React.FC = () => {
                 {/* 2. Total Faculty */}
                 <Link
                   to="/admin?tab=faculty"
-                  className="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs hover:border-[#16845B]/40 hover:shadow-md transition-all group"
+                  className="bg-white rounded-2xl border border-[#E7DADA] p-5 shadow-xs hover:border-[#8E1717]/40 hover:shadow-md transition-all group"
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
+                    <span className="text-xs font-semibold text-[#666666] uppercase tracking-wider">
                       Faculty Members
                     </span>
-                    <div className="w-10 h-10 rounded-xl bg-[#E6F5EF] text-[#16845B] flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className="w-10 h-10 rounded-xl bg-[#FFF7F7] text-[#8E1717] border border-[#8E1717]/20 flex items-center justify-center group-hover:scale-105 transition-transform">
                       <Briefcase className="w-5 h-5" />
                     </div>
                   </div>
-                  <div className="text-3xl font-extrabold text-[#17233B]">
+                  <div className="text-3xl font-extrabold text-[#252525]">
                     {adminOverview?.users?.totalTeachers ?? 0}
                   </div>
-                  <p className="text-xs text-[#16845B] mt-1 font-medium flex items-center gap-1">
+                  <p className="text-xs text-[#8E1717] mt-1 font-medium flex items-center gap-1">
                     <span>Verified Academic Staff</span>
                   </p>
                 </Link>
@@ -386,20 +372,20 @@ export const DashboardPage: React.FC = () => {
                 {/* 3. Pending Verifications */}
                 <Link
                   to="/admin?tab=verifications"
-                  className="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs hover:border-[#D97706]/40 hover:shadow-md transition-all group"
+                  className="bg-white rounded-2xl border border-[#E7DADA] p-5 shadow-xs hover:border-[#C62828]/40 hover:shadow-md transition-all group"
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
+                    <span className="text-xs font-semibold text-[#666666] uppercase tracking-wider">
                       Pending Approvals
                     </span>
-                    <div className="w-10 h-10 rounded-xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className="w-10 h-10 rounded-xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center group-hover:scale-105 transition-transform">
                       <AlertCircle className="w-5 h-5" />
                     </div>
                   </div>
-                  <div className="text-3xl font-extrabold text-[#17233B]">
+                  <div className="text-3xl font-extrabold text-[#252525]">
                     {adminOverview?.verifications?.pendingVerifications ?? 0}
                   </div>
-                  <p className="text-xs text-[#D97706] mt-1 font-medium flex items-center gap-1">
+                  <p className="text-xs text-[#C62828] mt-1 font-medium flex items-center gap-1">
                     <span>Faculty Verification Queue</span>
                   </p>
                 </Link>
@@ -407,20 +393,20 @@ export const DashboardPage: React.FC = () => {
                 {/* 4. Total Consultations */}
                 <Link
                   to="/admin?tab=appointments"
-                  className="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs hover:border-[#3157D5]/40 hover:shadow-md transition-all group"
+                  className="bg-white rounded-2xl border border-[#E7DADA] p-5 shadow-xs hover:border-[#C62828]/40 hover:shadow-md transition-all group"
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
+                    <span className="text-xs font-semibold text-[#666666] uppercase tracking-wider">
                       Total Consultations
                     </span>
-                    <div className="w-10 h-10 rounded-xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className="w-10 h-10 rounded-xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center group-hover:scale-105 transition-transform">
                       <Calendar className="w-5 h-5" />
                     </div>
                   </div>
-                  <div className="text-3xl font-extrabold text-[#17233B]">
+                  <div className="text-3xl font-extrabold text-[#252525]">
                     {adminOverview?.appointments?.totalAppointments ?? 0}
                   </div>
-                  <p className="text-xs text-[#3157D5] mt-1 font-medium flex items-center gap-1">
+                  <p className="text-xs text-[#C62828] mt-1 font-medium flex items-center gap-1">
                     <span>FacultyConnect Bookings</span>
                   </p>
                 </Link>
@@ -428,32 +414,32 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             {/* Admin Quick Action Hub */}
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xs p-6 sm:p-8 space-y-6">
+            <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xs p-6 sm:p-8 space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-base font-bold text-[#17233B] flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-[#3157D5]" />
+                  <h3 className="text-base font-bold text-[#252525] flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-[#C62828]" />
                     <span>Administrative Quick Launch & Tools</span>
                   </h3>
-                  <p className="text-xs text-[#64748B] mt-0.5">
+                  <p className="text-xs text-[#666666] mt-0.5">
                     Direct access to manage campus accounts, perform verifications, and download official data reports
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleExport('students')}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:bg-[#F6F8FC] text-xs font-semibold text-[#17233B] transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E7DADA] hover:bg-[#FFF7F7] text-xs font-semibold text-[#252525] transition-colors cursor-pointer"
                     title="Export Student Registry CSV"
                   >
-                    <Download className="w-3.5 h-3.5 text-[#3157D5]" />
+                    <Download className="w-3.5 h-3.5 text-[#C62828]" />
                     <span>Students CSV</span>
                   </button>
                   <button
                     onClick={() => handleExport('teachers')}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:bg-[#F6F8FC] text-xs font-semibold text-[#17233B] transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E7DADA] hover:bg-[#FFF7F7] text-xs font-semibold text-[#252525] transition-colors cursor-pointer"
                     title="Export Faculty Registry CSV"
                   >
-                    <Download className="w-3.5 h-3.5 text-[#16845B]" />
+                    <Download className="w-3.5 h-3.5 text-[#8E1717]" />
                     <span>Faculty CSV</span>
                   </button>
                 </div>
@@ -462,79 +448,79 @@ export const DashboardPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Link
                   to="/admin?tab=students"
-                  className="p-4 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] hover:border-[#3157D5]/40 hover:bg-[#EAF1FF]/40 transition-all group flex items-start gap-3.5"
+                  className="p-4 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] hover:border-[#C62828]/40 hover:bg-white transition-all group flex items-start gap-3.5"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-white border border-[#E2E8F0] text-[#3157D5] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <div className="w-10 h-10 rounded-xl bg-white border border-[#E7DADA] text-[#C62828] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                     <Users className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-[#17233B]">Manage Students</h4>
-                    <p className="text-xs text-[#64748B] mt-0.5">Filter by course, search UID, suspend or activate accounts.</p>
+                    <h4 className="text-sm font-bold text-[#252525]">Manage Students</h4>
+                    <p className="text-xs text-[#666666] mt-0.5">Filter by course, search UID, suspend or activate accounts.</p>
                   </div>
                 </Link>
 
                 <Link
                   to="/admin?tab=faculty"
-                  className="p-4 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] hover:border-[#16845B]/40 hover:bg-[#E6F5EF]/40 transition-all group flex items-start gap-3.5"
+                  className="p-4 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] hover:border-[#8E1717]/40 hover:bg-white transition-all group flex items-start gap-3.5"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-white border border-[#E2E8F0] text-[#16845B] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <div className="w-10 h-10 rounded-xl bg-white border border-[#E7DADA] text-[#8E1717] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                     <UserCheck className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-[#17233B]">Manage Faculty</h4>
-                    <p className="text-xs text-[#64748B] mt-0.5">Review designations, research domains, cabin locations.</p>
+                    <h4 className="text-sm font-bold text-[#252525]">Manage Faculty</h4>
+                    <p className="text-xs text-[#666666] mt-0.5">Review designations, research domains, cabin locations.</p>
                   </div>
                 </Link>
 
                 <Link
                   to="/admin?tab=verifications"
-                  className="p-4 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] hover:border-[#D97706]/40 hover:bg-[#FEF3C7]/40 transition-all group flex items-start gap-3.5"
+                  className="p-4 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] hover:border-[#C62828]/40 hover:bg-white transition-all group flex items-start gap-3.5"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-white border border-[#E2E8F0] text-[#D97706] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <div className="w-10 h-10 rounded-xl bg-white border border-[#E7DADA] text-[#C62828] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                     <ShieldCheck className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-[#17233B]">Verify Accounts</h4>
-                    <p className="text-xs text-[#64748B] mt-0.5">Approve new faculty sign-ups with official institutional badge.</p>
+                    <h4 className="text-sm font-bold text-[#252525]">Verify Accounts</h4>
+                    <p className="text-xs text-[#666666] mt-0.5">Approve new faculty sign-ups with official institutional badge.</p>
                   </div>
                 </Link>
 
                 <Link
                   to="/admin?tab=analytics"
-                  className="p-4 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] hover:border-[#3157D5]/40 hover:bg-[#EAF1FF]/40 transition-all group flex items-start gap-3.5"
+                  className="p-4 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] hover:border-[#C62828]/40 hover:bg-white transition-all group flex items-start gap-3.5"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-white border border-[#E2E8F0] text-[#3157D5] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <div className="w-10 h-10 rounded-xl bg-white border border-[#E7DADA] text-[#C62828] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                     <TrendingUp className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-[#17233B]">Campus Analytics</h4>
-                    <p className="text-xs text-[#64748B] mt-0.5">Interactive graphs, consultation trends, and department audits.</p>
+                    <h4 className="text-sm font-bold text-[#252525]">Campus Analytics</h4>
+                    <p className="text-xs text-[#666666] mt-0.5">Interactive graphs, consultation trends, and department audits.</p>
                   </div>
                 </Link>
               </div>
             </div>
 
-            {/* Registered Users Preview Table (Students & Teachers) */}
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xs p-6 sm:p-8 space-y-6">
+            {/* Registered Users Preview Table */}
+            <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xs p-6 sm:p-8 space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-base font-bold text-[#17233B] flex items-center gap-2">
-                    <Users className="w-5 h-5 text-[#3157D5]" />
+                  <h3 className="text-base font-bold text-[#252525] flex items-center gap-2">
+                    <Users className="w-5 h-5 text-[#C62828]" />
                     <span>Registered Campus Users</span>
                   </h3>
-                  <p className="text-xs text-[#64748B] mt-0.5">
+                  <p className="text-xs text-[#666666] mt-0.5">
                     Live accounts registered in the Chandigarh University database
                   </p>
                 </div>
 
                 {/* Tab Switcher */}
-                <div className="flex items-center gap-1.5 p-1 bg-[#F6F8FC] rounded-xl border border-[#E2E8F0] self-start sm:self-auto">
+                <div className="flex items-center gap-1.5 p-1 bg-[#FFF7F7] rounded-xl border border-[#E7DADA] self-start sm:self-auto">
                   <button
                     onClick={() => setAdminTab('students')}
                     className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       adminTab === 'students'
-                        ? 'bg-white text-[#3157D5] shadow-xs'
-                        : 'text-[#64748B] hover:text-[#17233B]'
+                        ? 'bg-white text-[#C62828] shadow-xs'
+                        : 'text-[#666666] hover:text-[#252525]'
                     }`}
                   >
                     Registered Students ({recentStudents.length})
@@ -543,8 +529,8 @@ export const DashboardPage: React.FC = () => {
                     onClick={() => setAdminTab('teachers')}
                     className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       adminTab === 'teachers'
-                        ? 'bg-white text-[#16845B] shadow-xs'
-                        : 'text-[#64748B] hover:text-[#17233B]'
+                        ? 'bg-white text-[#8E1717] shadow-xs'
+                        : 'text-[#666666] hover:text-[#252525]'
                     }`}
                   >
                     Registered Faculty ({recentTeachers.length})
@@ -553,10 +539,10 @@ export const DashboardPage: React.FC = () => {
               </div>
 
               {/* Table Data */}
-              <div className="overflow-x-auto rounded-2xl border border-[#E2E8F0]">
+              <div className="overflow-x-auto rounded-2xl border border-[#E7DADA]">
                 {adminTab === 'students' ? (
                   <table className="w-full text-left text-xs border-collapse">
-                    <thead className="bg-[#F8FAFC] text-[#64748B] uppercase font-bold border-b border-[#E2E8F0]">
+                    <thead className="bg-[#FFF7F7] text-[#666666] uppercase font-bold border-b border-[#E7DADA]">
                       <tr>
                         <th className="py-3 px-4">Student Name</th>
                         <th className="py-3 px-4">UID</th>
@@ -566,26 +552,26 @@ export const DashboardPage: React.FC = () => {
                         <th className="py-3 px-4 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E2E8F0] bg-white">
+                    <tbody className="divide-y divide-[#E7DADA] bg-white">
                       {recentStudents.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="py-8 text-center text-[#64748B]">
+                          <td colSpan={6} className="py-8 text-center text-[#666666]">
                             No students registered yet.
                           </td>
                         </tr>
                       ) : (
                         recentStudents.map((st) => (
-                          <tr key={st._id} className="hover:bg-[#F8FAFC] transition-colors">
-                            <td className="py-3.5 px-4 font-bold text-[#17233B]">
+                          <tr key={st._id} className="hover:bg-[#FFF7F7] transition-colors">
+                            <td className="py-3.5 px-4 font-bold text-[#252525]">
                               {st.fullName}
-                              <div className="text-[11px] font-normal text-[#64748B]">{st.email}</div>
+                              <div className="text-[11px] font-normal text-[#666666]">{st.email}</div>
                             </td>
-                            <td className="py-3.5 px-4 font-mono font-semibold text-[#3157D5]">
+                            <td className="py-3.5 px-4 font-mono font-semibold text-[#C62828]">
                               {st.uid}
                             </td>
-                            <td className="py-3.5 px-4 text-[#64748B]">
-                              <span className="font-medium text-[#17233B]">{st.department}</span>
-                              <div className="text-[11px] text-[#3157D5]">
+                            <td className="py-3.5 px-4 text-[#666666]">
+                              <span className="font-medium text-[#252525]">{st.department}</span>
+                              <div className="text-[11px] text-[#C62828]">
                                 {st.studentProfile?.course || 'B.Tech'} (Sem {st.studentProfile?.semester || 1})
                               </div>
                             </td>
@@ -593,8 +579,8 @@ export const DashboardPage: React.FC = () => {
                               <span
                                 className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${
                                   st.accountStatus === 'ACTIVE'
-                                    ? 'bg-[#E6F5EF] text-[#16845B]'
-                                    : 'bg-[#FEF2F2] text-[#EF4444]'
+                                    ? 'bg-[#FFF7F7] text-[#8E1717] border border-[#8E1717]/20'
+                                    : 'bg-[#FFF1F1] text-[#C62828] border border-[#C62828]/20'
                                 }`}
                               >
                                 {st.accountStatus || 'ACTIVE'}
@@ -602,12 +588,12 @@ export const DashboardPage: React.FC = () => {
                             </td>
                             <td className="py-3.5 px-4">
                               {st.isVerified ? (
-                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#16845B]">
+                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#8E1717]">
                                   <CheckCircle2 className="w-3.5 h-3.5" />
                                   Verified
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#D97706]">
+                                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#C62828]">
                                   <AlertCircle className="w-3.5 h-3.5" />
                                   Unverified
                                 </span>
@@ -616,7 +602,7 @@ export const DashboardPage: React.FC = () => {
                             <td className="py-3.5 px-4 text-right">
                               <Link
                                 to="/admin?tab=students"
-                                className="inline-flex items-center gap-1 text-xs font-bold text-[#3157D5] hover:underline"
+                                className="inline-flex items-center gap-1 text-xs font-bold text-[#C62828] hover:underline"
                               >
                                 <span>Manage</span>
                                 <ChevronRight className="w-3.5 h-3.5" />
@@ -629,7 +615,7 @@ export const DashboardPage: React.FC = () => {
                   </table>
                 ) : (
                   <table className="w-full text-left text-xs border-collapse">
-                    <thead className="bg-[#F8FAFC] text-[#64748B] uppercase font-bold border-b border-[#E2E8F0]">
+                    <thead className="bg-[#FFF7F7] text-[#666666] uppercase font-bold border-b border-[#E7DADA]">
                       <tr>
                         <th className="py-3 px-4">Faculty Name</th>
                         <th className="py-3 px-4">Faculty ID</th>
@@ -639,40 +625,40 @@ export const DashboardPage: React.FC = () => {
                         <th className="py-3 px-4 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E2E8F0] bg-white">
+                    <tbody className="divide-y divide-[#E7DADA] bg-white">
                       {recentTeachers.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="py-8 text-center text-[#64748B]">
+                          <td colSpan={6} className="py-8 text-center text-[#666666]">
                             No faculty members registered yet.
                           </td>
                         </tr>
                       ) : (
                         recentTeachers.map((tc) => (
-                          <tr key={tc._id} className="hover:bg-[#F8FAFC] transition-colors">
-                            <td className="py-3.5 px-4 font-bold text-[#17233B]">
+                          <tr key={tc._id} className="hover:bg-[#FFF7F7] transition-colors">
+                            <td className="py-3.5 px-4 font-bold text-[#252525]">
                               {tc.fullName}
-                              <div className="text-[11px] font-normal text-[#64748B]">{tc.email}</div>
+                              <div className="text-[11px] font-normal text-[#666666]">{tc.email}</div>
                             </td>
-                            <td className="py-3.5 px-4 font-mono font-semibold text-[#16845B]">
+                            <td className="py-3.5 px-4 font-mono font-semibold text-[#8E1717]">
                               {tc.uid}
                             </td>
-                            <td className="py-3.5 px-4 text-[#64748B]">
-                              <span className="font-medium text-[#17233B]">{tc.department}</span>
-                              <div className="text-[11px] text-[#64748B]">
+                            <td className="py-3.5 px-4 text-[#666666]">
+                              <span className="font-medium text-[#252525]">{tc.department}</span>
+                              <div className="text-[11px] text-[#666666]">
                                 Cabin: {tc.teacherProfile?.officeLocation || 'Main Block'}
                               </div>
                             </td>
-                            <td className="py-3.5 px-4 font-medium text-[#17233B]">
+                            <td className="py-3.5 px-4 font-medium text-[#252525]">
                               {tc.teacherProfile?.designation || 'Faculty Member'}
                             </td>
                             <td className="py-3.5 px-4">
                               <span
                                 className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${
                                   tc.teacherProfile?.verificationStatus === 'VERIFIED'
-                                    ? 'bg-[#E6F5EF] text-[#16845B]'
+                                    ? 'bg-[#FFF7F7] text-[#8E1717] border border-[#8E1717]/20'
                                     : tc.teacherProfile?.verificationStatus === 'REJECTED'
-                                    ? 'bg-[#FEF2F2] text-[#EF4444]'
-                                    : 'bg-[#FEF3C7] text-[#D97706]'
+                                    ? 'bg-[#FFF1F1] text-[#C62828] border border-[#C62828]/20'
+                                    : 'bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20'
                                 }`}
                               >
                                 {tc.teacherProfile?.verificationStatus || 'PENDING'}
@@ -681,7 +667,7 @@ export const DashboardPage: React.FC = () => {
                             <td className="py-3.5 px-4 text-right">
                               <Link
                                 to="/admin?tab=faculty"
-                                className="inline-flex items-center gap-1 text-xs font-bold text-[#16845B] hover:underline"
+                                className="inline-flex items-center gap-1 text-xs font-bold text-[#8E1717] hover:underline"
                               >
                                 <span>Manage</span>
                                 <ChevronRight className="w-3.5 h-3.5" />
@@ -715,32 +701,32 @@ export const DashboardPage: React.FC = () => {
             {/* Feature Cards Grid Customized by Role */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-[#17233B] flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-[#3157D5]" />
+                <h2 className="text-lg font-bold text-[#252525] flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-[#C62828]" />
                   <span>Campus Features & Quick Launch</span>
                 </h2>
-                <span className="text-xs text-[#64748B] font-medium">Tailored for your role</span>
+                <span className="text-xs text-[#666666] font-medium">Tailored for your role</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* FEATURE 0: AI DOCUMENT TUTOR */}
-                <div className="bg-white rounded-2xl border border-[#3157D5]/40 shadow-xs p-6 hover:shadow-md hover:border-[#3157D5] transition-all group flex flex-col justify-between relative overflow-hidden">
-                  <div className="absolute top-0 right-0 bg-[#3157D5] text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
+                <div className="bg-white rounded-2xl border border-[#C62828]/40 shadow-xs p-6 hover:shadow-md hover:border-[#C62828] transition-all group flex flex-col justify-between relative overflow-hidden">
+                  <div className="absolute top-0 right-0 bg-[#C62828] text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
                     New • RAG AI
                   </div>
                   <div>
-                    <div className="w-12 h-12 rounded-xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                       <Sparkles className="w-6 h-6" />
                     </div>
-                    <h3 className="text-base font-bold text-[#17233B] mb-1.5">
+                    <h3 className="text-base font-bold text-[#252525] mb-1.5">
                       AI Document Tutor
                     </h3>
-                    <p className="text-xs text-[#64748B] leading-relaxed mb-4">
+                    <p className="text-xs text-[#666666] leading-relaxed mb-4">
                       Upload course PDFs and lecture notes. Ask questions grounded strictly in your files with page citations and summaries.
                     </p>
-                    <div className="p-3 bg-[#EAF1FF]/40 rounded-xl border border-[#3157D5]/20 mb-4 flex items-center justify-between text-xs">
-                      <span className="text-[#3157D5] font-semibold">Engine:</span>
-                      <span className="font-extrabold text-[#17233B] px-2 py-0.5 bg-white rounded-md border border-[#3157D5]/30">
+                    <div className="p-3 bg-[#FFF7F7] rounded-xl border border-[#C62828]/20 mb-4 flex items-center justify-between text-xs">
+                      <span className="text-[#C62828] font-semibold">Engine:</span>
+                      <span className="font-extrabold text-[#252525] px-2 py-0.5 bg-white rounded-md border border-[#C62828]/30">
                         Groq • RAG
                       </span>
                     </div>
@@ -748,7 +734,7 @@ export const DashboardPage: React.FC = () => {
 
                   <Link
                     to="/ai-tutor"
-                    className="inline-flex items-center justify-between text-xs font-bold text-[#3157D5] hover:text-[#2544ad] pt-2 border-t border-[#E2E8F0]"
+                    className="inline-flex items-center justify-between text-xs font-bold text-[#C62828] hover:text-[#8E1717] pt-2 border-t border-[#E7DADA]"
                   >
                     <span>Launch AI Tutor</span>
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -756,21 +742,21 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* FEATURE 1: PROFILE MANAGEMENT */}
-                <div className="bg-white rounded-2xl border border-[#E2E8F0] p-6 hover:shadow-md hover:border-[#3157D5]/40 transition-all group flex flex-col justify-between">
+                <div className="bg-white rounded-2xl border border-[#E7DADA] p-6 hover:shadow-md hover:border-[#C62828]/40 transition-all group flex flex-col justify-between">
                   <div>
-                    <div className="w-12 h-12 rounded-xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                       {user.role === 'STUDENT' ? (
                         <GraduationCap className="w-6 h-6" />
                       ) : (
                         <Briefcase className="w-6 h-6" />
                       )}
                     </div>
-                    <h3 className="text-base font-bold text-[#17233B] mb-1.5">
+                    <h3 className="text-base font-bold text-[#252525] mb-1.5">
                       {user.role === 'STUDENT'
                         ? 'Student Academic Profile'
                         : 'Faculty Academic Profile'}
                     </h3>
-                    <p className="text-xs text-[#64748B] leading-relaxed mb-4">
+                    <p className="text-xs text-[#666666] leading-relaxed mb-4">
                       {user.role === 'STUDENT'
                         ? 'Showcase technical skills, portfolio links, academic bio, and privacy settings.'
                         : 'Configure office cabin location, research domains, student consultation preferences.'}
@@ -778,27 +764,27 @@ export const DashboardPage: React.FC = () => {
 
                     {/* Profile Highlights Preview */}
                     {user.role === 'STUDENT' && studentProfile && (
-                      <div className="p-3 bg-[#F6F8FC] rounded-xl border border-[#E2E8F0] mb-4 space-y-1.5 text-xs">
-                        <div className="flex justify-between text-[#64748B]">
+                      <div className="p-3 bg-[#FFF7F7] rounded-xl border border-[#E7DADA] mb-4 space-y-1.5 text-xs">
+                        <div className="flex justify-between text-[#666666]">
                           <span>Course:</span>
-                          <strong className="text-[#17233B]">{studentProfile.course || 'B.Tech'}</strong>
+                          <strong className="text-[#252525]">{studentProfile.course || 'B.Tech'}</strong>
                         </div>
-                        <div className="flex justify-between text-[#64748B]">
+                        <div className="flex justify-between text-[#666666]">
                           <span>Semester:</span>
-                          <strong className="text-[#17233B]">{studentProfile.semester || 1}</strong>
+                          <strong className="text-[#252525]">{studentProfile.semester || 1}</strong>
                         </div>
                         {studentProfile.skills && studentProfile.skills.length > 0 && (
                           <div className="pt-1.5 flex flex-wrap gap-1">
                             {studentProfile.skills.slice(0, 3).map((s, idx) => (
                               <span
                                 key={idx}
-                                className="px-2 py-0.5 rounded-md bg-[#EAF1FF] text-[#3157D5] text-[10px] font-bold"
+                                className="px-2 py-0.5 rounded-md bg-white text-[#C62828] text-[10px] font-bold border border-[#C62828]/30"
                               >
                                 {s}
                               </span>
                             ))}
                             {studentProfile.skills.length > 3 && (
-                              <span className="text-[10px] text-[#64748B] self-center">
+                              <span className="text-[10px] text-[#666666] self-center">
                                 +{studentProfile.skills.length - 3} more
                               </span>
                             )}
@@ -808,14 +794,14 @@ export const DashboardPage: React.FC = () => {
                     )}
 
                     {user.role === 'TEACHER' && teacherProfile && (
-                      <div className="p-3 bg-[#F6F8FC] rounded-xl border border-[#E2E8F0] mb-4 space-y-1.5 text-xs">
-                        <div className="flex justify-between text-[#64748B]">
+                      <div className="p-3 bg-[#FFF7F7] rounded-xl border border-[#E7DADA] mb-4 space-y-1.5 text-xs">
+                        <div className="flex justify-between text-[#666666]">
                           <span>Office:</span>
-                          <strong className="text-[#17233B]">{teacherProfile.officeLocation || 'Main Block'}</strong>
+                          <strong className="text-[#252525]">{teacherProfile.officeLocation || 'Main Block'}</strong>
                         </div>
-                        <div className="flex justify-between text-[#64748B]">
+                        <div className="flex justify-between text-[#666666]">
                           <span>Bookings:</span>
-                          <strong className={teacherProfile.isAcceptingBookings ? 'text-[#16845B]' : 'text-[#EF4444]'}>
+                          <strong className={teacherProfile.isAcceptingBookings ? 'text-[#8E1717]' : 'text-[#C62828]'}>
                             {teacherProfile.isAcceptingBookings ? 'Accepting Appointments' : 'Paused'}
                           </strong>
                         </div>
@@ -825,7 +811,7 @@ export const DashboardPage: React.FC = () => {
 
                   <Link
                     to="/profile"
-                    className="inline-flex items-center justify-between text-xs font-bold text-[#3157D5] hover:text-[#2544ad] pt-2 border-t border-[#E2E8F0]"
+                    className="inline-flex items-center justify-between text-xs font-bold text-[#C62828] hover:text-[#8E1717] pt-2 border-t border-[#E7DADA]"
                   >
                     <span>Edit & Update Profile</span>
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -833,25 +819,25 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* FEATURE 2: FACULTYCONNECT / APPOINTMENT ENGINE */}
-                <div className="bg-white rounded-2xl border border-[#E2E8F0] p-6 hover:shadow-md hover:border-[#3157D5]/40 transition-all group flex flex-col justify-between">
+                <div className="bg-white rounded-2xl border border-[#E7DADA] p-6 hover:shadow-md hover:border-[#C62828]/40 transition-all group flex flex-col justify-between">
                   <div>
-                    <div className="w-12 h-12 rounded-xl bg-[#E6F5EF] text-[#16845B] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7F7] text-[#8E1717] border border-[#8E1717]/20 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                       <Calendar className="w-6 h-6" />
                     </div>
-                    <h3 className="text-base font-bold text-[#17233B] mb-1.5">
+                    <h3 className="text-base font-bold text-[#252525] mb-1.5">
                       {user.role === 'STUDENT'
                         ? 'FacultyConnect Appointments'
                         : 'Consultation Schedule & Slots'}
                     </h3>
-                    <p className="text-xs text-[#64748B] leading-relaxed mb-4">
+                    <p className="text-xs text-[#666666] leading-relaxed mb-4">
                       {user.role === 'STUDENT'
                         ? 'Book 1-on-1 office hour appointments with department professors. Access video meeting links.'
                         : 'Define weekly availability slots, approve/reject student consultation requests, and attach Google Meet links.'}
                     </p>
 
-                    <div className="p-3 bg-[#F6F8FC] rounded-xl border border-[#E2E8F0] mb-4 flex items-center justify-between text-xs">
-                      <span className="text-[#64748B]">Active Consultations:</span>
-                      <span className="font-extrabold text-[#17233B] px-2.5 py-0.5 bg-white rounded-md border border-[#E2E8F0]">
+                    <div className="p-3 bg-[#FFF7F7] rounded-xl border border-[#E7DADA] mb-4 flex items-center justify-between text-xs">
+                      <span className="text-[#666666]">Active Consultations:</span>
+                      <span className="font-extrabold text-[#252525] px-2.5 py-0.5 bg-white rounded-md border border-[#E7DADA]">
                         {upcomingAppointments.length} upcoming
                       </span>
                     </div>
@@ -859,7 +845,7 @@ export const DashboardPage: React.FC = () => {
 
                   <Link
                     to="/appointments"
-                    className="inline-flex items-center justify-between text-xs font-bold text-[#16845B] hover:text-[#0f6042] pt-2 border-t border-[#E2E8F0]"
+                    className="inline-flex items-center justify-between text-xs font-bold text-[#8E1717] hover:text-[#701212] pt-2 border-t border-[#E7DADA]"
                   >
                     <span>{user.role === 'TEACHER' ? 'Manage Availability & Requests' : 'Book / View Consultations'}</span>
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -867,26 +853,26 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* FEATURE 3: CAMPUS DIRECTORY */}
-                <div className="bg-white rounded-2xl border border-[#E2E8F0] p-6 hover:shadow-md hover:border-[#3157D5]/40 transition-all group flex flex-col justify-between">
+                <div className="bg-white rounded-2xl border border-[#E7DADA] p-6 hover:shadow-md hover:border-[#C62828]/40 transition-all group flex flex-col justify-between">
                   <div>
-                    <div className="w-12 h-12 rounded-xl bg-[#F0FDF4] text-[#16845B] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                       <Users className="w-6 h-6" />
                     </div>
-                    <h3 className="text-base font-bold text-[#17233B] mb-1.5">
+                    <h3 className="text-base font-bold text-[#252525] mb-1.5">
                       Campus Directory
                     </h3>
-                    <p className="text-xs text-[#64748B] leading-relaxed mb-4">
+                    <p className="text-xs text-[#666666] leading-relaxed mb-4">
                       Discover verified students and professors across departments. Filter by skills, domains, or designations.
                     </p>
-                    <div className="p-3 bg-[#F6F8FC] rounded-xl border border-[#E2E8F0] mb-4 text-xs text-[#64748B] flex items-center justify-between">
+                    <div className="p-3 bg-[#FFF7F7] rounded-xl border border-[#E7DADA] mb-4 text-xs text-[#666666] flex items-center justify-between">
                       <span>Directory Privacy:</span>
-                      <strong className="text-[#17233B]">Campus Only</strong>
+                      <strong className="text-[#252525]">Campus Only</strong>
                     </div>
                   </div>
 
                   <Link
                     to="/directory"
-                    className="inline-flex items-center justify-between text-xs font-bold text-[#3157D5] hover:text-[#2544ad] pt-2 border-t border-[#E2E8F0]"
+                    className="inline-flex items-center justify-between text-xs font-bold text-[#C62828] hover:text-[#8E1717] pt-2 border-t border-[#E7DADA]"
                   >
                     <span>Browse Directory</span>
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -896,14 +882,14 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             {/* Upcoming Consultations Widget for Students & Teachers */}
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xs p-6 sm:p-8 space-y-6">
+            <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xs p-6 sm:p-8 space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-lg font-bold text-[#17233B] flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-[#3157D5]" />
+                  <h2 className="text-lg font-bold text-[#252525] flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-[#C62828]" />
                     <span>Upcoming Consultations & Meeting Links</span>
                   </h2>
-                  <p className="text-xs text-[#64748B] mt-0.5">
+                  <p className="text-xs text-[#666666] mt-0.5">
                     Join live video consultation sessions or view your confirmed academic slots
                   </p>
                 </div>
@@ -919,14 +905,14 @@ export const DashboardPage: React.FC = () => {
               </div>
 
               {upcomingAppointments.length === 0 ? (
-                <div className="py-10 text-center rounded-2xl bg-[#F6F8FC] border border-dashed border-[#E2E8F0]">
-                  <div className="w-12 h-12 rounded-full bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mx-auto mb-3">
+                <div className="py-10 text-center rounded-2xl bg-[#FFF7F7] border border-dashed border-[#E7DADA]">
+                  <div className="w-12 h-12 rounded-full bg-white text-[#C62828] border border-[#C62828]/20 flex items-center justify-center mx-auto mb-3">
                     <Calendar className="w-6 h-6" />
                   </div>
-                  <h3 className="text-sm font-bold text-[#17233B] mb-1">
+                  <h3 className="text-sm font-bold text-[#252525] mb-1">
                     No Upcoming Consultations Scheduled
                   </h3>
-                  <p className="text-xs text-[#64748B] max-w-sm mx-auto mb-4">
+                  <p className="text-xs text-[#666666] max-w-sm mx-auto mb-4">
                     {user.role === 'STUDENT'
                       ? 'Connect with your professors for academic guidance, project reviews, or thesis consultation.'
                       : 'Configure your weekly availability slots so students can book office hours.'}
@@ -970,7 +956,7 @@ export const DashboardPage: React.FC = () => {
                     return (
                       <div
                         key={appt._id}
-                        className="p-5 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] flex flex-col justify-between space-y-4 hover:border-[#3157D5]/40 transition-colors"
+                        className="p-5 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] flex flex-col justify-between space-y-4 hover:border-[#C62828]/40 transition-colors"
                       >
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
@@ -986,30 +972,30 @@ export const DashboardPage: React.FC = () => {
                             >
                               {appt.status}
                             </Badge>
-                            <span className="text-[11px] font-bold text-[#3157D5] bg-[#EAF1FF] px-2 py-0.5 rounded-md">
+                            <span className="text-[11px] font-bold text-[#C62828] bg-white border border-[#C62828]/30 px-2 py-0.5 rounded-md">
                               {appt.slot?.durationMinutes || 30} min
                             </span>
                           </div>
 
                           <div>
-                            <h4 className="text-sm font-bold text-[#17233B]">{partnerName}</h4>
-                            <p className="text-[11px] text-[#64748B]">{partnerRole}</p>
+                            <h4 className="text-sm font-bold text-[#252525]">{partnerName}</h4>
+                            <p className="text-[11px] text-[#666666]">{partnerRole}</p>
                           </div>
 
-                          <div className="space-y-1 text-xs text-[#64748B]">
+                          <div className="space-y-1 text-xs text-[#666666]">
                             <div className="flex items-center gap-1.5">
-                              <Calendar className="w-3.5 h-3.5 text-[#3157D5]" />
+                              <Calendar className="w-3.5 h-3.5 text-[#C62828]" />
                               <span>{startDate} at {startTime}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               {appt.slot?.locationType === 'VIRTUAL_MEET' ? (
                                 <>
-                                  <Video className="w-3.5 h-3.5 text-[#16845B]" />
+                                  <Video className="w-3.5 h-3.5 text-[#8E1717]" />
                                   <span>Virtual Google Meet / Zoom</span>
                                 </>
                               ) : (
                                 <>
-                                  <MapPin className="w-3.5 h-3.5 text-[#D97706]" />
+                                  <MapPin className="w-3.5 h-3.5 text-[#C62828]" />
                                   <span>{appt.slot?.locationDetails || 'Faculty Cabin'}</span>
                                 </>
                               )}
@@ -1023,7 +1009,7 @@ export const DashboardPage: React.FC = () => {
                             href={appt.meetingLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl bg-[#16845B] hover:bg-[#0f6042] text-white text-xs font-bold transition-colors shadow-xs"
+                            className="inline-flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl bg-[#C62828] hover:bg-[#8E1717] text-white text-xs font-bold transition-colors shadow-xs"
                           >
                             <Video className="w-3.5 h-3.5" />
                             <span>Join Meeting Link</span>

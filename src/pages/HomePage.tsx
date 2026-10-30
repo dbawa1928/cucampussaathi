@@ -23,26 +23,26 @@ export const HomePage: React.FC = () => {
   return (
     <div className="flex flex-col w-full">
       {/* 1. HERO SECTION */}
-      <section className="relative pt-12 pb-20 md:pt-18 md:pb-28 bg-gradient-to-b from-[#F6F8FC] via-white to-white overflow-hidden">
+      <section className="relative pt-12 pb-20 md:pt-18 md:pb-28 bg-gradient-to-b from-[#FFF7F7] via-white to-white overflow-hidden">
         {/* Subtle decorative background glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#EAF1FF]/70 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#FFF7F7] via-transparent to-transparent pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Subheading pill */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E2E8F0] shadow-xs text-xs font-semibold text-[#3157D5] mb-6">
-            <Sparkles className="w-4 h-4 text-[#3157D5]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E7DADA] shadow-xs text-xs font-semibold text-[#C62828] mb-6">
+            <Sparkles className="w-4 h-4 text-[#C62828]" />
             <span>AI-Powered University Knowledge & Collaboration Platform</span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#17233B] tracking-tight max-w-4xl mx-auto leading-[1.15]">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#252525] tracking-tight max-w-4xl mx-auto leading-[1.15]">
             Your Campus. Your Community.{' '}
-            <span className="text-[#3157D5]">Your Next Big Opportunity.</span>
+            <span className="text-[#C62828]">Your Next Big Opportunity.</span>
           </h1>
 
           {/* Description */}
-          <p className="mt-6 text-base sm:text-xl text-[#64748B] max-w-3xl mx-auto leading-relaxed">
-            Discover skills, connect with mentors, find the right teammates, and turn academic knowledge into real-world projects with CUCampusSaathi.
+          <p className="mt-6 text-base sm:text-xl text-[#666666] max-w-3xl mx-auto leading-relaxed">
+            Discover skills, connect with faculty mentors, find the right teammates, and turn academic knowledge into real-world projects with CUCampusSaathi.
           </p>
 
           {/* CTA Buttons */}
@@ -68,7 +68,7 @@ export const HomePage: React.FC = () => {
           </div>
 
           {/* Trust points */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-[#64748B] font-medium">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-[#666666] font-medium">
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-[#16845B]" /> Verified Campus Profiles
             </span>
@@ -88,7 +88,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 2. CAMPUS PROBLEMS & CHALLENGES */}
-      <section className="py-20 bg-[#F6F8FC] border-y border-[#E2E8F0]">
+      <section className="py-20 bg-[#FFF7F7] border-y border-[#E7DADA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             badge="Campus Reality"
@@ -128,16 +128,16 @@ export const HomePage: React.FC = () => {
               return (
                 <div
                   key={i}
-                  className="p-6 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-between"
+                  className="p-6 rounded-2xl bg-white border border-[#E7DADA] shadow-xs flex flex-col justify-between"
                 >
                   <div>
-                    <div className="w-10 h-10 rounded-lg bg-[#FFF7ED] text-[#C2410C] flex items-center justify-center mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-[#FFF7ED] text-[#C2410C] flex items-center justify-center mb-4">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <h3 className="text-base font-bold text-[#17233B] mb-2">
+                    <h3 className="text-base font-bold text-[#252525] mb-2">
                       {problem.title}
                     </h3>
-                    <p className="text-sm text-[#64748B] leading-relaxed">
+                    <p className="text-sm text-[#666666] leading-relaxed">
                       {problem.description}
                     </p>
                   </div>
@@ -209,7 +209,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 4. HOW THE PLATFORM WORKS */}
-      <section className="py-20 bg-[#F6F8FC] border-y border-[#E2E8F0]">
+      <section className="py-20 bg-[#FFF7F7] border-y border-[#E7DADA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             badge="Simplified Workflow"
@@ -237,16 +237,16 @@ export const HomePage: React.FC = () => {
             ].map((item, i) => (
               <div
                 key={i}
-                className="p-8 rounded-xl bg-white border border-[#E2E8F0] shadow-xs relative flex flex-col justify-between"
+                className="p-8 rounded-2xl bg-white border border-[#E7DADA] shadow-xs relative flex flex-col justify-between"
               >
                 <div>
-                  <span className="text-4xl font-extrabold text-[#EAF1FF] text-[#3157D5]/30">
+                  <span className="text-4xl font-extrabold text-[#C62828]/20">
                     {item.step}
                   </span>
-                  <h3 className="text-lg font-bold text-[#17233B] mt-2 mb-2">
+                  <h3 className="text-lg font-bold text-[#252525] mt-2 mb-2">
                     {item.title}
                   </h3>
-                  <p className="text-sm text-[#64748B] leading-relaxed">
+                  <p className="text-sm text-[#666666] leading-relaxed">
                     {item.desc}
                   </p>
                 </div>
@@ -273,17 +273,17 @@ export const HomePage: React.FC = () => {
 
           <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Student Column */}
-            <div className="p-8 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] flex flex-col justify-between">
+            <div className="p-8 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 rounded-xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mb-5">
+                <div className="w-12 h-12 rounded-xl bg-white text-[#C62828] border border-[#E7DADA] flex items-center justify-center mb-5 shadow-xs">
                   <GraduationCap className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-[#17233B] mb-2">For Students</h3>
-                <p className="text-sm text-[#64748B] mb-6">
+                <h3 className="text-xl font-bold text-[#252525] mb-2">For Students</h3>
+                <p className="text-sm text-[#666666] mb-6">
                   Accelerate your academic learning curve, expand your peer network, and build high-impact portfolio projects.
                 </p>
 
-                <ul className="space-y-3 text-sm text-[#17233B]">
+                <ul className="space-y-3 text-sm text-[#252525]">
                   {[
                     'Instant doubt clarification with AI Document Tutor',
                     'Assemble balanced hackathon & capstone teams',
@@ -298,10 +298,10 @@ export const HomePage: React.FC = () => {
                 </ul>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-[#E2E8F0]">
+              <div className="mt-8 pt-4 border-t border-[#E7DADA]">
                 <Link
                   to="/register"
-                  className="text-xs font-bold text-[#3157D5] hover:underline flex items-center gap-1"
+                  className="text-xs font-bold text-[#C62828] hover:text-[#8E1717] hover:underline flex items-center gap-1"
                 >
                   Join as Student →
                 </Link>
@@ -309,17 +309,17 @@ export const HomePage: React.FC = () => {
             </div>
 
             {/* Teacher Column */}
-            <div className="p-8 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] flex flex-col justify-between">
+            <div className="p-8 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 rounded-xl bg-[#E6F5EF] text-[#16845B] flex items-center justify-center mb-5">
+                <div className="w-12 h-12 rounded-xl bg-white text-[#C62828] border border-[#E7DADA] flex items-center justify-center mb-5 shadow-xs">
                   <Calendar className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-[#17233B] mb-2">For Faculty</h3>
-                <p className="text-sm text-[#64748B] mb-6">
+                <h3 className="text-xl font-bold text-[#252525] mb-2">For Faculty</h3>
+                <p className="text-sm text-[#666666] mb-6">
                   Manage student consultations efficiently, mentor promising research projects, and organize course doubts.
                 </p>
 
-                <ul className="space-y-3 text-sm text-[#17233B]">
+                <ul className="space-y-3 text-sm text-[#252525]">
                   {[
                     'Customizable office-hour consultation slots',
                     'Review student meeting agendas prior to acceptance',
@@ -334,10 +334,10 @@ export const HomePage: React.FC = () => {
                 </ul>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-[#E2E8F0]">
+              <div className="mt-8 pt-4 border-t border-[#E7DADA]">
                 <Link
                   to="/register"
-                  className="text-xs font-bold text-[#16845B] hover:underline flex items-center gap-1"
+                  className="text-xs font-bold text-[#C62828] hover:text-[#8E1717] hover:underline flex items-center gap-1"
                 >
                   Join as Faculty →
                 </Link>
@@ -345,17 +345,17 @@ export const HomePage: React.FC = () => {
             </div>
 
             {/* Administration Column */}
-            <div className="p-8 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] flex flex-col justify-between">
+            <div className="p-8 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 rounded-xl bg-[#F3E8FF] text-[#7E22CE] flex items-center justify-center mb-5">
+                <div className="w-12 h-12 rounded-xl bg-white text-[#C62828] border border-[#E7DADA] flex items-center justify-center mb-5 shadow-xs">
                   <Building2 className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-[#17233B] mb-2">For Administration</h3>
-                <p className="text-sm text-[#64748B] mb-6">
+                <h3 className="text-xl font-bold text-[#252525] mb-2">For Administration</h3>
+                <p className="text-sm text-[#666666] mb-6">
                   Gain aggregate visibility into campus innovation trends, skill distributions, and mentorship health.
                 </p>
 
-                <ul className="space-y-3 text-sm text-[#17233B]">
+                <ul className="space-y-3 text-sm text-[#252525]">
                   {[
                     'Campus-wide skill distribution heatmaps',
                     'Track patents, research papers, and startup prototypes',
@@ -370,10 +370,10 @@ export const HomePage: React.FC = () => {
                 </ul>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-[#E2E8F0]">
+              <div className="mt-8 pt-4 border-t border-[#E7DADA]">
                 <Link
                   to="/features"
-                  className="text-xs font-bold text-[#7E22CE] hover:underline flex items-center gap-1"
+                  className="text-xs font-bold text-[#C62828] hover:text-[#8E1717] hover:underline flex items-center gap-1"
                 >
                   Explore Admin Insights →
                 </Link>
@@ -384,28 +384,28 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 6. FACULTYCONNECT SPOTLIGHT */}
-      <section className="py-20 bg-[#F6F8FC] border-y border-[#E2E8F0]">
+      <section className="py-20 bg-[#FFF7F7] border-y border-[#E7DADA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-8 sm:p-12 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm flex flex-col lg:flex-row items-center justify-between gap-10">
+          <div className="p-8 sm:p-12 rounded-3xl bg-white border border-[#E7DADA] shadow-sm flex flex-col lg:flex-row items-center justify-between gap-10">
             <div className="max-w-xl">
               <Badge variant="primary" size="sm" className="mb-3">
                 Feature Spotlight
               </Badge>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#17233B] tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#252525] tracking-tight">
                 FacultyConnect: Academic Mentorship Made Effortless
               </h2>
-              <p className="mt-4 text-base text-[#64748B] leading-relaxed">
+              <p className="mt-4 text-base text-[#666666] leading-relaxed">
                 No more waiting outside faculty cabins or guessing when your professor is available. Browse teacher expertise, inspect consultation schedules, and book 1-on-1 guidance slots with a clear agenda.
               </p>
 
               <div className="mt-6 space-y-3">
-                <div className="flex items-center gap-3 text-sm text-[#17233B]">
-                  <div className="w-8 h-8 rounded-lg bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center shrink-0">
+                <div className="flex items-center gap-3 text-sm text-[#252525]">
+                  <div className="w-8 h-8 rounded-lg bg-[#FFF7F7] border border-[#E7DADA] text-[#C62828] flex items-center justify-center shrink-0">
                     <Calendar className="w-4 h-4" />
                   </div>
                   <span>Real-time availability synced with faculty calendar</span>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-[#17233B]">
+                <div className="flex items-center gap-3 text-sm text-[#252525]">
                   <div className="w-8 h-8 rounded-lg bg-[#E6F5EF] text-[#16845B] flex items-center justify-center shrink-0">
                     <CheckCircle2 className="w-4 h-4" />
                   </div>
@@ -424,35 +424,35 @@ export const HomePage: React.FC = () => {
             </div>
 
             {/* Visual Booking Preview Card */}
-            <div className="w-full lg:w-96 p-5 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] shadow-xs">
-              <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#E2E8F0]">
-                <div className="w-12 h-12 rounded-full bg-[#EAF1FF] text-[#3157D5] font-bold text-lg flex items-center justify-center border border-[#3157D5]/20">
+            <div className="w-full lg:w-96 p-5 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] shadow-xs">
+              <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#E7DADA]">
+                <div className="w-12 h-12 rounded-full bg-white text-[#C62828] font-bold text-lg flex items-center justify-center border border-[#E7DADA] shadow-xs">
                   RS
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm text-[#17233B]">Dr. Rajesh Sharma</h4>
-                  <p className="text-xs text-[#64748B]">Associate Professor • Dept of AI</p>
+                  <h4 className="font-bold text-sm text-[#252525]">Dr. Rajesh Sharma</h4>
+                  <p className="text-xs text-[#666666]">Associate Professor • Dept of AI</p>
                 </div>
               </div>
 
               <div className="space-y-2.5 text-xs">
-                <div className="p-2.5 rounded-lg bg-white border border-[#E2E8F0] flex items-center justify-between">
-                  <span className="text-[#64748B]">Consultation Slot:</span>
-                  <span className="font-bold text-[#17233B]">Friday, 3:30 PM (30 min)</span>
+                <div className="p-2.5 rounded-xl bg-white border border-[#E7DADA] flex items-center justify-between">
+                  <span className="text-[#666666]">Consultation Slot:</span>
+                  <span className="font-bold text-[#252525]">Friday, 3:30 PM (30 min)</span>
                 </div>
-                <div className="p-2.5 rounded-lg bg-white border border-[#E2E8F0] flex items-center justify-between">
-                  <span className="text-[#64748B]">Mode:</span>
-                  <span className="font-bold text-[#3157D5]">In-Person (Cabin 402)</span>
+                <div className="p-2.5 rounded-xl bg-white border border-[#E7DADA] flex items-center justify-between">
+                  <span className="text-[#666666]">Mode:</span>
+                  <span className="font-bold text-[#C62828]">In-Person (Cabin 402)</span>
                 </div>
-                <div className="p-2.5 rounded-lg bg-white border border-[#E2E8F0]">
-                  <span className="text-[#64748B] block mb-1">Meeting Agenda:</span>
-                  <span className="font-medium text-[#17233B]">
+                <div className="p-2.5 rounded-xl bg-white border border-[#E7DADA]">
+                  <span className="text-[#666666] block mb-1">Meeting Agenda:</span>
+                  <span className="font-medium text-[#252525]">
                     Reviewing Machine Learning Capstone pipeline & dataset validation
                   </span>
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-[#E2E8F0] text-center">
+              <div className="mt-4 pt-3 border-t border-[#E7DADA] text-center">
                 <span className="text-xs font-semibold text-[#16845B] flex items-center justify-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4" /> Ready to Book in 2 Clicks
                 </span>
@@ -465,7 +465,7 @@ export const HomePage: React.FC = () => {
       {/* 7. FINAL CTA SECTION */}
       <section className="py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-8 sm:p-14 rounded-3xl bg-gradient-to-br from-[#3157D5] to-[#203ea8] text-white text-center shadow-lg relative overflow-hidden">
+          <div className="p-8 sm:p-14 rounded-3xl bg-gradient-to-br from-[#C62828] to-[#8E1717] text-white text-center shadow-lg relative overflow-hidden">
             <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
               Ready to Accelerate Your Campus Journey?
             </h2>
@@ -478,7 +478,7 @@ export const HomePage: React.FC = () => {
                 to="/register"
                 variant="secondary"
                 size="lg"
-                className="w-full sm:w-auto bg-white text-[#3157D5] hover:bg-[#F6F8FC] font-bold"
+                className="w-full sm:w-auto bg-white text-[#C62828] hover:bg-[#FFF7F7] font-bold border-transparent"
               >
                 Create Free Account
               </Button>

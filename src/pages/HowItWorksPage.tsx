@@ -145,27 +145,27 @@ export const HowItWorksPage: React.FC = () => {
   return (
     <div className="flex flex-col w-full">
       {/* Hero */}
-      <section className="pt-14 pb-16 bg-[#F6F8FC] border-b border-[#E2E8F0]">
+      <section className="pt-14 pb-16 bg-[#FFF7F7] border-b border-[#E7DADA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Badge variant="primary" size="md" className="mb-4">
             Workflow Architecture
           </Badge>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#17233B] tracking-tight max-w-3xl mx-auto">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#252525] tracking-tight max-w-3xl mx-auto">
             How CUCampusSaathi Works
           </h1>
-          <p className="mt-4 text-base sm:text-lg text-[#64748B] max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-4 text-base sm:text-lg text-[#666666] max-w-2xl mx-auto leading-relaxed">
             Step-by-step guidance on how students, faculty members, and university administrators leverage the platform to achieve academic goals.
           </p>
 
           {/* Workflow Toggle Buttons */}
-          <div className="mt-8 inline-flex p-1.5 rounded-xl bg-white border border-[#E2E8F0] shadow-xs">
+          <div className="mt-8 inline-flex p-1.5 rounded-xl bg-white border border-[#E7DADA] shadow-xs">
             <button
               type="button"
               onClick={() => setActiveWorkflow('students')}
               className={`px-5 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-150 cursor-pointer ${
                 activeWorkflow === 'students'
-                  ? 'bg-[#3157D5] text-white shadow-xs'
-                  : 'text-[#64748B] hover:text-[#17233B]'
+                  ? 'bg-[#C62828] text-white shadow-xs'
+                  : 'text-[#666666] hover:text-[#252525]'
               }`}
             >
               For Students (6 Steps)
@@ -175,8 +175,8 @@ export const HowItWorksPage: React.FC = () => {
               onClick={() => setActiveWorkflow('teachers')}
               className={`px-5 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-150 cursor-pointer ${
                 activeWorkflow === 'teachers'
-                  ? 'bg-[#3157D5] text-white shadow-xs'
-                  : 'text-[#64748B] hover:text-[#17233B]'
+                  ? 'bg-[#C62828] text-white shadow-xs'
+                  : 'text-[#666666] hover:text-[#252525]'
               }`}
             >
               For Teachers (6 Steps)
@@ -186,8 +186,8 @@ export const HowItWorksPage: React.FC = () => {
               onClick={() => setActiveWorkflow('admin')}
               className={`px-5 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-150 cursor-pointer ${
                 activeWorkflow === 'admin'
-                  ? 'bg-[#3157D5] text-white shadow-xs'
-                  : 'text-[#64748B] hover:text-[#17233B]'
+                  ? 'bg-[#C62828] text-white shadow-xs'
+                  : 'text-[#666666] hover:text-[#252525]'
               }`}
             >
               For Administration (5 Steps)
@@ -200,12 +200,12 @@ export const HowItWorksPage: React.FC = () => {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-[#17233B]">
+            <h2 className="text-2xl font-bold text-[#252525]">
               {activeWorkflow === 'students' && 'The Complete Student Journey'}
               {activeWorkflow === 'teachers' && 'The Faculty Consultation & Mentorship Flow'}
               {activeWorkflow === 'admin' && 'The Institutional Oversight & Analytics Protocol'}
             </h2>
-            <p className="text-sm text-[#64748B] mt-1">
+            <p className="text-sm text-[#666666] mt-1">
               Seamlessly executed inside a single, intuitive interface.
             </p>
           </div>
@@ -216,21 +216,21 @@ export const HowItWorksPage: React.FC = () => {
               return (
                 <div
                   key={step.num}
-                  className="p-7 rounded-2xl bg-[#F6F8FC] border border-[#E2E8F0] shadow-xs flex flex-col justify-between"
+                  className="p-7 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] shadow-xs flex flex-col justify-between hover:border-[#C62828]/40 transition-colors"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-5">
-                      <div className="w-12 h-12 rounded-xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-xl bg-white border border-[#C62828]/20 text-[#C62828] flex items-center justify-center">
                         <Icon className="w-6 h-6" />
                       </div>
-                      <span className="text-2xl font-black text-[#CBD5E1]">
+                      <span className="text-2xl font-black text-[#8E1717]/30">
                         {step.num}
                       </span>
                     </div>
-                    <h3 className="text-base font-bold text-[#17233B] mb-2.5">
+                    <h3 className="text-base font-bold text-[#252525] mb-2.5">
                       {step.title}
                     </h3>
-                    <p className="text-sm text-[#64748B] leading-relaxed">
+                    <p className="text-sm text-[#666666] leading-relaxed">
                       {step.desc}
                     </p>
                   </div>
@@ -242,7 +242,7 @@ export const HowItWorksPage: React.FC = () => {
       </section>
 
       {/* Accessible Explanation of AI Architecture */}
-      <section className="py-20 bg-[#F6F8FC] border-y border-[#E2E8F0]">
+      <section className="py-20 bg-[#FFF7F7] border-y border-[#E7DADA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             badge="Under the Hood"
@@ -251,47 +251,47 @@ export const HowItWorksPage: React.FC = () => {
           />
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs">
-              <div className="w-10 h-10 rounded-lg bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mb-4">
+            <div className="p-6 rounded-2xl bg-white border border-[#E7DADA] shadow-xs">
+              <div className="w-10 h-10 rounded-lg bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center mb-4">
                 <Cpu className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-[#17233B] mb-2">
+              <h3 className="text-lg font-bold text-[#252525] mb-2">
                 Semantic Skill Matching
               </h3>
-              <p className="text-sm text-[#64748B] leading-relaxed mb-3">
+              <p className="text-sm text-[#666666] leading-relaxed mb-3">
                 Rather than primitive keyword searching, our AI clusters related competencies using embeddings. It understands that a student proficient in PyTorch and OpenCV naturally complements an IoT developer working on camera feeds.
               </p>
-              <div className="text-xs font-semibold text-[#16845B]">
+              <div className="text-xs font-semibold text-[#C62828]">
                 ✓ Prevents duplicate skill silos in hackathon teams
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs">
-              <div className="w-10 h-10 rounded-lg bg-[#E6F5EF] text-[#16845B] flex items-center justify-center mb-4">
+            <div className="p-6 rounded-2xl bg-white border border-[#E7DADA] shadow-xs">
+              <div className="w-10 h-10 rounded-lg bg-[#FFF7F7] text-[#8E1717] border border-[#8E1717]/20 flex items-center justify-center mb-4">
                 <Bot className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-[#17233B] mb-2">
+              <h3 className="text-lg font-bold text-[#252525] mb-2">
                 Grounded Document Retrieval (RAG)
               </h3>
-              <p className="text-sm text-[#64748B] leading-relaxed mb-3">
+              <p className="text-sm text-[#666666] leading-relaxed mb-3">
                 The AI Document Tutor converts course slides and PDFs into high-dimensional vector chunks. When students ask questions, the model retrieves the exact excerpt before generating a response, providing slide numbers and citations.
               </p>
-              <div className="text-xs font-semibold text-[#16845B]">
+              <div className="text-xs font-semibold text-[#8E1717]">
                 ✓ Eliminates hallucinations; strictly course-grounded
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs">
-              <div className="w-10 h-10 rounded-lg bg-[#F3E8FF] text-[#7E22CE] flex items-center justify-center mb-4">
+            <div className="p-6 rounded-2xl bg-white border border-[#E7DADA] shadow-xs">
+              <div className="w-10 h-10 rounded-lg bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center mb-4">
                 <Users className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-[#17233B] mb-2">
+              <h3 className="text-lg font-bold text-[#252525] mb-2">
                 Balanced Team Recommendations
               </h3>
-              <p className="text-sm text-[#64748B] leading-relaxed mb-3">
+              <p className="text-sm text-[#666666] leading-relaxed mb-3">
                 Our constraint-satisfaction matchmaking balances three parameters: complementary skill requirements (frontend, backend, design), semester credit load, and compatible working time slots to optimize team stability.
               </p>
-              <div className="text-xs font-semibold text-[#16845B]">
+              <div className="text-xs font-semibold text-[#C62828]">
                 ✓ High team completion and low dropout rates
               </div>
             </div>
@@ -302,10 +302,10 @@ export const HowItWorksPage: React.FC = () => {
       {/* CTA */}
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-2xl font-bold text-[#17233B]">
+          <h3 className="text-2xl font-bold text-[#252525]">
             Start Your Campus Collaboration Today
           </h3>
-          <p className="mt-2 text-sm text-[#64748B]">
+          <p className="mt-2 text-sm text-[#666666]">
             Join the students and teachers currently building our connected university network.
           </p>
           <div className="mt-6 flex justify-center gap-3">

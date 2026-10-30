@@ -136,7 +136,7 @@ export const RegisterPage: React.FC = () => {
         email: formData.email.trim().toLowerCase(),
         uid: formData.uid.trim().toUpperCase(),
         department: formData.department,
-        role: formData.role.toUpperCase(), // 'STUDENT' or 'TEACHER'
+        role: formData.role.toUpperCase(),
         password: formData.password,
       };
 
@@ -158,19 +158,19 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-[#F6F8FC]">
+    <div className="flex-1 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-[#FFF7F7]">
       <div className="w-full max-w-xl">
         {/* Prototype Indicator */}
         <div className="mb-6 flex justify-center">
-          <Badge variant="warning" size="sm" dot>
+          <Badge variant="primary" size="sm" dot>
             University Registration Portal
           </Badge>
         </div>
 
-        <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-sm p-8 sm:p-10">
+        <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-sm p-8 sm:p-10">
           <div className="text-center mb-8">
             <Link to="/" className="inline-block mb-4">
-              <div className="w-12 h-12 rounded-2xl overflow-hidden bg-[#EAF1FF] border border-[#3157D5]/20 flex items-center justify-center mx-auto shadow-xs">
+              <div className="w-12 h-12 rounded-2xl overflow-hidden bg-[#FFF7F7] border border-[#C62828]/20 flex items-center justify-center mx-auto shadow-xs">
                 <img
                   src="/0.FAVICON.png"
                   alt="CUCampusSaathi"
@@ -178,17 +178,17 @@ export const RegisterPage: React.FC = () => {
                 />
               </div>
             </Link>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#17233B] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#252525] tracking-tight">
               Create Your Campus Account
             </h1>
-            <p className="text-xs sm:text-sm text-[#64748B] mt-1.5">
+            <p className="text-xs sm:text-sm text-[#666666] mt-1.5">
               Connect with students, peers, and faculty across Chandigarh University
             </p>
           </div>
 
           {/* Role Selector: Student vs Teacher */}
           <div className="mb-6">
-            <label className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-2">
               Select Your University Role
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -197,8 +197,8 @@ export const RegisterPage: React.FC = () => {
                 onClick={() => setFormData({ ...formData, role: 'Student' })}
                 className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border text-sm font-semibold transition-all cursor-pointer ${
                   formData.role === 'Student'
-                    ? 'border-[#3157D5] bg-[#EAF1FF] text-[#3157D5] shadow-xs'
-                    : 'border-[#E2E8F0] bg-white text-[#64748B] hover:bg-[#F6F8FC]'
+                    ? 'border-[#C62828] bg-[#FFF7F7] text-[#C62828] shadow-xs'
+                    : 'border-[#E7DADA] bg-white text-[#666666] hover:bg-[#FFF7F7]'
                 }`}
               >
                 <GraduationCap className="w-4 h-4" />
@@ -209,8 +209,8 @@ export const RegisterPage: React.FC = () => {
                 onClick={() => setFormData({ ...formData, role: 'Teacher' })}
                 className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border text-sm font-semibold transition-all cursor-pointer ${
                   formData.role === 'Teacher'
-                    ? 'border-[#3157D5] bg-[#EAF1FF] text-[#3157D5] shadow-xs'
-                    : 'border-[#E2E8F0] bg-white text-[#64748B] hover:bg-[#F6F8FC]'
+                    ? 'border-[#C62828] bg-[#FFF7F7] text-[#C62828] shadow-xs'
+                    : 'border-[#E7DADA] bg-white text-[#666666] hover:bg-[#FFF7F7]'
                 }`}
               >
                 <Briefcase className="w-4 h-4" />
@@ -221,14 +221,14 @@ export const RegisterPage: React.FC = () => {
 
           {isSuccess ? (
             <div className="py-8 text-center">
-              <div className="w-16 h-16 rounded-full bg-[#E6F5EF] text-[#16845B] flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-[#FFF7F7] text-[#C62828] flex items-center justify-center mx-auto mb-4 border border-[#C62828]/20">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-[#17233B] mb-2">
+              <h3 className="text-xl font-bold text-[#252525] mb-2">
                 Registration Successful!
               </h3>
-              <p className="text-sm text-[#64748B] max-w-sm mx-auto mb-6 leading-relaxed">
-                Welcome to CUCampusSaathi, <strong className="text-[#17233B]">{formData.fullName}</strong>. Your account as a <strong className="text-[#17233B]">{formData.role}</strong> ({formData.uid}) has been registered in the database.
+              <p className="text-sm text-[#666666] max-w-sm mx-auto mb-6 leading-relaxed">
+                Welcome to CUCampusSaathi, <strong className="text-[#252525]">{formData.fullName}</strong>. Your account as a <strong className="text-[#252525]">{formData.role}</strong> ({formData.uid}) has been registered in the database.
               </p>
               <div className="flex flex-col gap-2.5 w-full">
                 <Button to="/dashboard" variant="primary" size="md" className="w-full">
@@ -242,7 +242,7 @@ export const RegisterPage: React.FC = () => {
           ) : (
             <form onSubmit={handleSubmit} noValidate className="space-y-4">
               {apiError && (
-                <div className="p-3.5 rounded-xl bg-[#FEF2F2] border border-[#EF4444]/30 text-xs text-[#EF4444] flex items-center gap-2">
+                <div className="p-3.5 rounded-xl bg-[#FFF1F1] border border-[#C62828]/30 text-xs text-[#C62828] flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{apiError}</span>
                 </div>
@@ -252,12 +252,12 @@ export const RegisterPage: React.FC = () => {
                 <div>
                   <label
                     htmlFor="fullName"
-                    className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-1.5"
+                    className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-1.5"
                   >
-                    Full Name <span className="text-[#EF4444]">*</span>
+                    Full Name <span className="text-[#C62828]">*</span>
                   </label>
                   <div className="relative">
-                    <User className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <User className="w-4 h-4 text-[#8E1717]/50 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type="text"
                       id="fullName"
@@ -266,24 +266,24 @@ export const RegisterPage: React.FC = () => {
                         setFormData({ ...formData, fullName: e.target.value })
                       }
                       placeholder="e.g. Deepak Sharma"
-                      className="w-full pl-9 pr-3 py-2 rounded-lg border border-[#E2E8F0] text-sm text-[#17233B] placeholder:text-[#94A3B8] focus:border-[#3157D5] focus:outline-none"
+                      className="w-full pl-9 pr-3 py-2 rounded-lg border border-[#E7DADA] text-sm text-[#252525] placeholder:text-[#999999] focus:border-[#C62828] focus:outline-none"
                     />
                   </div>
                   {errors.fullName && (
-                    <p className="mt-1 text-xs text-[#EF4444]">{errors.fullName}</p>
+                    <p className="mt-1 text-xs text-[#C62828]">{errors.fullName}</p>
                   )}
                 </div>
 
                 <div>
                   <label
                     htmlFor="uid"
-                    className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-1.5"
+                    className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-1.5"
                   >
                     {formData.role === 'Student' ? 'University UID' : 'Faculty ID'}{' '}
-                    <span className="text-[#EF4444]">*</span>
+                    <span className="text-[#C62828]">*</span>
                   </label>
                   <div className="relative">
-                    <IdCard className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <IdCard className="w-4 h-4 text-[#8E1717]/50 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type="text"
                       id="uid"
@@ -294,11 +294,11 @@ export const RegisterPage: React.FC = () => {
                       placeholder={
                         formData.role === 'Student' ? 'e.g. 24bcs10812' : 'e.g. fac10984'
                       }
-                      className="w-full pl-9 pr-3 py-2 rounded-lg border border-[#E2E8F0] text-sm text-[#17233B] placeholder:text-[#94A3B8] focus:border-[#3157D5] focus:outline-none font-mono"
+                      className="w-full pl-9 pr-3 py-2 rounded-lg border border-[#E7DADA] text-sm text-[#252525] placeholder:text-[#999999] focus:border-[#C62828] focus:outline-none font-mono"
                     />
                   </div>
                   {errors.uid && (
-                    <p className="mt-1 text-xs text-[#EF4444]">{errors.uid}</p>
+                    <p className="mt-1 text-xs text-[#C62828]">{errors.uid}</p>
                   )}
                 </div>
               </div>
@@ -308,12 +308,12 @@ export const RegisterPage: React.FC = () => {
                 <div>
                   <label
                     htmlFor="regEmail"
-                    className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-1.5"
+                    className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-1.5"
                   >
-                    University Email <span className="text-[#EF4444]">*</span>
+                    University Email <span className="text-[#C62828]">*</span>
                   </label>
                   <div className="relative">
-                    <Mail className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Mail className="w-4 h-4 text-[#8E1717]/50 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type="email"
                       id="regEmail"
@@ -322,18 +322,18 @@ export const RegisterPage: React.FC = () => {
                         setFormData({ ...formData, email: e.target.value })
                       }
                       placeholder="e.g. name@cuchd.in"
-                      className="w-full pl-9 pr-3 py-2 rounded-lg border border-[#E2E8F0] text-sm text-[#17233B] placeholder:text-[#94A3B8] focus:border-[#3157D5] focus:outline-none"
+                      className="w-full pl-9 pr-3 py-2 rounded-lg border border-[#E7DADA] text-sm text-[#252525] placeholder:text-[#999999] focus:border-[#C62828] focus:outline-none"
                     />
                   </div>
                   {errors.email && (
-                    <p className="mt-1 text-xs text-[#EF4444]">{errors.email}</p>
+                    <p className="mt-1 text-xs text-[#C62828]">{errors.email}</p>
                   )}
                 </div>
 
                 <div>
                   <label
                     htmlFor="department"
-                    className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-1.5"
+                    className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-1.5"
                   >
                     Department
                   </label>
@@ -343,7 +343,7 @@ export const RegisterPage: React.FC = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, department: e.target.value })
                     }
-                    className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] text-sm text-[#17233B] bg-white focus:border-[#3157D5] focus:outline-none"
+                    className="w-full px-3 py-2 rounded-lg border border-[#E7DADA] text-sm text-[#252525] bg-white focus:border-[#C62828] focus:outline-none"
                   >
                     <option value="Computer Science & Engineering">Computer Science & Engineering</option>
                     <option value="Artificial Intelligence & ML">Artificial Intelligence & ML</option>
@@ -358,11 +358,11 @@ export const RegisterPage: React.FC = () => {
 
               {/* Dynamic Role-Dependent Fields */}
               {formData.role === 'Student' ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-[#F6F8FC] border border-[#E2E8F0]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-[#FFF7F7] border border-[#E7DADA]">
                   <div>
                     <label
                       htmlFor="course"
-                      className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-1.5"
+                      className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-1.5"
                     >
                       Enrolled Course
                     </label>
@@ -372,7 +372,7 @@ export const RegisterPage: React.FC = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, course: e.target.value })
                       }
-                      className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] text-sm text-[#17233B] bg-white focus:border-[#3157D5] focus:outline-none"
+                      className="w-full px-3 py-2 rounded-lg border border-[#E7DADA] text-sm text-[#252525] bg-white focus:border-[#C62828] focus:outline-none"
                     >
                       <option value="B.Tech CSE">B.Tech Computer Science</option>
                       <option value="B.Tech AI & Data Science">B.Tech AI & Data Science</option>
@@ -385,7 +385,7 @@ export const RegisterPage: React.FC = () => {
                   <div>
                     <label
                       htmlFor="semester"
-                      className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-1.5"
+                      className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-1.5"
                     >
                       Current Semester
                     </label>
@@ -395,7 +395,7 @@ export const RegisterPage: React.FC = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, semester: e.target.value })
                       }
-                      className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] text-sm text-[#17233B] bg-white focus:border-[#3157D5] focus:outline-none"
+                      className="w-full px-3 py-2 rounded-lg border border-[#E7DADA] text-sm text-[#252525] bg-white focus:border-[#C62828] focus:outline-none"
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
                         <option key={sem} value={sem.toString()}>
@@ -406,10 +406,10 @@ export const RegisterPage: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <div className="p-4 rounded-xl bg-[#F6F8FC] border border-[#E2E8F0]">
+                <div className="p-4 rounded-xl bg-[#FFF7F7] border border-[#E7DADA]">
                   <label
                     htmlFor="designation"
-                    className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-1.5"
+                    className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-1.5"
                   >
                     Faculty Designation
                   </label>
@@ -419,7 +419,7 @@ export const RegisterPage: React.FC = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, designation: e.target.value })
                     }
-                    className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] text-sm text-[#17233B] bg-white focus:border-[#3157D5] focus:outline-none"
+                    className="w-full px-3 py-2 rounded-lg border border-[#E7DADA] text-sm text-[#252525] bg-white focus:border-[#C62828] focus:outline-none"
                   >
                     <option value="Assistant Professor">Assistant Professor</option>
                     <option value="Associate Professor">Associate Professor</option>
@@ -435,12 +435,12 @@ export const RegisterPage: React.FC = () => {
                 <div>
                   <label
                     htmlFor="regPassword"
-                    className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-1.5"
+                    className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-1.5"
                   >
-                    Password <span className="text-[#EF4444]">*</span>
+                    Password <span className="text-[#C62828]">*</span>
                   </label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Lock className="w-4 h-4 text-[#8E1717]/50 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       id="regPassword"
@@ -449,31 +449,31 @@ export const RegisterPage: React.FC = () => {
                         setFormData({ ...formData, password: e.target.value })
                       }
                       placeholder="Min 8 characters"
-                      className="w-full pl-9 pr-9 py-2 rounded-lg border border-[#E2E8F0] text-sm text-[#17233B] placeholder:text-[#94A3B8] focus:border-[#3157D5] focus:outline-none"
+                      className="w-full pl-9 pr-9 py-2 rounded-lg border border-[#E7DADA] text-sm text-[#252525] placeholder:text-[#999999] focus:border-[#C62828] focus:outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#17233B] cursor-pointer"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8E1717]/60 hover:text-[#252525] cursor-pointer"
                       aria-label="Toggle password visibility"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                   {errors.password && (
-                    <p className="mt-1 text-xs text-[#EF4444]">{errors.password}</p>
+                    <p className="mt-1 text-xs text-[#C62828]">{errors.password}</p>
                   )}
                 </div>
 
                 <div>
                   <label
                     htmlFor="confirmPassword"
-                    className="block text-xs font-bold text-[#17233B] uppercase tracking-wider mb-1.5"
+                    className="block text-xs font-bold text-[#252525] uppercase tracking-wider mb-1.5"
                   >
-                    Confirm Password <span className="text-[#EF4444]">*</span>
+                    Confirm Password <span className="text-[#C62828]">*</span>
                   </label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Lock className="w-4 h-4 text-[#8E1717]/50 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       id="confirmPassword"
@@ -485,11 +485,11 @@ export const RegisterPage: React.FC = () => {
                         })
                       }
                       placeholder="Repeat password"
-                      className="w-full pl-9 pr-3 py-2 rounded-lg border border-[#E2E8F0] text-sm text-[#17233B] placeholder:text-[#94A3B8] focus:border-[#3157D5] focus:outline-none"
+                      className="w-full pl-9 pr-3 py-2 rounded-lg border border-[#E7DADA] text-sm text-[#252525] placeholder:text-[#999999] focus:border-[#C62828] focus:outline-none"
                     />
                   </div>
                   {errors.confirmPassword && (
-                    <p className="mt-1 text-xs text-[#EF4444]">{errors.confirmPassword}</p>
+                    <p className="mt-1 text-xs text-[#C62828]">{errors.confirmPassword}</p>
                   )}
                 </div>
               </div>
@@ -497,32 +497,32 @@ export const RegisterPage: React.FC = () => {
               {/* Legal Checkboxes */}
               <div className="space-y-2 pt-2">
                 <div>
-                  <label className="flex items-start gap-2 cursor-pointer select-none text-xs text-[#64748B]">
+                  <label className="flex items-start gap-2 cursor-pointer select-none text-xs text-[#666666]">
                     <input
                       type="checkbox"
                       checked={formData.agreeTerms}
                       onChange={(e) =>
                         setFormData({ ...formData, agreeTerms: e.target.checked })
                       }
-                      className="mt-0.5 rounded border-[#E2E8F0] text-[#3157D5] focus:ring-[#3157D5]"
+                      className="mt-0.5 rounded border-[#E7DADA] text-[#C62828] focus:ring-[#C62828]"
                     />
                     <span>
                       I agree to the CUCampusSaathi{' '}
                       <Link
                         to="/terms"
-                        className="text-[#3157D5] underline hover:text-[#2546b5]"
+                        className="text-[#C62828] underline hover:text-[#8E1717]"
                       >
                         Terms & Conditions
                       </Link>
                     </span>
                   </label>
                   {errors.agreeTerms && (
-                    <p className="text-xs text-[#EF4444] mt-0.5">{errors.agreeTerms}</p>
+                    <p className="text-xs text-[#C62828] mt-0.5">{errors.agreeTerms}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="flex items-start gap-2 cursor-pointer select-none text-xs text-[#64748B]">
+                  <label className="flex items-start gap-2 cursor-pointer select-none text-xs text-[#666666]">
                     <input
                       type="checkbox"
                       checked={formData.agreePrivacy}
@@ -532,20 +532,20 @@ export const RegisterPage: React.FC = () => {
                           agreePrivacy: e.target.checked,
                         })
                       }
-                      className="mt-0.5 rounded border-[#E2E8F0] text-[#3157D5] focus:ring-[#3157D5]"
+                      className="mt-0.5 rounded border-[#E7DADA] text-[#C62828] focus:ring-[#C62828]"
                     />
                     <span>
                       I have read and acknowledge the{' '}
                       <Link
                         to="/privacy"
-                        className="text-[#3157D5] underline hover:text-[#2546b5]"
+                        className="text-[#C62828] underline hover:text-[#8E1717]"
                       >
                         Privacy Policy
                       </Link>
                     </span>
                   </label>
                   {errors.agreePrivacy && (
-                    <p className="text-xs text-[#EF4444] mt-0.5">{errors.agreePrivacy}</p>
+                    <p className="text-xs text-[#C62828] mt-0.5">{errors.agreePrivacy}</p>
                   )}
                 </div>
               </div>
@@ -574,11 +574,11 @@ export const RegisterPage: React.FC = () => {
           )}
 
           {/* Login Link Footer */}
-          <div className="mt-6 pt-5 border-t border-[#E2E8F0] text-center text-xs text-[#64748B]">
+          <div className="mt-6 pt-5 border-t border-[#E7DADA] text-center text-xs text-[#666666]">
             Already registered on CUCampusSaathi?{' '}
             <Link
               to="/login"
-              className="text-[#3157D5] font-bold hover:underline"
+              className="text-[#C62828] font-bold hover:underline"
             >
               Sign In
             </Link>
@@ -586,7 +586,7 @@ export const RegisterPage: React.FC = () => {
         </div>
 
         {/* Admin Restriction Note */}
-        <p className="mt-4 text-center text-[11px] text-[#94A3B8] max-w-sm mx-auto">
+        <p className="mt-4 text-center text-[11px] text-[#666666] max-w-sm mx-auto">
           Notice: University Administrator roles cannot be registered through this public interface and must be provisioned by authorized IT leadership.
         </p>
       </div>

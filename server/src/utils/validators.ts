@@ -321,16 +321,6 @@ export const bookAppointmentSchema = z
     meetingMode: z.enum(['ONLINE', 'IN_PERSON']).optional().default('IN_PERSON'),
     campusBlock: z.enum(CAMPUS_BLOCKS).optional(),
     roomNumber: z.string().trim().max(50).optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.meetingMode === 'IN_PERSON' && !data.campusBlock) {
-      // In-person appointments should have a valid campus block
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['campusBlock'],
-        message: 'Campus block is required for in-person consultations',
-      });
-    }
   });
 
 export const blockStudentSchema = z.object({

@@ -383,21 +383,21 @@ export const AdminDashboardPage: React.FC = () => {
   // Access Control Guard
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#F6F8FC] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#3157D5] animate-spin" />
+      <div className="min-h-screen bg-[#FFF7F7] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[#C62828] animate-spin" />
       </div>
     );
   }
 
   if (!user || user.role !== 'ADMIN') {
     return (
-      <div className="min-h-screen bg-[#F6F8FC] py-16 px-4 flex items-center justify-center">
-        <div className="bg-white rounded-3xl border border-[#E2E8F0] p-8 max-w-md w-full text-center shadow-xs">
+      <div className="min-h-screen bg-[#FFF7F7] py-16 px-4 flex items-center justify-center">
+        <div className="bg-white rounded-3xl border border-[#E7DADA] p-8 max-w-md w-full text-center shadow-xs">
           <div className="w-12 h-12 rounded-2xl bg-[#FEF2F2] text-[#EF4444] flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-6 h-6" />
           </div>
-          <h2 className="text-xl font-bold text-[#17233B] mb-2">Access Restricted</h2>
-          <p className="text-xs text-[#64748B] mb-6 leading-relaxed">
+          <h2 className="text-xl font-bold text-[#252525] mb-2">Access Restricted</h2>
+          <p className="text-xs text-[#666666] mb-6 leading-relaxed">
             The University Administration Console is restricted to authorized Chandigarh University
             administrators.
           </p>
@@ -410,7 +410,7 @@ export const AdminDashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F6F8FC] flex flex-col">
+    <div className="min-h-screen bg-[#FFF7F7] flex flex-col">
       <AdminHeader
         title={
           currentTab === 'overview'
@@ -469,9 +469,9 @@ export const AdminDashboardPage: React.FC = () => {
           {currentTab === 'overview' && (
             <div className="space-y-8">
               {loading && !overview ? (
-                <div className="py-20 flex flex-col items-center justify-center bg-white rounded-3xl border border-[#E2E8F0]">
-                  <Loader2 className="w-8 h-8 text-[#3157D5] animate-spin mb-3" />
-                  <p className="text-sm font-semibold text-[#17233B]">Loading live metrics...</p>
+                <div className="py-20 flex flex-col items-center justify-center bg-white rounded-3xl border border-[#E7DADA]">
+                  <Loader2 className="w-8 h-8 text-[#C62828] animate-spin mb-3" />
+                  <p className="text-sm font-semibold text-[#252525]">Loading live metrics...</p>
                 </div>
               ) : (
                 <>
@@ -510,47 +510,47 @@ export const AdminDashboardPage: React.FC = () => {
                   {/* Summary Details Grid */}
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Consultation Status Distribution */}
-                    <div className="lg:col-span-6 bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs">
-                      <h3 className="text-sm font-bold text-[#17233B] mb-4 flex items-center justify-between">
+                    <div className="lg:col-span-6 bg-white rounded-3xl border border-[#E7DADA] p-6 shadow-xs">
+                      <h3 className="text-sm font-bold text-[#252525] mb-4 flex items-center justify-between">
                         <span>Consultation Booking Breakdown</span>
-                        <span className="text-xs text-[#64748B]">All Time</span>
+                        <span className="text-xs text-[#666666]">All Time</span>
                       </h3>
                       <div className="space-y-3">
-                        <div className="flex items-center justify-between p-3 rounded-xl bg-[#F6F8FC] border border-[#E2E8F0] text-xs">
+                        <div className="flex items-center justify-between p-3 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] text-xs">
                           <span className="font-semibold text-[#16845B]">Completed Guidance Sessions</span>
                           <span className="font-bold">{overview?.appointments?.completed || 0}</span>
                         </div>
-                        <div className="flex items-center justify-between p-3 rounded-xl bg-[#F6F8FC] border border-[#E2E8F0] text-xs">
-                          <span className="font-semibold text-[#3157D5]">Confirmed / Accepted</span>
+                        <div className="flex items-center justify-between p-3 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] text-xs">
+                          <span className="font-semibold text-[#C62828]">Confirmed / Accepted</span>
                           <span className="font-bold">{overview?.appointments?.accepted || 0}</span>
                         </div>
-                        <div className="flex items-center justify-between p-3 rounded-xl bg-[#F6F8FC] border border-[#E2E8F0] text-xs">
+                        <div className="flex items-center justify-between p-3 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] text-xs">
                           <span className="font-semibold text-[#C2410C]">Pending Faculty Review</span>
                           <span className="font-bold">{overview?.appointments?.pending || 0}</span>
                         </div>
-                        <div className="flex items-center justify-between p-3 rounded-xl bg-[#F6F8FC] border border-[#E2E8F0] text-xs">
-                          <span className="font-semibold text-[#64748B]">Cancelled Sessions</span>
+                        <div className="flex items-center justify-between p-3 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] text-xs">
+                          <span className="font-semibold text-[#666666]">Cancelled Sessions</span>
                           <span className="font-bold">{overview?.appointments?.cancelled || 0}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Department Distribution */}
-                    <div className="lg:col-span-6 bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs">
-                      <h3 className="text-sm font-bold text-[#17233B] mb-4 flex items-center justify-between">
+                    <div className="lg:col-span-6 bg-white rounded-3xl border border-[#E7DADA] p-6 shadow-xs">
+                      <h3 className="text-sm font-bold text-[#252525] mb-4 flex items-center justify-between">
                         <span>Most Active Academic Departments</span>
-                        <span className="text-xs text-[#64748B]">Users Enrolled</span>
+                        <span className="text-xs text-[#666666]">Users Enrolled</span>
                       </h3>
                       <div className="space-y-2">
                         {overview?.departments?.map((dept: any) => (
                           <div
                             key={dept.department}
-                            className="flex items-center justify-between p-2.5 rounded-xl hover:bg-[#F6F8FC] transition-colors text-xs"
+                            className="flex items-center justify-between p-2.5 rounded-xl hover:bg-[#FFF7F7] transition-colors text-xs"
                           >
-                            <span className="font-medium text-[#17233B] truncate max-w-[260px]">
+                            <span className="font-medium text-[#252525] truncate max-w-[260px]">
                               {dept.department}
                             </span>
-                            <span className="font-bold text-[#3157D5] bg-[#EAF1FF] px-2.5 py-0.5 rounded-md font-mono">
+                            <span className="font-bold text-[#C62828] bg-[#FFF7F7] px-2.5 py-0.5 rounded-md font-mono">
                               {dept.userCount} users
                             </span>
                           </div>
@@ -560,23 +560,23 @@ export const AdminDashboardPage: React.FC = () => {
                   </div>
 
                   {/* Recent Administrative Activity Feed */}
-                  <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs">
-                    <h3 className="text-sm font-bold text-[#17233B] mb-4 flex items-center gap-2">
-                      <History className="w-4 h-4 text-[#3157D5]" />
+                  <div className="bg-white rounded-3xl border border-[#E7DADA] p-6 shadow-xs">
+                    <h3 className="text-sm font-bold text-[#252525] mb-4 flex items-center gap-2">
+                      <History className="w-4 h-4 text-[#C62828]" />
                       Recent Administrative Activity Audit Log
                     </h3>
                     {overview?.recentActivity?.length === 0 ? (
-                      <p className="text-xs text-[#64748B] text-center py-6">
+                      <p className="text-xs text-[#666666] text-center py-6">
                         No administrative operations recorded yet.
                       </p>
                     ) : (
-                      <div className="divide-y divide-[#F1F5F9]">
+                      <div className="divide-y divide-[#E7DADA]">
                         {overview?.recentActivity?.map((log: any) => (
                           <div key={log._id} className="py-3 flex items-center justify-between gap-4 text-xs">
                             <div>
-                              <span className="font-bold text-[#17233B]">{log.action}</span>
+                              <span className="font-bold text-[#252525]">{log.action}</span>
                               {log.reason && (
-                                <span className="text-[#64748B] block text-[11px] mt-0.5">
+                                <span className="text-[#666666] block text-[11px] mt-0.5">
                                   Reason: {log.reason}
                                 </span>
                               )}
@@ -602,7 +602,7 @@ export const AdminDashboardPage: React.FC = () => {
           {currentTab === 'students' && (
             <div className="space-y-6">
               {/* Search & Filter Header */}
-              <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex flex-wrap items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-white border border-[#E7DADA] shadow-xs flex flex-wrap items-center justify-between gap-3">
                 <div className="flex-1 min-w-[240px] relative">
                   <Search className="w-4 h-4 text-[#94A3B8] absolute left-3.5 top-3" />
                   <input
@@ -610,14 +610,14 @@ export const AdminDashboardPage: React.FC = () => {
                     value={studentSearch}
                     onChange={(e) => setStudentSearch(e.target.value)}
                     placeholder="Search by student name, email, or university UID..."
-                    className="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5]"
+                    className="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]"
                   />
                 </div>
                 <div className="flex items-center gap-2">
                   <select
                     value={studentStatusFilter}
                     onChange={(e) => setStudentStatusFilter(e.target.value)}
-                    className="px-3 py-2 text-xs rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5]"
+                    className="px-3 py-2 text-xs rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]"
                   >
                     <option value="">All Statuses</option>
                     <option value="ACTIVE">Active</option>
@@ -628,10 +628,10 @@ export const AdminDashboardPage: React.FC = () => {
               </div>
 
               {/* Students Table */}
-              <div className="bg-white rounded-3xl border border-[#E2E8F0] overflow-hidden shadow-xs">
+              <div className="bg-white rounded-3xl border border-[#E7DADA] overflow-hidden shadow-xs">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-bold text-[#64748B]">
+                    <tr className="bg-[#FFF7F7] border-b border-[#E7DADA] text-[11px] font-bold text-[#666666]">
                       <th className="p-4">Student</th>
                       <th className="p-4">University UID</th>
                       <th className="p-4">Department & Course</th>
@@ -640,31 +640,31 @@ export const AdminDashboardPage: React.FC = () => {
                       <th className="p-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#F1F5F9] text-xs text-[#17233B]">
+                  <tbody className="divide-y divide-[#E7DADA] text-xs text-[#252525]">
                     {students.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="p-8 text-center text-xs text-[#64748B]">
+                        <td colSpan={6} className="p-8 text-center text-xs text-[#666666]">
                           No students matching current filters.
                         </td>
                       </tr>
                     ) : (
                       students.map((s) => (
-                        <tr key={s._id} className="hover:bg-[#F8FAFC]/60 transition-colors">
+                        <tr key={s._id} className="hover:bg-[#FFF7F7]/60 transition-colors">
                           <td className="p-4">
-                            <span className="font-bold text-[#17233B] block">{s.fullName}</span>
-                            <span className="text-[11px] text-[#64748B]">{s.email}</span>
+                            <span className="font-bold text-[#252525] block">{s.fullName}</span>
+                            <span className="text-[11px] text-[#666666]">{s.email}</span>
                           </td>
-                          <td className="p-4 font-mono font-bold text-[#3157D5]">{s.uid}</td>
+                          <td className="p-4 font-mono font-bold text-[#C62828]">{s.uid}</td>
                           <td className="p-4">
                             <span className="block font-medium">{s.department}</span>
-                            <span className="text-[11px] text-[#64748B]">
+                            <span className="text-[11px] text-[#666666]">
                               {s.profile?.course ? `${s.profile.course} (Sem ${s.profile.semester})` : 'Profile pending'}
                             </span>
                           </td>
                           <td className="p-4">
                             <StatusBadge status={s.accountStatus} type="account" />
                           </td>
-                          <td className="p-4 text-[11px] text-[#64748B]">
+                          <td className="p-4 text-[11px] text-[#666666]">
                             {s.createdAt ? new Date(s.createdAt).toLocaleDateString() : 'N/A'}
                           </td>
                           <td className="p-4 text-right space-x-2">
@@ -720,7 +720,7 @@ export const AdminDashboardPage: React.FC = () => {
           {currentTab === 'teachers' && (
             <div className="space-y-6">
               {/* Search & Filter Header */}
-              <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex flex-wrap items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-white border border-[#E7DADA] shadow-xs flex flex-wrap items-center justify-between gap-3">
                 <div className="flex-1 min-w-[240px] relative">
                   <Search className="w-4 h-4 text-[#94A3B8] absolute left-3.5 top-3" />
                   <input
@@ -728,14 +728,14 @@ export const AdminDashboardPage: React.FC = () => {
                     value={teacherSearch}
                     onChange={(e) => setTeacherSearch(e.target.value)}
                     placeholder="Search by faculty name, email, or department..."
-                    className="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5]"
+                    className="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]"
                   />
                 </div>
                 <div className="flex items-center gap-2">
                   <select
                     value={teacherVerifFilter}
                     onChange={(e) => setTeacherVerifFilter(e.target.value)}
-                    className="px-3 py-2 text-xs rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5]"
+                    className="px-3 py-2 text-xs rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]"
                   >
                     <option value="">All Verifications</option>
                     <option value="VERIFIED">Verified</option>
@@ -746,10 +746,10 @@ export const AdminDashboardPage: React.FC = () => {
               </div>
 
               {/* Faculty Table */}
-              <div className="bg-white rounded-3xl border border-[#E2E8F0] overflow-hidden shadow-xs">
+              <div className="bg-white rounded-3xl border border-[#E7DADA] overflow-hidden shadow-xs">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-bold text-[#64748B]">
+                    <tr className="bg-[#FFF7F7] border-b border-[#E7DADA] text-[11px] font-bold text-[#666666]">
                       <th className="p-4">Faculty Member</th>
                       <th className="p-4">Department & Designation</th>
                       <th className="p-4">Cabin Location</th>
@@ -758,23 +758,23 @@ export const AdminDashboardPage: React.FC = () => {
                       <th className="p-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#F1F5F9] text-xs text-[#17233B]">
+                  <tbody className="divide-y divide-[#E7DADA] text-xs text-[#252525]">
                     {teachers.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="p-8 text-center text-xs text-[#64748B]">
+                        <td colSpan={6} className="p-8 text-center text-xs text-[#666666]">
                           No faculty members matching current filters.
                         </td>
                       </tr>
                     ) : (
                       teachers.map((t) => (
-                        <tr key={t._id} className="hover:bg-[#F8FAFC]/60 transition-colors">
+                        <tr key={t._id} className="hover:bg-[#FFF7F7]/60 transition-colors">
                           <td className="p-4">
-                            <span className="font-bold text-[#17233B] block">{t.fullName}</span>
-                            <span className="text-[11px] text-[#64748B]">{t.email}</span>
+                            <span className="font-bold text-[#252525] block">{t.fullName}</span>
+                            <span className="text-[11px] text-[#666666]">{t.email}</span>
                           </td>
                           <td className="p-4">
                             <span className="block font-medium">{t.department}</span>
-                            <span className="text-[11px] text-[#64748B]">
+                            <span className="text-[11px] text-[#666666]">
                               {t.profile?.designation || 'Faculty'}
                             </span>
                           </td>
@@ -843,14 +843,14 @@ export const AdminDashboardPage: React.FC = () => {
           {currentTab === 'verifications' && (
             <div className="space-y-6">
               {/* Tab Filters */}
-              <div className="flex gap-2 p-1.5 bg-white rounded-2xl border border-[#E2E8F0] shadow-2xs w-fit">
+              <div className="flex gap-2 p-1.5 bg-white rounded-2xl border border-[#E7DADA] shadow-2xs w-fit">
                 <button
                   type="button"
                   onClick={() => setVerifStatusFilter('PENDING')}
                   className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                     verifStatusFilter === 'PENDING'
-                      ? 'bg-[#3157D5] text-white shadow-xs'
-                      : 'text-[#64748B] hover:text-[#17233B]'
+                      ? 'bg-[#C62828] text-white shadow-xs'
+                      : 'text-[#666666] hover:text-[#252525]'
                   }`}
                 >
                   Pending Review ({overview?.verification?.pendingVerifications || 0})
@@ -860,8 +860,8 @@ export const AdminDashboardPage: React.FC = () => {
                   onClick={() => setVerifStatusFilter('VERIFIED')}
                   className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                     verifStatusFilter === 'VERIFIED'
-                      ? 'bg-[#3157D5] text-white shadow-xs'
-                      : 'text-[#64748B] hover:text-[#17233B]'
+                      ? 'bg-[#C62828] text-white shadow-xs'
+                      : 'text-[#666666] hover:text-[#252525]'
                   }`}
                 >
                   Approved
@@ -871,8 +871,8 @@ export const AdminDashboardPage: React.FC = () => {
                   onClick={() => setVerifStatusFilter('REJECTED')}
                   className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                     verifStatusFilter === 'REJECTED'
-                      ? 'bg-[#3157D5] text-white shadow-xs'
-                      : 'text-[#64748B] hover:text-[#17233B]'
+                      ? 'bg-[#C62828] text-white shadow-xs'
+                      : 'text-[#666666] hover:text-[#252525]'
                   }`}
                 >
                   Declined
@@ -882,27 +882,27 @@ export const AdminDashboardPage: React.FC = () => {
               {/* Verification Cards List */}
               <div className="grid grid-cols-1 gap-4">
                 {verifications.length === 0 ? (
-                  <div className="py-16 text-center bg-white rounded-3xl border border-[#E2E8F0] text-xs text-[#64748B]">
+                  <div className="py-16 text-center bg-white rounded-3xl border border-[#E7DADA] text-xs text-[#666666]">
                     No faculty applications in {verifStatusFilter.toLowerCase()} queue.
                   </div>
                 ) : (
                   verifications.map((v) => (
                     <div
                       key={v._id}
-                      className="bg-white rounded-2xl border border-[#E2E8F0] p-6 shadow-xs hover:border-[#3157D5]/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
+                      className="bg-white rounded-2xl border border-[#E7DADA] p-6 shadow-xs hover:border-[#C62828]/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
                     >
                       <div className="space-y-2 flex-1">
                         <div className="flex items-center gap-3">
-                          <span className="font-extrabold text-base text-[#17233B]">
+                          <span className="font-extrabold text-base text-[#252525]">
                             {v.user?.fullName}
                           </span>
-                          <span className="text-xs font-mono text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded">
+                          <span className="text-xs font-mono text-[#666666] bg-[#E7DADA] px-2 py-0.5 rounded">
                             {v.user?.uid}
                           </span>
                           <StatusBadge status={v.verificationStatus} type="verification" />
                         </div>
 
-                        <div className="text-xs text-[#64748B] space-x-3">
+                        <div className="text-xs text-[#666666] space-x-3">
                           <span>
                             <strong>Department: </strong> {v.department}
                           </span>
@@ -921,7 +921,7 @@ export const AdminDashboardPage: React.FC = () => {
                             {v.researchDomains.map((d: string) => (
                               <span
                                 key={d}
-                                className="px-2 py-0.5 rounded-md text-[10px] bg-[#EAF1FF] text-[#3157D5] font-semibold"
+                                className="px-2 py-0.5 rounded-md text-[10px] bg-[#FFF7F7] text-[#C62828] font-semibold"
                               >
                                 {d}
                               </span>
@@ -990,12 +990,12 @@ export const AdminDashboardPage: React.FC = () => {
           {currentTab === 'appointments' && (
             <div className="space-y-6">
               {/* Filter Bar */}
-              <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex flex-wrap items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-white border border-[#E7DADA] shadow-xs flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <select
                     value={apptStatusFilter}
                     onChange={(e) => setApptStatusFilter(e.target.value)}
-                    className="px-3 py-2 text-xs rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5]"
+                    className="px-3 py-2 text-xs rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]"
                   >
                     <option value="">All Appointment Statuses</option>
                     <option value="ACCEPTED">Confirmed</option>
@@ -1007,10 +1007,10 @@ export const AdminDashboardPage: React.FC = () => {
               </div>
 
               {/* Appointments Table */}
-              <div className="bg-white rounded-3xl border border-[#E2E8F0] overflow-hidden shadow-xs">
+              <div className="bg-white rounded-3xl border border-[#E7DADA] overflow-hidden shadow-xs">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-bold text-[#64748B]">
+                    <tr className="bg-[#FFF7F7] border-b border-[#E7DADA] text-[11px] font-bold text-[#666666]">
                       <th className="p-4">Student</th>
                       <th className="p-4">Faculty Mentor</th>
                       <th className="p-4">Date & Time</th>
@@ -1019,25 +1019,25 @@ export const AdminDashboardPage: React.FC = () => {
                       <th className="p-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#F1F5F9] text-xs text-[#17233B]">
+                  <tbody className="divide-y divide-[#E7DADA] text-xs text-[#252525]">
                     {appointments.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="p-8 text-center text-xs text-[#64748B]">
+                        <td colSpan={6} className="p-8 text-center text-xs text-[#666666]">
                           No consultations matching current filters.
                         </td>
                       </tr>
                     ) : (
                       appointments.map((a) => (
-                        <tr key={a._id} className="hover:bg-[#F8FAFC]/60 transition-colors">
+                        <tr key={a._id} className="hover:bg-[#FFF7F7]/60 transition-colors">
                           <td className="p-4">
-                            <span className="font-bold text-[#17233B] block">{a.student?.fullName}</span>
-                            <span className="text-[11px] text-[#64748B] font-mono">{a.student?.uid}</span>
+                            <span className="font-bold text-[#252525] block">{a.student?.fullName}</span>
+                            <span className="text-[11px] text-[#666666] font-mono">{a.student?.uid}</span>
                           </td>
                           <td className="p-4">
-                            <span className="font-bold text-[#17233B] block">
+                            <span className="font-bold text-[#252525] block">
                               {a.teacherProfile?.user?.fullName || 'Faculty'}
                             </span>
-                            <span className="text-[11px] text-[#64748B]">{a.teacherProfile?.department}</span>
+                            <span className="text-[11px] text-[#666666]">{a.teacherProfile?.department}</span>
                           </td>
                           <td className="p-4 text-[11px]">
                             {a.slot?.startTime ? formatDate(a.slot.startTime) : 'N/A'}
@@ -1046,7 +1046,7 @@ export const AdminDashboardPage: React.FC = () => {
                             <span
                               className={`px-2 py-0.5 rounded text-[11px] font-bold ${
                                 a.meetingMode === 'ONLINE'
-                                  ? 'bg-[#EAF1FF] text-[#3157D5]'
+                                  ? 'bg-[#FFF7F7] text-[#C62828]'
                                   : 'bg-[#E6F5EF] text-[#16845B]'
                               }`}
                             >
@@ -1100,8 +1100,8 @@ export const AdminDashboardPage: React.FC = () => {
           {currentTab === 'analytics' && (
             <div className="space-y-6">
               {/* Timeframe selector */}
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs">
-                <span className="text-xs font-bold text-[#17233B]">Select Analysis Timeframe:</span>
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-white border border-[#E7DADA] shadow-xs">
+                <span className="text-xs font-bold text-[#252525]">Select Analysis Timeframe:</span>
                 <div className="flex gap-2">
                   {(['7d', '30d', '90d', 'all'] as const).map((tf) => (
                     <button
@@ -1109,8 +1109,8 @@ export const AdminDashboardPage: React.FC = () => {
                       onClick={() => setAnalyticsTimeframe(tf)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                         analyticsTimeframe === tf
-                          ? 'bg-[#3157D5] text-white shadow-xs'
-                          : 'text-[#64748B] hover:text-[#17233B] bg-[#F6F8FC]'
+                          ? 'bg-[#C62828] text-white shadow-xs'
+                          : 'text-[#666666] hover:text-[#252525] bg-[#FFF7F7]'
                       }`}
                     >
                       {tf === '7d' ? 'Last 7 Days' : tf === '30d' ? 'Last 30 Days' : tf === '90d' ? 'Last 90 Days' : 'All Time'}
@@ -1153,20 +1153,20 @@ export const AdminDashboardPage: React.FC = () => {
 
               {/* Timeline Trends Breakdown */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <div className="lg:col-span-6 bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs">
-                  <h3 className="text-sm font-bold text-[#17233B] mb-3 flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-[#3157D5]" />
+                <div className="lg:col-span-6 bg-white rounded-3xl border border-[#E7DADA] p-6 shadow-xs">
+                  <h3 className="text-sm font-bold text-[#252525] mb-3 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-[#C62828]" />
                     Registration Volume Over Time
                   </h3>
                   {analyticsData?.userTimeline?.length === 0 ? (
-                    <p className="text-xs text-[#64748B] py-8 text-center">No registration records in this timeframe.</p>
+                    <p className="text-xs text-[#666666] py-8 text-center">No registration records in this timeframe.</p>
                   ) : (
                     <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
                       {analyticsData?.userTimeline?.map((item: any) => (
-                        <div key={item.date} className="flex items-center justify-between p-2 rounded-xl bg-[#F6F8FC] text-xs">
-                          <span className="font-mono text-[#64748B]">{item.date}</span>
+                        <div key={item.date} className="flex items-center justify-between p-2 rounded-xl bg-[#FFF7F7] text-xs">
+                          <span className="font-mono text-[#666666]">{item.date}</span>
                           <div className="flex items-center gap-3">
-                            <span className="text-[#3157D5] font-semibold">+{item.student} Students</span>
+                            <span className="text-[#C62828] font-semibold">+{item.student} Students</span>
                             <span className="text-[#16845B] font-semibold">+{item.teacher} Faculty</span>
                           </div>
                         </div>
@@ -1175,19 +1175,19 @@ export const AdminDashboardPage: React.FC = () => {
                   )}
                 </div>
 
-                <div className="lg:col-span-6 bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs">
-                  <h3 className="text-sm font-bold text-[#17233B] mb-3 flex items-center gap-2">
-                    <CalendarCheck className="w-4 h-4 text-[#3157D5]" />
+                <div className="lg:col-span-6 bg-white rounded-3xl border border-[#E7DADA] p-6 shadow-xs">
+                  <h3 className="text-sm font-bold text-[#252525] mb-3 flex items-center gap-2">
+                    <CalendarCheck className="w-4 h-4 text-[#C62828]" />
                     Consultation Trends Over Time
                   </h3>
                   {analyticsData?.appointmentTimeline?.length === 0 ? (
-                    <p className="text-xs text-[#64748B] py-8 text-center">No consultation records in this timeframe.</p>
+                    <p className="text-xs text-[#666666] py-8 text-center">No consultation records in this timeframe.</p>
                   ) : (
                     <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
                       {analyticsData?.appointmentTimeline?.map((item: any) => (
-                        <div key={item.date} className="flex items-center justify-between p-2 rounded-xl bg-[#F6F8FC] text-xs">
-                          <span className="font-mono text-[#64748B]">{item.date}</span>
-                          <span className="font-bold text-[#17233B]">{item.total} Booked</span>
+                        <div key={item.date} className="flex items-center justify-between p-2 rounded-xl bg-[#FFF7F7] text-xs">
+                          <span className="font-mono text-[#666666]">{item.date}</span>
+                          <span className="font-bold text-[#252525]">{item.total} Booked</span>
                         </div>
                       ))}
                     </div>
@@ -1235,7 +1235,7 @@ export const AdminDashboardPage: React.FC = () => {
               </div>
 
               {/* Filter & Search Bar */}
-              <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex flex-wrap items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-white border border-[#E7DADA] shadow-xs flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3 flex-1 min-w-[280px]">
                   <div className="relative flex-1">
                     <Search className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
@@ -1244,13 +1244,13 @@ export const AdminDashboardPage: React.FC = () => {
                       placeholder="Search by title, original filename, student name, or email..."
                       value={docsSearch}
                       onChange={(e) => setDocsSearch(e.target.value)}
-                      className="w-full pl-9 pr-4 py-2 text-xs rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5]"
+                      className="w-full pl-9 pr-4 py-2 text-xs rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]"
                     />
                   </div>
                   <select
                     value={docsStatusFilter}
                     onChange={(e) => setDocsStatusFilter(e.target.value)}
-                    className="px-3 py-2 text-xs rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5]"
+                    className="px-3 py-2 text-xs rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]"
                   >
                     <option value="">All Statuses</option>
                     <option value="COMPLETED">Indexed / Completed</option>
@@ -1259,8 +1259,8 @@ export const AdminDashboardPage: React.FC = () => {
                   </select>
                 </div>
 
-                <div className="text-xs text-[#64748B]">
-                  Showing <strong className="text-[#17233B]">
+                <div className="text-xs text-[#666666]">
+                  Showing <strong className="text-[#252525]">
                     {adminDocs.filter((doc) => {
                       const matchesStatus = !docsStatusFilter || doc.processingStatus === docsStatusFilter;
                       const q = docsSearch.toLowerCase();
@@ -1277,10 +1277,10 @@ export const AdminDashboardPage: React.FC = () => {
               </div>
 
               {/* Documents Table */}
-              <div className="bg-white rounded-3xl border border-[#E2E8F0] overflow-hidden shadow-xs">
+              <div className="bg-white rounded-3xl border border-[#E7DADA] overflow-hidden shadow-xs">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-bold text-[#64748B]">
+                    <tr className="bg-[#FFF7F7] border-b border-[#E7DADA] text-[11px] font-bold text-[#666666]">
                       <th className="p-4">Document Title</th>
                       <th className="p-4">Owner (Student)</th>
                       <th className="p-4">Pages & Size</th>
@@ -1290,10 +1290,10 @@ export const AdminDashboardPage: React.FC = () => {
                       <th className="p-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#F1F5F9] text-xs text-[#17233B]">
+                  <tbody className="divide-y divide-[#E7DADA] text-xs text-[#252525]">
                     {adminDocs.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="p-8 text-center text-xs text-[#64748B]">
+                        <td colSpan={7} className="p-8 text-center text-xs text-[#666666]">
                           No campus documents found.
                         </td>
                       </tr>
@@ -1311,36 +1311,36 @@ export const AdminDashboardPage: React.FC = () => {
                           return matchesStatus && matchesQuery;
                         })
                         .map((doc) => (
-                          <tr key={doc._id} className="hover:bg-[#F8FAFC]/60 transition-colors">
+                          <tr key={doc._id} className="hover:bg-[#FFF7F7]/60 transition-colors">
                             <td className="p-4">
                               <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-lg bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center shrink-0">
+                                <div className="w-8 h-8 rounded-lg bg-[#FFF7F7] text-[#C62828] flex items-center justify-center shrink-0">
                                   <FileText className="w-4 h-4" />
                                 </div>
                                 <div className="min-w-0">
-                                  <p className="font-bold text-[#17233B] truncate max-w-[200px]">
+                                  <p className="font-bold text-[#252525] truncate max-w-[200px]">
                                     {doc.title || doc.originalFilename}
                                   </p>
-                                  <p className="text-[10px] text-[#64748B] font-mono truncate max-w-[200px]">
+                                  <p className="text-[10px] text-[#666666] font-mono truncate max-w-[200px]">
                                     {doc.originalFilename}
                                   </p>
                                 </div>
                               </div>
                             </td>
                             <td className="p-4">
-                              <span className="font-bold block text-[#17233B]">{doc.owner?.fullName || 'Student'}</span>
-                              <span className="text-[11px] text-[#64748B] block">{doc.owner?.email}</span>
+                              <span className="font-bold block text-[#252525]">{doc.owner?.fullName || 'Student'}</span>
+                              <span className="text-[11px] text-[#666666] block">{doc.owner?.email}</span>
                               <span className="text-[10px] text-slate-400">{doc.owner?.department}</span>
                             </td>
                             <td className="p-4 text-xs">
                               <span className="font-semibold">{doc.pageCount || 0} Pages</span>
-                              <span className="text-[11px] text-[#64748B] block">
+                              <span className="text-[11px] text-[#666666] block">
                                 {doc.fileSize ? `${(doc.fileSize / 1024).toFixed(1)} KB` : 'N/A'}
                               </span>
                             </td>
                             <td className="p-4 text-xs">
                               <span className="font-semibold">{doc.chunkCount || 0} Chunks</span>
-                              <span className="text-[10px] text-[#3157D5] font-mono block">
+                              <span className="text-[10px] text-[#C62828] font-mono block">
                                 {doc.embeddingProvider || 'bm25-lexical'}
                               </span>
                             </td>
@@ -1357,7 +1357,7 @@ export const AdminDashboardPage: React.FC = () => {
                                 {doc.processingStatus}
                               </span>
                             </td>
-                            <td className="p-4 text-[11px] text-[#64748B]">
+                            <td className="p-4 text-[11px] text-[#666666]">
                               {formatDate(doc.createdAt)}
                             </td>
                             <td className="p-4 text-right">
@@ -1365,7 +1365,7 @@ export const AdminDashboardPage: React.FC = () => {
                                 href={`${API_BASE_URL}/documents/${doc._id}/file`}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#F6F8FC] border border-[#E2E8F0] hover:border-[#3157D5]/40 text-xs font-semibold text-[#3157D5] transition-colors"
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FFF7F7] border border-[#E7DADA] hover:border-[#C62828]/40 text-xs font-semibold text-[#C62828] transition-colors"
                               >
                                 <Eye className="w-3.5 h-3.5" />
                                 <span>Inspect PDF</span>
@@ -1387,8 +1387,8 @@ export const AdminDashboardPage: React.FC = () => {
           {currentTab === 'reports' && (
             <div className="space-y-6">
               <div className="mb-4">
-                <h2 className="text-lg font-bold text-[#17233B]">Administrative Data Reports</h2>
-                <p className="text-xs text-[#64748B]">
+                <h2 className="text-lg font-bold text-[#252525]">Administrative Data Reports</h2>
+                <p className="text-xs text-[#666666]">
                   Download verified university CSV spreadsheets. Data includes formula injection
                   sanitization and strict exclusion of credentials.
                 </p>
@@ -1396,13 +1396,13 @@ export const AdminDashboardPage: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Students Master CSV */}
-                <div className="p-6 rounded-3xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+                <div className="p-6 rounded-3xl bg-white border border-[#E7DADA] shadow-xs flex flex-col justify-between">
                   <div>
-                    <div className="w-10 h-10 rounded-2xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mb-3">
+                    <div className="w-10 h-10 rounded-2xl bg-[#FFF7F7] text-[#C62828] flex items-center justify-center mb-3">
                       <Users className="w-5 h-5" />
                     </div>
-                    <h3 className="font-bold text-sm text-[#17233B] mb-1">Student Master Report</h3>
-                    <p className="text-xs text-[#64748B] leading-relaxed mb-4">
+                    <h3 className="font-bold text-sm text-[#252525] mb-1">Student Master Report</h3>
+                    <p className="text-xs text-[#666666] leading-relaxed mb-4">
                       Complete roster of registered campus students, enrolled courses, current semester, and account status.
                     </p>
                   </div>
@@ -1418,13 +1418,13 @@ export const AdminDashboardPage: React.FC = () => {
                 </div>
 
                 {/* Faculty Directory CSV */}
-                <div className="p-6 rounded-3xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+                <div className="p-6 rounded-3xl bg-white border border-[#E7DADA] shadow-xs flex flex-col justify-between">
                   <div>
                     <div className="w-10 h-10 rounded-2xl bg-[#E6F5EF] text-[#16845B] flex items-center justify-center mb-3">
                       <Briefcase className="w-5 h-5" />
                     </div>
-                    <h3 className="font-bold text-sm text-[#17233B] mb-1">Faculty Directory Report</h3>
-                    <p className="text-xs text-[#64748B] leading-relaxed mb-4">
+                    <h3 className="font-bold text-sm text-[#252525] mb-1">Faculty Directory Report</h3>
+                    <p className="text-xs text-[#666666] leading-relaxed mb-4">
                       Complete list of faculty members, departments, cabin locations, and official verification status.
                     </p>
                   </div>
@@ -1441,13 +1441,13 @@ export const AdminDashboardPage: React.FC = () => {
                 </div>
 
                 {/* Faculty Verifications CSV */}
-                <div className="p-6 rounded-3xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+                <div className="p-6 rounded-3xl bg-white border border-[#E7DADA] shadow-xs flex flex-col justify-between">
                   <div>
                     <div className="w-10 h-10 rounded-2xl bg-[#FFF7ED] text-[#C2410C] flex items-center justify-center mb-3">
                       <ShieldCheck className="w-5 h-5" />
                     </div>
-                    <h3 className="font-bold text-sm text-[#17233B] mb-1">Faculty Verification Audit</h3>
-                    <p className="text-xs text-[#64748B] leading-relaxed mb-4">
+                    <h3 className="font-bold text-sm text-[#252525] mb-1">Faculty Verification Audit</h3>
+                    <p className="text-xs text-[#666666] leading-relaxed mb-4">
                       Audit report of faculty verification decisions, approving administrators, and recorded decline reasons.
                     </p>
                   </div>
@@ -1463,13 +1463,13 @@ export const AdminDashboardPage: React.FC = () => {
                 </div>
 
                 {/* Consultations CSV */}
-                <div className="p-6 rounded-3xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+                <div className="p-6 rounded-3xl bg-white border border-[#E7DADA] shadow-xs flex flex-col justify-between">
                   <div>
-                    <div className="w-10 h-10 rounded-2xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mb-3">
+                    <div className="w-10 h-10 rounded-2xl bg-[#FFF7F7] text-[#C62828] flex items-center justify-center mb-3">
                       <CalendarCheck className="w-5 h-5" />
                     </div>
-                    <h3 className="font-bold text-sm text-[#17233B] mb-1">Campus Consultations Log</h3>
-                    <p className="text-xs text-[#64748B] leading-relaxed mb-4">
+                    <h3 className="font-bold text-sm text-[#252525] mb-1">Campus Consultations Log</h3>
+                    <p className="text-xs text-[#666666] leading-relaxed mb-4">
                       Log of all booked office and virtual consultations, meeting format, discussion agendas, and statuses.
                     </p>
                   </div>
@@ -1485,13 +1485,13 @@ export const AdminDashboardPage: React.FC = () => {
                 </div>
 
                 {/* Platform Summary CSV */}
-                <div className="p-6 rounded-3xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+                <div className="p-6 rounded-3xl bg-white border border-[#E7DADA] shadow-xs flex flex-col justify-between">
                   <div>
-                    <div className="w-10 h-10 rounded-2xl bg-[#F1F5F9] text-[#475569] flex items-center justify-center mb-3">
+                    <div className="w-10 h-10 rounded-2xl bg-[#E7DADA] text-[#475569] flex items-center justify-center mb-3">
                       <TrendingUp className="w-5 h-5" />
                     </div>
-                    <h3 className="font-bold text-sm text-[#17233B] mb-1">Platform Executive Summary</h3>
-                    <p className="text-xs text-[#64748B] leading-relaxed mb-4">
+                    <h3 className="font-bold text-sm text-[#252525] mb-1">Platform Executive Summary</h3>
+                    <p className="text-xs text-[#666666] leading-relaxed mb-4">
                       High-level snapshot of platform adoption, completion ratios, active user populations, and engagement.
                     </p>
                   </div>
@@ -1515,12 +1515,12 @@ export const AdminDashboardPage: React.FC = () => {
           {currentTab === 'audit-logs' && (
             <div className="space-y-6">
               {/* Filter */}
-              <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex flex-wrap items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-white border border-[#E7DADA] shadow-xs flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <select
                     value={auditActionFilter}
                     onChange={(e) => setAuditActionFilter(e.target.value)}
-                    className="px-3 py-2 text-xs rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5]"
+                    className="px-3 py-2 text-xs rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]"
                   >
                     <option value="">All Actions</option>
                     <option value="FACULTY_APPROVED">Faculty Approved</option>
@@ -1536,10 +1536,10 @@ export const AdminDashboardPage: React.FC = () => {
               </div>
 
               {/* Audit Logs Table */}
-              <div className="bg-white rounded-3xl border border-[#E2E8F0] overflow-hidden shadow-xs">
+              <div className="bg-white rounded-3xl border border-[#E7DADA] overflow-hidden shadow-xs">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-bold text-[#64748B]">
+                    <tr className="bg-[#FFF7F7] border-b border-[#E7DADA] text-[11px] font-bold text-[#666666]">
                       <th className="p-4">Timestamp</th>
                       <th className="p-4">Admin User</th>
                       <th className="p-4">Action</th>
@@ -1548,38 +1548,38 @@ export const AdminDashboardPage: React.FC = () => {
                       <th className="p-4">IP Address</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#F1F5F9] text-xs text-[#17233B]">
+                  <tbody className="divide-y divide-[#E7DADA] text-xs text-[#252525]">
                     {auditLogs.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="p-8 text-center text-xs text-[#64748B]">
+                        <td colSpan={6} className="p-8 text-center text-xs text-[#666666]">
                           No audit log entries matching current criteria.
                         </td>
                       </tr>
                     ) : (
                       auditLogs.map((log) => (
-                        <tr key={log._id} className="hover:bg-[#F8FAFC]/60 transition-colors">
-                          <td className="p-4 text-[11px] font-mono text-[#64748B]">
+                        <tr key={log._id} className="hover:bg-[#FFF7F7]/60 transition-colors">
+                          <td className="p-4 text-[11px] font-mono text-[#666666]">
                             {formatDate(log.createdAt)}
                           </td>
                           <td className="p-4">
-                            <span className="font-bold text-[#17233B] block">
+                            <span className="font-bold text-[#252525] block">
                               {log.adminUser?.fullName || 'Admin'}
                             </span>
-                            <span className="text-[11px] text-[#64748B]">{log.adminUser?.email}</span>
+                            <span className="text-[11px] text-[#666666]">{log.adminUser?.email}</span>
                           </td>
-                          <td className="p-4 font-mono font-bold text-[11px] text-[#3157D5]">
+                          <td className="p-4 font-mono font-bold text-[11px] text-[#C62828]">
                             {log.action}
                           </td>
                           <td className="p-4">
                             {log.targetUser ? (
                               <div>
                                 <span className="font-semibold block">{log.targetUser.fullName}</span>
-                                <span className="text-[10px] text-[#64748B] font-mono">
+                                <span className="text-[10px] text-[#666666] font-mono">
                                   {log.targetUser.uid} ({log.targetUser.role})
                                 </span>
                               </div>
                             ) : log.targetAppointment ? (
-                              <span className="text-[11px] text-[#64748B]">
+                              <span className="text-[11px] text-[#666666]">
                                 Appt: {log.targetAppointment?.agenda?.slice(0, 30)}...
                               </span>
                             ) : (
@@ -1605,23 +1605,23 @@ export const AdminDashboardPage: React.FC = () => {
           {/* INSPECT MODALS */}
           {/* ---------------------------------------------------- */}
           {selectedStudent && (
-            <div className="fixed inset-0 z-50 bg-[#17233B]/50 backdrop-blur-xs flex items-center justify-center p-4">
-              <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl max-w-lg w-full p-6 animate-in zoom-in-95 duration-150">
+            <div className="fixed inset-0 z-50 bg-[#252525]/50 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xl max-w-lg w-full p-6 animate-in zoom-in-95 duration-150">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-base font-bold text-[#17233B]">Student Profile Inspection</h3>
+                  <h3 className="text-base font-bold text-[#252525]">Student Profile Inspection</h3>
                   <button
                     onClick={() => setSelectedStudent(null)}
-                    className="text-[#64748B] hover:text-[#17233B] text-lg font-bold"
+                    className="text-[#666666] hover:text-[#252525] text-lg font-bold"
                   >
                     ×
                   </button>
                 </div>
                 <div className="space-y-3 text-xs">
                   <div>
-                    <span className="font-bold text-sm text-[#17233B]">{selectedStudent.fullName}</span>
-                    <span className="text-[#64748B] block">{selectedStudent.email}</span>
+                    <span className="font-bold text-sm text-[#252525]">{selectedStudent.fullName}</span>
+                    <span className="text-[#666666] block">{selectedStudent.email}</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-[#F6F8FC]">
+                  <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-[#FFF7F7]">
                     <div>
                       <strong>UID: </strong> {selectedStudent.uid}
                     </div>
@@ -1642,7 +1642,7 @@ export const AdminDashboardPage: React.FC = () => {
                     </div>
                   </div>
                   {selectedStudent.profile?.bio && (
-                    <div className="p-3 rounded-xl border border-[#E2E8F0]">
+                    <div className="p-3 rounded-xl border border-[#E7DADA]">
                       <strong>Bio: </strong> {selectedStudent.profile.bio}
                     </div>
                   )}
@@ -1653,7 +1653,7 @@ export const AdminDashboardPage: React.FC = () => {
                         {selectedStudent.profile.skills.map((sk: string) => (
                           <span
                             key={sk}
-                            className="px-2 py-0.5 rounded bg-[#EAF1FF] text-[#3157D5] text-[10px] font-semibold"
+                            className="px-2 py-0.5 rounded bg-[#FFF7F7] text-[#C62828] text-[10px] font-semibold"
                           >
                             {sk}
                           </span>
@@ -1662,7 +1662,7 @@ export const AdminDashboardPage: React.FC = () => {
                     </div>
                   )}
                 </div>
-                <div className="flex justify-end pt-4 border-t border-[#F1F5F9] mt-4">
+                <div className="flex justify-end pt-4 border-t border-[#E7DADA] mt-4">
                   <Button onClick={() => setSelectedStudent(null)} variant="outline" size="sm">
                     Close
                   </Button>
@@ -1672,23 +1672,23 @@ export const AdminDashboardPage: React.FC = () => {
           )}
 
           {selectedTeacher && (
-            <div className="fixed inset-0 z-50 bg-[#17233B]/50 backdrop-blur-xs flex items-center justify-center p-4">
-              <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl max-w-lg w-full p-6 animate-in zoom-in-95 duration-150">
+            <div className="fixed inset-0 z-50 bg-[#252525]/50 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xl max-w-lg w-full p-6 animate-in zoom-in-95 duration-150">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-base font-bold text-[#17233B]">Faculty Profile Inspection</h3>
+                  <h3 className="text-base font-bold text-[#252525]">Faculty Profile Inspection</h3>
                   <button
                     onClick={() => setSelectedTeacher(null)}
-                    className="text-[#64748B] hover:text-[#17233B] text-lg font-bold"
+                    className="text-[#666666] hover:text-[#252525] text-lg font-bold"
                   >
                     ×
                   </button>
                 </div>
                 <div className="space-y-3 text-xs">
                   <div>
-                    <span className="font-bold text-sm text-[#17233B]">{selectedTeacher.fullName}</span>
-                    <span className="text-[#64748B] block">{selectedTeacher.email}</span>
+                    <span className="font-bold text-sm text-[#252525]">{selectedTeacher.fullName}</span>
+                    <span className="text-[#666666] block">{selectedTeacher.email}</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-[#F6F8FC]">
+                  <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-[#FFF7F7]">
                     <div>
                       <strong>UID / Faculty ID: </strong> {selectedTeacher.uid}
                     </div>
@@ -1715,7 +1715,7 @@ export const AdminDashboardPage: React.FC = () => {
                         {selectedTeacher.profile.researchDomains.map((d: string) => (
                           <span
                             key={d}
-                            className="px-2 py-0.5 rounded bg-[#EAF1FF] text-[#3157D5] text-[10px] font-semibold"
+                            className="px-2 py-0.5 rounded bg-[#FFF7F7] text-[#C62828] text-[10px] font-semibold"
                           >
                             {d}
                           </span>
@@ -1724,7 +1724,7 @@ export const AdminDashboardPage: React.FC = () => {
                     </div>
                   )}
                 </div>
-                <div className="flex justify-end pt-4 border-t border-[#F1F5F9] mt-4">
+                <div className="flex justify-end pt-4 border-t border-[#E7DADA] mt-4">
                   <Button onClick={() => setSelectedTeacher(null)} variant="outline" size="sm">
                     Close
                   </Button>
@@ -1734,19 +1734,19 @@ export const AdminDashboardPage: React.FC = () => {
           )}
 
           {selectedAppt && (
-            <div className="fixed inset-0 z-50 bg-[#17233B]/50 backdrop-blur-xs flex items-center justify-center p-4">
-              <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl max-w-lg w-full p-6 animate-in zoom-in-95 duration-150">
+            <div className="fixed inset-0 z-50 bg-[#252525]/50 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xl max-w-lg w-full p-6 animate-in zoom-in-95 duration-150">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-base font-bold text-[#17233B]">Consultation Details</h3>
+                  <h3 className="text-base font-bold text-[#252525]">Consultation Details</h3>
                   <button
                     onClick={() => setSelectedAppt(null)}
-                    className="text-[#64748B] hover:text-[#17233B] text-lg font-bold"
+                    className="text-[#666666] hover:text-[#252525] text-lg font-bold"
                   >
                     ×
                   </button>
                 </div>
                 <div className="space-y-3 text-xs">
-                  <div className="p-3 rounded-xl bg-[#F6F8FC]">
+                  <div className="p-3 rounded-xl bg-[#FFF7F7]">
                     <div>
                       <strong>Student: </strong> {selectedAppt.student?.fullName} ({selectedAppt.student?.uid})
                     </div>
@@ -1760,17 +1760,17 @@ export const AdminDashboardPage: React.FC = () => {
                       <strong>Format: </strong> {selectedAppt.meetingMode}
                     </div>
                   </div>
-                  <div className="p-3 rounded-xl border border-[#E2E8F0]">
+                  <div className="p-3 rounded-xl border border-[#E7DADA]">
                     <strong>Discussion Agenda: </strong> "{selectedAppt.agenda}"
                   </div>
                   {selectedAppt.meetingLink && (
-                    <div className="p-3 rounded-xl bg-[#EAF1FF]/40 border border-[#3157D5]/20">
+                    <div className="p-3 rounded-xl bg-[#FFF7F7]/40 border border-[#C62828]/20">
                       <strong>Meeting Link: </strong>
                       <a
                         href={selectedAppt.meetingLink}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[#3157D5] underline ml-1"
+                        className="text-[#C62828] underline ml-1"
                       >
                         {selectedAppt.meetingLink}
                       </a>
@@ -1787,7 +1787,7 @@ export const AdminDashboardPage: React.FC = () => {
                     </div>
                   )}
                 </div>
-                <div className="flex justify-end pt-4 border-t border-[#F1F5F9] mt-4">
+                <div className="flex justify-end pt-4 border-t border-[#E7DADA] mt-4">
                   <Button onClick={() => setSelectedAppt(null)} variant="outline" size="sm">
                     Close
                   </Button>
