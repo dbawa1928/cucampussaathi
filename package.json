@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:all": "npm run build && cd server && npm install && npm run build",
+    "build:all": "npm install --include=dev && npm run build && cd server && npm install --include=dev && npm run build",
     "start": "node server/dist/index.js",
     "lint": "oxlint",
     "preview": "vite preview"
