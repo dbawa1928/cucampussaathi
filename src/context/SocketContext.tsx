@@ -117,8 +117,14 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     // Initial fetch of notifications
     fetchNotifications();
 
+    const socketUrl =
+      import.meta.env.VITE_SOCKET_URL ||
+      (import.meta.env.VITE_API_BASE_URL
+        ? (import.meta.env.VITE_API_BASE_URL as string).replace(/\/api\/v1\/?$/, '')
+        : 'http://localhost:5000');
+
     // Connect to WebSocket server using HttpOnly credentials
-    const socket = io('http://localhost:5000', {
+    const socket = io(socketUrl, {
       withCredentials: true,
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 10,
