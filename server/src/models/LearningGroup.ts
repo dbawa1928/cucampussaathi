@@ -83,3 +83,4 @@ const LearningGroupSchema = new Schema<ILearningGroup>(
 LearningGroupSchema.index({ name: 'text', description: 'text' });
 
 export const LearningGroupModel = model<ILearningGroup>('LearningGroup', LearningGroupSchema);
+

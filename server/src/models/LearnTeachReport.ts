@@ -74,3 +74,4 @@ const LearnTeachReportSchema = new Schema<ILearnTeachReport>(
 );
 
 export const LearnTeachReportModel = model<ILearnTeachReport>('LearnTeachReport', LearnTeachReportSchema);
+

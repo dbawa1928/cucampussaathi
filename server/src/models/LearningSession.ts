@@ -145,3 +145,4 @@ LearningSessionSchema.index({ teacher: 1, date: 1, status: 1 });
 LearningSessionSchema.index({ learners: 1, date: 1, status: 1 });
 
 export const LearningSessionModel = model<ILearningSession>('LearningSession', LearningSessionSchema);
+

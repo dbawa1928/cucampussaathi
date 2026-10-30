@@ -117,3 +117,4 @@ export const submitReportSchema = z.object({
   reason: z.string().min(3).max(200),
   details: z.string().max(1000).optional(),
 });
+

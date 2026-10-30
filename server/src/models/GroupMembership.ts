@@ -52,3 +52,4 @@ const GroupMembershipSchema = new Schema<IGroupMembership>(
 GroupMembershipSchema.index({ group: 1, user: 1 }, { unique: true });
 
 export const GroupMembershipModel = model<IGroupMembership>('GroupMembership', GroupMembershipSchema);
+

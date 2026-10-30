@@ -58,3 +58,4 @@ const LearningReviewSchema = new Schema<ILearningReview>(
 LearningReviewSchema.index({ session: 1, reviewer: 1 }, { unique: true });
 
 export const LearningReviewModel = model<ILearningReview>('LearningReview', LearningReviewSchema);
+

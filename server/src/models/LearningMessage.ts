@@ -52,3 +52,4 @@ LearningMessageSchema.index({ connection: 1, createdAt: 1 });
 LearningMessageSchema.index({ group: 1, createdAt: 1 });
 
 export const LearningMessageModel = model<ILearningMessage>('LearningMessage', LearningMessageSchema);
+

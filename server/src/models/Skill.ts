@@ -82,3 +82,4 @@ const SkillSchema = new Schema<ISkill>(
 SkillSchema.index({ name: 'text', description: 'text' });
 
 export const SkillModel = model<ISkill>('Skill', SkillSchema);
+

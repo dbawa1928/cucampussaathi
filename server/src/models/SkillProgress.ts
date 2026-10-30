@@ -94,3 +94,4 @@ const SkillProgressSchema = new Schema<ISkillProgress>(
 SkillProgressSchema.index({ user: 1, skill: 1 }, { unique: true });
 
 export const SkillProgressModel = model<ISkillProgress>('SkillProgress', SkillProgressSchema);
+

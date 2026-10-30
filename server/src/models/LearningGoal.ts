@@ -118,3 +118,4 @@ LearningGoalSchema.index({ user: 1, skill: 1, status: 1 });
 LearningGoalSchema.index({ skillName: 'text', learningObjective: 'text' });
 
 export const LearningGoalModel = model<ILearningGoal>('LearningGoal', LearningGoalSchema);
+

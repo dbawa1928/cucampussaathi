@@ -102,3 +102,4 @@ const SkillConnectionSchema = new Schema<ISkillConnection>(
 SkillConnectionSchema.index({ sender: 1, receiver: 1, skill: 1, status: 1 });
 
 export const SkillConnectionModel = model<ISkillConnection>('SkillConnection', SkillConnectionSchema);
+

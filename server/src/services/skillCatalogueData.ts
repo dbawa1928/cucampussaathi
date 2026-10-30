@@ -88,3 +88,4 @@ export const DEFAULT_UNIVERSITY_SKILLS: DefaultSkillSeed[] = [
   { name: 'Git & GitHub Collaboration', category: 'Other Skills', description: 'Branching strategies, pull requests, merge conflict resolution, and CI/CD' },
   { name: 'Docker & Containerization', category: 'Other Skills', description: 'Dockerfiles, container orchestration, Docker Compose, and image optimization' },
 ];
+

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import mongoose from 'mongoose';
-import { createApp } from '../app';
+import { app } from '../app';
 import {
   User,
   SkillModel,
@@ -17,8 +17,6 @@ import {
   LearnTeachReportModel,
 } from '../models';
 import { env } from '../config/env';
-
-const app = createApp();
 
 describe('Learn & Teach Network — End-to-End Test Suite', () => {
   let studentCookie: string;
@@ -539,3 +537,4 @@ describe('Learn & Teach Network — End-to-End Test Suite', () => {
     });
   });
 });
+

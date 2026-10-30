@@ -128,3 +128,4 @@ TeachingListingSchema.index({ user: 1, skill: 1, status: 1 });
 TeachingListingSchema.index({ skillName: 'text', description: 'text' });
 
 export const TeachingListingModel = model<ITeachingListing>('TeachingListing', TeachingListingSchema);
+

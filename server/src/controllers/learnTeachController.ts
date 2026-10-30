@@ -1,6 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
+import { Types } from 'mongoose';
 import { learnTeachService } from '../services/learnTeachService';
 import { recommendationEngine } from '../services/recommendationEngine';
+import {
+  SkillModel,
+  LearningReviewModel,
+  SkillProgressModel,
+  LearningGroupModel,
+  GroupMembershipModel,
+} from '../models';
+import { AppError } from '../utils/errors';
 import {
   createTeachingListingSchema,
   updateTeachingListingSchema,
@@ -30,7 +39,20 @@ export class LearnTeachController {
   }
 
   /**
-   * GET /api/v1/learn-teach/dashboard
+   * GET /api/v1/learn-teach/skills/categories
+   */
+  async getSkillCategories(_req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const skills = await learnTeachService.listSkills();
+      const categories = Array.from(new Set(skills.map((s) => s.category))).sort();
+      res.json({ success: true, data: categories });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /api/v1/learn-teach/dashboard or /dashboard-stats
    */
   async getDashboardOverview(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -54,6 +76,16 @@ export class LearnTeachController {
       res.json({
         success: true,
         data: {
+          skillsICanTeachCount: teachingListings.filter((l) => l.status === 'ACTIVE').length,
+          skillsIWantToLearnCount: learningGoals.filter((g) => g.status === 'ACTIVE').length,
+          activeConnectionsCount: connections.activeConnections.length,
+          pendingRequestsCount: connections.receivedRequests.length,
+          upcomingSessionsCount: upcomingSessions.length,
+          completedSessionsCount: completedSessions.length,
+          activeGroupsCount: 0,
+          upcomingSessions: upcomingSessions.slice(0, 3),
+          recentConnections: connections.activeConnections.slice(0, 4),
+          topRecommendations: recommendations.slice(0, 4),
           stats: {
             teachingSkillsCount: teachingListings.filter((l) => l.status === 'ACTIVE').length,
             learningGoalsCount: learningGoals.filter((g) => g.status === 'ACTIVE').length,
@@ -66,7 +98,6 @@ export class LearnTeachController {
           learningGoals: learningGoals.slice(0, 5),
           activeConnections: connections.activeConnections.slice(0, 5),
           receivedRequests: connections.receivedRequests.slice(0, 5),
-          upcomingSessions: upcomingSessions.slice(0, 3),
           progress: progressList.slice(0, 5),
           recommendations,
         },
@@ -121,7 +152,35 @@ export class LearnTeachController {
   async createTeachingListing(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const userId = req.user!._id.toString();
-      const validated = createTeachingListingSchema.parse(req.body);
+      let body = { ...req.body };
+
+      if (body.skillId && (!body.skillName || !body.category)) {
+        const skill = await SkillModel.findById(body.skillId);
+        if (skill) {
+          body.skillName = skill.name;
+          body.category = skill.category;
+        }
+      }
+
+      if (body.skillLevel && !body.expertiseLevel) {
+        body.expertiseLevel = body.skillLevel;
+      }
+      if (body.preferredMode && !body.teachingMode) {
+        body.teachingMode = body.preferredMode;
+      }
+      if (body.preferredLanguages && !body.languages) {
+        body.languages = body.preferredLanguages;
+      }
+      if (!body.description || body.description.trim().length < 10) {
+        body.description = body.description?.trim()
+          ? `${body.description.trim()} - Available for peer guidance and academic support.`
+          : 'Ready to mentor university peers and help with course materials.';
+      }
+      if (body.experienceMonths === undefined) {
+        body.experienceMonths = 6;
+      }
+
+      const validated = createTeachingListingSchema.parse(body);
       const listing = await learnTeachService.createTeachingListing(userId, validated);
       res.status(201).json({ success: true, message: 'Teaching skill listed successfully.', data: listing });
     } catch (error) {
@@ -167,7 +226,25 @@ export class LearnTeachController {
   async createLearningGoal(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const userId = req.user!._id.toString();
-      const validated = createLearningGoalSchema.parse(req.body);
+      let body = { ...req.body };
+
+      if (body.skillId && (!body.skillName || !body.category)) {
+        const skill = await SkillModel.findById(body.skillId);
+        if (skill) {
+          body.skillName = skill.name;
+          body.category = skill.category;
+        }
+      }
+
+      if (body.notes && !body.learningObjective) {
+        body.learningObjective = body.notes.trim().length >= 10
+          ? body.notes.trim()
+          : `${body.notes.trim()} - Aiming to master this skill for university coursework and placements.`;
+      } else if (!body.learningObjective) {
+        body.learningObjective = 'Looking to learn and improve proficiency in this subject.';
+      }
+
+      const validated = createLearningGoalSchema.parse(body);
       const goal = await learnTeachService.createLearningGoal(userId, validated);
       res.status(201).json({ success: true, message: 'Learning goal saved successfully.', data: goal });
     } catch (error) {
@@ -223,7 +300,19 @@ export class LearnTeachController {
   async sendConnectionRequest(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const userId = req.user!._id.toString();
-      const validated = sendConnectionRequestSchema.parse(req.body);
+      let body = { ...req.body };
+
+      if (body.recipientId && !body.receiverId) {
+        body.receiverId = body.recipientId;
+      }
+      if (body.skillDesiredId && !body.skillId) {
+        body.skillId = body.skillDesiredId;
+      }
+      if (body.introMessage && !body.requestMessage) {
+        body.requestMessage = body.introMessage;
+      }
+
+      const validated = sendConnectionRequestSchema.parse(body);
       const conn = await learnTeachService.sendConnectionRequest(userId, validated);
       res.status(201).json({ success: true, message: 'Connection request sent successfully.', data: conn });
     } catch (error) {
@@ -453,6 +542,131 @@ export class LearnTeachController {
       next(error);
     }
   }
+
+  async handleConnectionStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!._id.toString();
+      const { action, note, reason } = req.body;
+      const connId = req.params.id;
+
+      let conn;
+      if (action === 'ACCEPT') {
+        conn = await learnTeachService.acceptConnectionRequest(userId, connId);
+      } else if (action === 'REJECT') {
+        conn = await learnTeachService.rejectConnectionRequest(userId, connId, note || reason);
+      } else if (action === 'WITHDRAW') {
+        conn = await learnTeachService.withdrawConnectionRequest(userId, connId);
+      } else if (action === 'CANCEL') {
+        conn = await learnTeachService.cancelConnection(userId, connId);
+      } else {
+        return next(new AppError('Invalid connection action', 400));
+      }
+
+      res.json({ success: true, message: `Connection status updated to ${action}.`, data: conn });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async handleSessionStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!._id.toString();
+      const { action, reason } = req.body;
+      const sessionId = req.params.id;
+
+      let session;
+      if (action === 'CONFIRM' || action === 'ACCEPT') {
+        session = await learnTeachService.acceptSession(userId, sessionId);
+      } else if (action === 'REJECT') {
+        session = await learnTeachService.cancelSession(userId, sessionId, reason || 'Declined by participant');
+      } else if (action === 'CANCEL') {
+        session = await learnTeachService.cancelSession(userId, sessionId, reason);
+      } else {
+        return next(new AppError('Invalid session action', 400));
+      }
+
+      res.json({ success: true, message: `Session status updated to ${action}.`, data: session });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getUserReviews(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const targetUserId = req.params.userId;
+      const reviews = await LearningReviewModel.find({ targetUser: new Types.ObjectId(targetUserId) })
+        .populate('reviewer', 'fullName email role avatarUrl')
+        .sort({ createdAt: -1 });
+      res.json({ success: true, data: reviews });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async createProgress(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!._id.toString();
+      const { skillId, overallProficiency, notes, milestones } = req.body;
+      const progress = await SkillProgressModel.create({
+        user: new Types.ObjectId(userId),
+        skill: new Types.ObjectId(skillId),
+        overallProficiency: overallProficiency || 'BEGINNER',
+        notes: notes || '',
+        milestones: (milestones || []).map((m: any) => ({
+          title: m.title,
+          completed: false,
+        })),
+      });
+      res.status(201).json({ success: true, data: progress });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async toggleMilestoneByIndex(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!._id.toString();
+      const progressId = req.params.id;
+      const { milestoneIndex, completed } = req.body;
+
+      const progress = await SkillProgressModel.findOne({
+        _id: new Types.ObjectId(progressId),
+        user: new Types.ObjectId(userId),
+      });
+
+      if (!progress) {
+        return next(new AppError('Progress tracker not found', 404));
+      }
+
+      if (progress.milestones && progress.milestones[milestoneIndex] !== undefined) {
+        progress.milestones[milestoneIndex].completed = completed ?? !progress.milestones[milestoneIndex].completed;
+        if (progress.milestones[milestoneIndex].completed) {
+          progress.milestones[milestoneIndex].completedAt = new Date();
+        }
+        await progress.save();
+      }
+
+      res.json({ success: true, message: 'Milestone updated.', data: progress });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async leaveGroup(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!._id.toString();
+      const groupId = req.params.id;
+      await GroupMembershipModel.findOneAndDelete({
+        user: new Types.ObjectId(userId),
+        group: new Types.ObjectId(groupId),
+      });
+      await LearningGroupModel.findByIdAndUpdate(groupId, { $inc: { memberCount: -1 } });
+      res.json({ success: true, message: 'Left learning group successfully.' });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const learnTeachController = new LearnTeachController();
+
