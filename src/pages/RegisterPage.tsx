@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Eye,
   EyeOff,
@@ -51,6 +51,7 @@ interface RegisterErrors {
 
 export const RegisterPage: React.FC = () => {
   const { register } = useAuth();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState<RegisterForm>({
     fullName: '',
@@ -148,6 +149,7 @@ export const RegisterPage: React.FC = () => {
 
       await register(payload);
       setIsSuccess(true);
+      navigate('/dashboard');
     } catch (err: any) {
       setApiError(err.message || 'Registration failed. Please check your information.');
     } finally {
@@ -228,9 +230,14 @@ export const RegisterPage: React.FC = () => {
               <p className="text-sm text-[#64748B] max-w-sm mx-auto mb-6 leading-relaxed">
                 Welcome to CUCampusSaathi, <strong className="text-[#17233B]">{formData.fullName}</strong>. Your account as a <strong className="text-[#17233B]">{formData.role}</strong> ({formData.uid}) has been registered in the database.
               </p>
-              <Button to="/login" variant="primary" size="md" className="w-full">
-                Proceed to Log In
-              </Button>
+              <div className="flex flex-col gap-2.5 w-full">
+                <Button to="/dashboard" variant="primary" size="md" className="w-full">
+                  Go to My Dashboard
+                </Button>
+                <Button to="/profile" variant="outline" size="md" className="w-full">
+                  Complete My Profile & Skills
+                </Button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate className="space-y-4">

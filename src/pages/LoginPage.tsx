@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Eye,
   EyeOff,
@@ -18,6 +18,7 @@ import { useAuth, type AuthUser } from '../context/AuthContext';
 
 export const LoginPage: React.FC = () => {
   const { login, user: currentUser, logout } = useAuth();
+  const navigate = useNavigate();
 
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -46,6 +47,8 @@ export const LoginPage: React.FC = () => {
     try {
       const user = await login(identifier.trim(), password);
       setAuthenticatedUser(user);
+      // Directly navigate to personalized Dashboard
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Authentication failed. Please verify your credentials.');
     } finally {
@@ -119,11 +122,14 @@ export const LoginPage: React.FC = () => {
               </div>
 
               <div className="flex flex-col gap-2.5">
-                <Button to="/profile" variant="primary" size="md" className="w-full">
+                <Button to="/dashboard" variant="primary" size="md" className="w-full">
+                  Go to Dashboard
+                </Button>
+                <Button to="/profile" variant="outline" size="md" className="w-full">
                   Manage My Profile & Skills
                 </Button>
-                <Button to="/directory" variant="outline" size="md" className="w-full">
-                  Browse Campus Directory
+                <Button to="/appointments" variant="outline" size="md" className="w-full">
+                  FacultyConnect Appointments
                 </Button>
                 <Button
                   onClick={async () => {
