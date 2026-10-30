@@ -152,11 +152,38 @@ export const cancelEventSchema = z.object({
 
 export const eventQuerySchema = z.object({
   category: z.string().optional(),
-  mode: z.enum(['ONLINE', 'OFFLINE']).optional(),
-  status: z.enum(['DRAFT', 'PUBLISHED', 'CANCELLED', 'COMPLETED']).optional(),
-  timeframe: z.enum(['upcoming', 'today', 'this-week', 'past', 'all']).default('upcoming'),
+  mode: z
+    .preprocess((val) => (typeof val === 'string' && val.trim() ? val.toUpperCase() : undefined), z.enum(['ONLINE', 'OFFLINE']).optional()),
+  status: z
+    .preprocess(
+      (val) => (typeof val === 'string' && val.trim() ? val.toUpperCase() : undefined),
+      z.enum(['DRAFT', 'PUBLISHED', 'CANCELLED', 'COMPLETED']).optional()
+    ),
+  timeframe: z
+    .preprocess((val) => {
+      if (typeof val === 'string' && val.trim()) {
+        const normalized = val.toLowerCase().replace(/_/g, '-');
+        if (['upcoming', 'today', 'this-week', 'past', 'all'].includes(normalized)) {
+          return normalized;
+        }
+      }
+      return 'upcoming';
+    }, z.enum(['upcoming', 'today', 'this-week', 'past', 'all']))
+    .default('upcoming'),
   search: z.string().optional(),
   month: z.string().optional(), // YYYY-MM format
-  page: z.string().regex(/^\d+$/).default('1').transform(Number),
-  limit: z.string().regex(/^\d+$/).default('20').transform(Number),
+  page: z
+    .preprocess((val) => {
+      if (typeof val === 'number') return Math.max(1, Math.floor(val));
+      if (typeof val === 'string' && /^\d+$/.test(val)) return Math.max(1, parseInt(val, 10));
+      return 1;
+    }, z.number().int().min(1))
+    .default(1),
+  limit: z
+    .preprocess((val) => {
+      if (typeof val === 'number') return Math.min(100, Math.max(1, Math.floor(val)));
+      if (typeof val === 'string' && /^\d+$/.test(val)) return Math.min(100, Math.max(1, parseInt(val, 10)));
+      return 20;
+    }, z.number().int().min(1).max(100))
+    .default(20),
 });

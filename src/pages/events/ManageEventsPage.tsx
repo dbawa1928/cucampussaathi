@@ -69,7 +69,7 @@ export const ManageEventsPage: React.FC = () => {
         setStats(res.stats || null);
       }
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to load your events');
+      setError(err?.message || err?.response?.data?.message || 'Failed to load your events');
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +91,7 @@ export const ManageEventsPage: React.FC = () => {
       await eventsApi.publishEvent(id);
       fetchManagedEvents();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to publish event');
+      alert(err?.message || err?.response?.data?.message || 'Failed to publish event');
     }
   };
 
@@ -105,7 +105,7 @@ export const ManageEventsPage: React.FC = () => {
       setCancellationReason('');
       fetchManagedEvents();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to cancel event');
+      alert(err?.message || err?.response?.data?.message || 'Failed to cancel event');
     } finally {
       setIsCancelling(false);
     }
@@ -118,7 +118,7 @@ export const ManageEventsPage: React.FC = () => {
       await eventsApi.deleteDraft(id);
       fetchManagedEvents();
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete draft');
+      alert(err?.message || err?.response?.data?.message || 'Failed to delete draft');
     }
   };
 

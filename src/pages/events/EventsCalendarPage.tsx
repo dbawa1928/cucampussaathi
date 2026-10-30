@@ -69,10 +69,10 @@ export const EventsCalendarPage: React.FC = () => {
           category: selectedCategory !== 'ALL' ? (selectedCategory as EventCategory) : undefined,
           mode: selectedMode !== 'ALL' ? (selectedMode as EventMode) : undefined,
           search: searchQuery.trim() || undefined,
-          timeframe: timeframe === 'PAST' ? 'PAST' : timeframe === 'UPCOMING' ? 'UPCOMING' : 'ALL',
+          timeframe: timeframe === 'PAST' ? 'past' : timeframe === 'UPCOMING' ? 'upcoming' : 'all',
           limit: 100,
         }),
-        eventsApi.getFeaturedEvents(),
+        eventsApi.getFeaturedEvents().catch((fErr) => { console.warn('Featured events:', fErr); return []; }),
       ]);
 
       if (eventsRes && eventsRes.events) {
@@ -83,7 +83,7 @@ export const EventsCalendarPage: React.FC = () => {
       }
     } catch (err: any) {
       console.error('Failed to load events:', err);
-      setError(err?.response?.data?.message || 'Unable to load events calendar');
+      setError(err?.message || err?.response?.data?.message || 'Unable to load events calendar');
     } finally {
       setIsLoading(false);
     }

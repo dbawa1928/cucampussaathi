@@ -62,7 +62,7 @@ export const EventDetailPage: React.FC = () => {
       }
     } catch (err: any) {
       console.error('Failed to load event:', err);
-      setError(err?.response?.data?.message || 'Failed to load event details');
+      setError(err?.message || err?.response?.data?.message || 'Failed to load event details');
     } finally {
       setIsLoading(false);
     }
@@ -92,7 +92,7 @@ export const EventDetailPage: React.FC = () => {
         fetchEventData();
       }
     } catch (err: any) {
-      setRegError(err?.response?.data?.message || 'Registration failed. Please try again.');
+      setRegError(err?.message || err?.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setIsRegistering(false);
     }
@@ -111,7 +111,7 @@ export const EventDetailPage: React.FC = () => {
         fetchEventData();
       }
     } catch (err: any) {
-      setRegError(err?.response?.data?.message || 'Failed to cancel registration.');
+      setRegError(err?.message || err?.response?.data?.message || 'Failed to cancel registration.');
     } finally {
       setIsRegistering(false);
     }

@@ -87,16 +87,30 @@ export class EventService {
       }
     }
 
+    const andClauses: any[] = [];
+    if (query.$or) {
+      andClauses.push({ $or: query.$or });
+      delete query.$or;
+    }
+
     if (params.search && params.search.trim()) {
       const q = params.search.trim();
-      query.$or = [
-        { title: { $regex: q, $options: 'i' } },
-        { shortDescription: { $regex: q, $options: 'i' } },
-        { description: { $regex: q, $options: 'i' } },
-        { venue: { $regex: q, $options: 'i' } },
-        { organizerName: { $regex: q, $options: 'i' } },
-        { 'speakerDetails.name': { $regex: q, $options: 'i' } },
-      ];
+      andClauses.push({
+        $or: [
+          { title: { $regex: q, $options: 'i' } },
+          { shortDescription: { $regex: q, $options: 'i' } },
+          { description: { $regex: q, $options: 'i' } },
+          { venue: { $regex: q, $options: 'i' } },
+          { organizerName: { $regex: q, $options: 'i' } },
+          { 'speakerDetails.name': { $regex: q, $options: 'i' } },
+        ],
+      });
+    }
+
+    if (andClauses.length === 1) {
+      query.$or = andClauses[0].$or;
+    } else if (andClauses.length > 1) {
+      query.$and = andClauses;
     }
 
     const sortOrder: any = params.timeframe === 'past' ? { startDateTime: -1 } : { startDateTime: 1 };
