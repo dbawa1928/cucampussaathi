@@ -112,6 +112,50 @@ export class AiTutorController {
       next(error);
     }
   }
+
+  /**
+   * POST /api/v1/ai/documents/:id/tools
+   */
+  async generateTool(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!._id.toString();
+      const documentId = req.params.id;
+      const { toolType, style, topic } = req.body;
+
+      if (!toolType) {
+        throw new AppError('toolType (summary, exam_prep, notes, concept_explainer) is required.', 400);
+      }
+
+      const result = await aiTutorService.generateTool(userId, documentId, toolType, { style, topic });
+
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/v1/ai/documents/:id/quiz
+   */
+  async generateQuiz(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!._id.toString();
+      const documentId = req.params.id;
+      const numQuestions = req.body.numQuestions ? parseInt(req.body.numQuestions, 10) : 5;
+
+      const result = await aiTutorService.generateQuiz(userId, documentId, numQuestions);
+
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const aiTutorController = new AiTutorController();

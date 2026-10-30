@@ -3,15 +3,16 @@ import { DocumentModel, IDocument } from '../models/Document';
 import { DocumentChunkModel } from '../models/DocumentChunk';
 import { DocumentConversationModel } from '../models/DocumentConversation';
 import { documentStorageService } from './documentStorageService';
-import { pdfProcessingService } from './pdfProcessingService';
 import { env } from '../config/env';
 import { logger } from '../utils/logger';
 import { AppError, NotFoundError } from '../utils/errors';
 
+import { documentExtractionService } from './documentExtractionService';
+
 export class DocumentService {
   /**
-   * Upload and process a new PDF study document for an authenticated student.
-   * Strict validation of MIME type, PDF signature, file size, and page content.
+   * Upload and process a new study document (PDF, PowerPoint .pptx, Word .docx) for an authenticated student.
+   * Strict validation of MIME type, format signatures, file size, and page/slide content.
    */
   async uploadAndProcessDocument(
     userId: string,
@@ -28,8 +29,13 @@ export class DocumentService {
       );
     }
 
-    // 2. Validate PDF magic bytes
-    pdfProcessingService.validatePdfSignature(fileBuffer);
+    // 2. Validate format & extract document structure
+    const { format, pages, totalTextLength, mimeType } =
+      await documentExtractionService.extractDocument(fileBuffer, originalFilename);
+
+    if (pages.length > 250) {
+      throw new AppError('Document exceeds maximum supported limit of 250 pages/slides.', 400);
+    }
 
     // 3. Save physical file safely
     const { storageKey, storagePath, fileSize } = await documentStorageService.saveFile(
@@ -37,35 +43,37 @@ export class DocumentService {
       originalFilename
     );
 
-    const title = customTitle?.trim() || originalFilename.replace(/\.pdf$/i, '').trim();
+    const title =
+      customTitle?.trim() ||
+      originalFilename.replace(/\.(pdf|pptx|docx|ppt|doc)$/i, '').trim();
 
     // 4. Create document record in database
     const document = await DocumentModel.create({
       owner: new Types.ObjectId(userId),
       title: title.substring(0, 200),
       originalFilename,
-      mimeType: 'application/pdf',
+      mimeType,
+      documentFormat: format,
       fileSize,
       storagePath,
       storageKey,
-      pageCount: 0,
+      pageCount: pages.length,
+      extractedPages: pages.map((p) => ({
+        pageNumber: p.pageNumber,
+        text: p.text,
+        type: p.type || (format === 'pptx' ? 'slide' : 'page'),
+      })),
       processingStatus: 'PROCESSING',
       chunkCount: 0,
       embeddingProvider: 'bm25-lexical',
+      extractedTextLength: totalTextLength,
     });
 
     try {
-      // 5. Extract pages and clean text
-      const { pages, totalTextLength } = await pdfProcessingService.extractPages(fileBuffer);
+      // 5. Generate chunks
+      const chunksData = documentExtractionService.createChunks(pages);
 
-      if (pages.length > 200) {
-        throw new AppError('Document exceeds maximum supported limit of 200 pages.', 400);
-      }
-
-      // 6. Generate chunks
-      const chunksData = pdfProcessingService.createChunks(pages);
-
-      // 7. Store chunks in database
+      // 6. Store chunks in database
       const chunkDocs = chunksData.map((c) => ({
         document: document._id,
         owner: new Types.ObjectId(userId),
@@ -76,6 +84,7 @@ export class DocumentService {
         metadata: {
           originalFilename,
           pageNumber: c.pageNumber,
+          format,
         },
       }));
 
@@ -83,15 +92,13 @@ export class DocumentService {
         await DocumentChunkModel.insertMany(chunkDocs);
       }
 
-      // 8. Mark processing as completed
+      // 7. Mark processing as completed
       document.processingStatus = 'COMPLETED';
-      document.pageCount = pages.length;
       document.chunkCount = chunkDocs.length;
-      document.extractedTextLength = totalTextLength;
       await document.save();
 
       logger.info(
-        `Document ${document._id} processed successfully: ${pages.length} pages, ${chunkDocs.length} chunks.`
+        `Document ${document._id} (${format.toUpperCase()}) processed successfully: ${pages.length} pages/slides, ${chunkDocs.length} chunks.`
       );
 
       return document;
@@ -219,6 +226,24 @@ export class DocumentService {
         totalCompleted: 0,
         totalFailed: 0,
       },
+    };
+  }
+
+  /**
+   * Retrieve extracted pages or slides for the in-browser document viewer.
+   */
+  async getDocumentContent(
+    documentId: string,
+    userId: string,
+    isAdmin = false
+  ): Promise<{
+    document: IDocument;
+    pages: { pageNumber: number; text: string; type?: string }[];
+  }> {
+    const document = await this.getDocumentById(documentId, userId, isAdmin);
+    return {
+      document,
+      pages: document.extractedPages || [],
     };
   }
 }

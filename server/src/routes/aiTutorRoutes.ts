@@ -18,6 +18,20 @@ router.post(
   aiTutorController.summarize.bind(aiTutorController)
 );
 
+// Generate specialized learning tools (summary, exam_prep, notes, concept_explainer)
+router.post(
+  '/documents/:id/tools',
+  authGuard,
+  aiTutorController.generateTool.bind(aiTutorController)
+);
+
+// Generate interactive practice quiz
+router.post(
+  '/documents/:id/quiz',
+  authGuard,
+  aiTutorController.generateQuiz.bind(aiTutorController)
+);
+
 // List conversations for a document
 router.get(
   '/documents/:id/conversations',

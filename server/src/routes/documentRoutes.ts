@@ -32,7 +32,10 @@ router.delete('/:id', authGuard, documentController.delete.bind(documentControll
 // Check document indexing/processing status
 router.get('/:id/status', authGuard, documentController.getStatus.bind(documentController));
 
-// Stream PDF file for in-browser viewer
+// Stream file for in-browser viewer
 router.get('/:id/file', authGuard, documentController.getFile.bind(documentController));
+
+// Get extracted pages/slides content for document viewer
+router.get('/:id/content', authGuard, documentController.getContent.bind(documentController));
 
 export default router;

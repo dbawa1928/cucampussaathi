@@ -78,3 +78,79 @@ textarea:focus-visible {
 ::-webkit-scrollbar-thumb:hover {
   background: #C62828;
 }
+
+/* 3D Visual Effects & Micro-Animations for AI Academic Workspace */
+@keyframes float3d {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(198, 40, 40, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(198, 40, 40, 0.35);
+  }
+}
+
+@keyframes wavePulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+.animate-float-3d {
+  animation: float3d 5s ease-in-out infinite;
+}
+
+.animate-float-gentle {
+  animation: floatGentle 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.animate-wave-pulse {
+  animation: wavePulse 1.5s ease-in-out infinite;
+}
+
+.shadow-3d-red {
+  box-shadow: 0 20px 35px -10px rgba(198, 40, 40, 0.18), 0 0 1px 1px rgba(198, 40, 40, 0.08);
+}
+
+.shadow-card-3d {
+  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(198, 40, 40, 0.06);
+}
+
+.card-3d-tilt {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.card-3d-tilt:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 20px 35px -8px rgba(198, 40, 40, 0.14), 0 6px 15px -3px rgba(0, 0, 0, 0.05);
+}

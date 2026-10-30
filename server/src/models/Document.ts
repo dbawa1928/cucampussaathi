@@ -11,6 +11,12 @@ export interface IDocument extends MongooseDoc {
   storagePath: string;
   storageKey: string;
   pageCount: number;
+  documentFormat?: 'pdf' | 'pptx' | 'docx';
+  extractedPages?: {
+    pageNumber: number;
+    text: string;
+    type?: string;
+  }[];
   processingStatus: DocumentProcessingStatus;
   processingError?: string;
   chunkCount: number;
@@ -63,6 +69,18 @@ const documentSchema = new Schema<IDocument>(
       default: 0,
       min: 0,
     },
+    documentFormat: {
+      type: String,
+      enum: ['pdf', 'pptx', 'docx'],
+      default: 'pdf',
+    },
+    extractedPages: [
+      {
+        pageNumber: { type: Number, required: true },
+        text: { type: String, default: '' },
+        type: { type: String, default: 'page' },
+      },
+    ],
     processingStatus: {
       type: String,
       enum: ['UPLOADED', 'PROCESSING', 'COMPLETED', 'FAILED'],

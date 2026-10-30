@@ -22,6 +22,7 @@ dist
 dist-ssr
 server/dist
 server/node_modules
+server/uploads
 MY DATA
 
 # Editor directories and files

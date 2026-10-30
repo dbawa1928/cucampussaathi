@@ -228,6 +228,81 @@ export class AiTutorService {
       throw new NotFoundError('Conversation not found or unauthorized.');
     }
   }
+
+  /**
+   * Run specialized academic learning tool on document.
+   */
+  async generateTool(
+    userId: string,
+    documentId: string,
+    toolType: 'summary' | 'exam_prep' | 'notes' | 'concept_explainer',
+    options?: { style?: 'beginner' | 'academic' | 'step_by_step' | 'exam_oriented'; topic?: string }
+  ) {
+    const document = await documentService.getDocumentById(documentId, userId);
+    if (document.processingStatus !== 'COMPLETED') {
+      throw new AppError('Document must be completely processed before generating learning tools.', 400);
+    }
+
+    const representativeChunks = await DocumentChunkModel.find({
+      document: document._id,
+      owner: new Types.ObjectId(userId),
+    })
+      .sort({ chunkIndex: 1 })
+      .limit(10);
+
+    if (representativeChunks.length === 0) {
+      throw new AppError('No indexed text chunks found for this document.', 400);
+    }
+
+    const result = await groqService.generateLearningTool(
+      document.title,
+      representativeChunks,
+      toolType,
+      options
+    );
+
+    return {
+      documentId: document._id,
+      title: document.title,
+      toolType,
+      content: result.answer,
+      model: result.model,
+      pageCount: document.pageCount,
+    };
+  }
+
+  /**
+   * Generate interactive practice quiz for document.
+   */
+  async generateQuiz(userId: string, documentId: string, numQuestions = 5) {
+    const document = await documentService.getDocumentById(documentId, userId);
+    if (document.processingStatus !== 'COMPLETED') {
+      throw new AppError('Document must be completely processed before generating quiz.', 400);
+    }
+
+    const representativeChunks = await DocumentChunkModel.find({
+      document: document._id,
+      owner: new Types.ObjectId(userId),
+    })
+      .sort({ chunkIndex: 1 })
+      .limit(12);
+
+    if (representativeChunks.length === 0) {
+      throw new AppError('No indexed text chunks found for this document.', 400);
+    }
+
+    const quizData = await groqService.generateQuiz(
+      document.title,
+      representativeChunks,
+      numQuestions
+    );
+
+    return {
+      documentId: document._id,
+      title: document.title,
+      questions: quizData.questions,
+    };
+  }
 }
 
 export const aiTutorService = new AiTutorService();
