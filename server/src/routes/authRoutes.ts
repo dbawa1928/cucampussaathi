@@ -14,6 +14,10 @@ router.post('/login', authRateLimiter, (req, res, next) =>
   authController.login(req, res, next)
 );
 
+router.post('/forgot-password', authRateLimiter, (req, res, next) =>
+  authController.forgotPassword(req, res, next)
+);
+
 router.post('/refresh', (req, res, next) =>
   authController.refresh(req, res, next)
 );

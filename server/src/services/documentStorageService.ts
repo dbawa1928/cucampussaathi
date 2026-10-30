@@ -23,16 +23,18 @@ export class DocumentStorageService {
   }
 
   /**
-   * Save uploaded PDF buffer with a cryptographically secure random filename.
-   * Path traversal resistant.
+   * Save uploaded file buffer with a cryptographically secure random filename.
+   * Preserves original file extension. Path traversal resistant.
    */
   async saveFile(
     fileBuffer: Buffer,
-    _originalFilename: string
+    originalFilename: string
   ): Promise<{ storageKey: string; storagePath: string; fileSize: number }> {
     this.ensureStorageDirectory();
 
-    const storageKey = `${crypto.randomUUID()}.pdf`;
+    // Preserve original extension for correct MIME serving
+    const ext = path.extname(originalFilename).toLowerCase() || '.pdf';
+    const storageKey = `${crypto.randomUUID()}${ext}`;
     const fullPath = path.join(this.baseStorageDir, storageKey);
 
     // Verify target path does not escape baseStorageDir

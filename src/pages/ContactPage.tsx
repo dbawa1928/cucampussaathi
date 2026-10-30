@@ -11,6 +11,7 @@ import {
 
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import { apiClient, type ApiResponse } from '../api/client';
 
 interface FormData {
   fullName: string;
@@ -42,6 +43,8 @@ export const ContactPage: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [ticketId, setTicketId] = useState('');
 
   const validate = (): boolean => {
     const errs: FormErrors = {};
@@ -76,16 +79,28 @@ export const ContactPage: React.FC = () => {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
+    setSubmitError('');
 
-    setTimeout(() => {
+    try {
+      const res = await apiClient.post<ApiResponse<{ ticketId: string }>>('/contact', formData);
+      if (res.success) {
+        if (res.data?.ticketId) {
+          setTicketId(res.data.ticketId);
+        }
+        setIsSubmitted(true);
+      } else {
+        setSubmitError(res.message || 'Failed to submit contact query.');
+      }
+    } catch (err: any) {
+      setSubmitError(err.message || 'Network error while submitting your query. Please try again.');
+    } finally {
       setIsSubmitting(false);
-      setIsSubmitted(true);
-    }, 1000);
+    }
   };
 
   const handleReset = () => {
@@ -98,6 +113,7 @@ export const ContactPage: React.FC = () => {
       privacyConsent: false,
     });
     setErrors({});
+    setSubmitError('');
     setIsSubmitted(false);
   };
 
@@ -149,13 +165,13 @@ export const ContactPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Demo Mode Notice Banner */}
+              {/* Campus Support Notice */}
               <div className="p-5 rounded-2xl bg-[#FFF7F7] border border-[#C62828]/25 text-xs text-[#252525] leading-relaxed">
                 <div className="flex items-center gap-2 font-bold text-[#C62828] mb-1.5">
                   <Info className="w-4 h-4" />
-                  <span>Public Demo Notice</span>
+                  <span>Institutional Helpdesk</span>
                 </div>
-                This public frontend prototype processes and validates submissions on the client side. In this demo phase, submissions simulate server verification without dispatching external messages.
+                Inquiries are encrypted and routed directly to the Chandigarh University Academic & Technical Operations helpdesk. You will receive email tracking updates.
               </div>
 
               <div className="p-6 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] text-xs text-[#666666] space-y-2">
@@ -172,18 +188,23 @@ export const ContactPage: React.FC = () => {
               <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#E7DADA] shadow-sm">
                 {isSubmitted ? (
                   <div className="py-12 text-center flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-full bg-[#FFF7F7] text-[#C62828] flex items-center justify-center mb-5 border border-[#C62828]/20">
+                    <div className="w-16 h-16 rounded-full bg-[#E6F5EF] text-[#16845B] flex items-center justify-center mb-5 border border-[#16845B]/20">
                       <CheckCircle2 className="w-8 h-8" />
                     </div>
                     <h3 className="text-2xl font-bold text-[#252525] mb-2">
-                      Message Received!
+                      Inquiry Logged Successfully!
                     </h3>
-                    <p className="text-sm text-[#666666] max-w-md mx-auto mb-6 leading-relaxed">
-                      Thank you, <strong className="text-[#252525]">{formData.fullName}</strong>. Your query regarding <em>"{formData.subject}"</em> has been logged in this demo prototype environment.
+                    <p className="text-sm text-[#666666] max-w-md mx-auto mb-3 leading-relaxed">
+                      Thank you, <strong className="text-[#252525]">{formData.fullName}</strong>. Your inquiry regarding <em>"{formData.subject}"</em> has been recorded.
                     </p>
+                    {ticketId && (
+                      <div className="mb-6 px-3.5 py-1.5 rounded-lg bg-[#FFF7F7] border border-[#E7DADA] text-xs font-mono text-[#C62828]">
+                        Ticket Ref: #{ticketId.slice(-8).toUpperCase()}
+                      </div>
+                    )}
                     <div className="flex gap-3">
                       <Button onClick={handleReset} variant="outline" size="md">
-                        Send Another Inquiry
+                        Submit Another Inquiry
                       </Button>
                       <Button to="/" variant="primary" size="md">
                         Return to Home
@@ -192,6 +213,12 @@ export const ContactPage: React.FC = () => {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} noValidate className="space-y-6">
+                    {submitError && (
+                      <div className="p-3.5 rounded-xl bg-[#FFF1F1] border border-[#C62828]/30 text-xs text-[#C62828] flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 shrink-0" />
+                        <span>{submitError}</span>
+                      </div>
+                    )}
                     <div className="border-b border-[#E7DADA] pb-4">
                       <h2 className="text-xl font-bold text-[#252525]">
                         Send a Message to Support

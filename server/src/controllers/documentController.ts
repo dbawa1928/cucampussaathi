@@ -158,9 +158,23 @@ export class DocumentController {
 
       const filePath = documentStorageService.resolveAbsolutePath(document.storagePath);
 
-      res.setHeader('Content-Type', document.mimeType || 'application/pdf');
+      // Ensure proper content type for each format
+      let contentType = document.mimeType || 'application/octet-stream';
+      const ext = document.storagePath.toLowerCase().split('.').pop();
+      if (ext === 'pdf') contentType = 'application/pdf';
+      else if (ext === 'pptx') contentType = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+      else if (ext === 'docx') contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+      res.setHeader('Content-Type', contentType);
       res.setHeader('Content-Disposition', `inline; filename="${encodeURIComponent(document.originalFilename)}"`);
-      res.sendFile(filePath);
+      res.setHeader('Accept-Ranges', 'bytes');
+      res.setHeader('Cache-Control', 'private, max-age=300');
+
+      res.sendFile(filePath, (err) => {
+        if (err && !res.headersSent) {
+          next(err);
+        }
+      });
     } catch (error) {
       next(error);
     }

@@ -10,7 +10,7 @@ export class AiTutorController {
     try {
       const userId = req.user!._id.toString();
       const documentId = req.params.id;
-      const { question, conversationId } = req.body;
+      const { question, conversationId, language } = req.body;
 
       if (!question || typeof question !== 'string') {
         throw new AppError('Question text is required.', 400);
@@ -20,7 +20,8 @@ export class AiTutorController {
         userId,
         documentId,
         question,
-        conversationId
+        conversationId,
+        language
       );
 
       res.status(200).json({

@@ -1,7 +1,9 @@
+import crypto from 'crypto';
 import { User, IUser } from '../models/User';
 import { StudentProfile } from '../models/StudentProfile';
 import { TeacherProfile } from '../models/TeacherProfile';
 import { RefreshToken } from '../models/RefreshToken';
+import { PasswordReset } from '../models/PasswordReset';
 import { hashPassword, verifyPassword } from '../utils/password';
 import {
   signAccessToken,
@@ -341,6 +343,33 @@ export class AuthService {
       createdAt: user.createdAt,
       profile,
     };
+  }
+
+  /**
+   * Create a secure password reset request token.
+   * Mitigates user enumeration by always responding cleanly.
+   */
+  async requestPasswordReset(email: string): Promise<void> {
+    const cleanEmail = email.toLowerCase().trim();
+    const user = await User.findOne({ email: cleanEmail });
+
+    if (!user) {
+      logger.info(`[AUTH] Password reset requested for non-existent email: ${cleanEmail}`);
+      return;
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const tokenHash = hashToken(resetToken);
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await PasswordReset.create({
+      user: user._id,
+      tokenHash,
+      expiresAt,
+      used: false,
+    });
+
+    logger.info(`[AUTH] Password reset token generated for user ${user._id} (${cleanEmail})`);
   }
 }
 

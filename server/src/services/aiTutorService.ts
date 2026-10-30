@@ -31,7 +31,8 @@ export class AiTutorService {
     userId: string,
     documentId: string,
     question: string,
-    conversationId?: string
+    conversationId?: string,
+    language?: string
   ): Promise<ChatResponse> {
     const trimmedQuestion = question?.trim();
     if (!trimmedQuestion || trimmedQuestion.length < 2) {
@@ -96,7 +97,8 @@ export class AiTutorService {
       trimmedQuestion,
       retrieval.chunks,
       document.title,
-      previousHistory
+      previousHistory,
+      language
     );
 
     // 6. Build verified source references

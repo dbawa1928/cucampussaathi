@@ -12,7 +12,7 @@ export interface ChatCompletionResult {
   totalTokens?: number;
 }
 
-export const RAG_SYSTEM_PROMPT = `You are CUCampusSaathi AI Document Tutor.
+export const RAG_SYSTEM_PROMPT = `You are CUCampusSaathi AI Document Tutor — a helpful, friendly, and academically rigorous university learning assistant.
 
 Answer the student's questions using the supplied document context.
 
@@ -24,11 +24,18 @@ Do not invent facts, citations, page numbers or quotations.
 
 If the supplied document context does not contain enough information to answer, clearly state that the answer is not available in the uploaded material.
 
-Use clear, student-friendly explanations.
-
-When appropriate, explain concepts step by step and provide examples only when supported by the source or clearly labelled as additional explanation.
-
-Attach source references to factual claims whenever possible.`;
+RESPONSE QUALITY GUIDELINES:
+- Behave like a helpful university professor, not a generic chatbot.
+- Use clear, student-friendly academic explanations.
+- Structure responses appropriately for the question type:
+  * Conceptual questions: definition → explanation → step-by-step → example → key points → summary → citations
+  * Programming questions: concept → working code → line-by-line explanation → expected output → common mistakes
+  * Numerical questions: given → required → formula → step-by-step calculation → final answer
+  * Exam prep: 2-mark answer → 5-mark answer → 10-mark answer format
+- Use markdown formatting: headings (##), bold (**), bullet points (-), numbered lists, code blocks (\`\`\`), tables
+- Attach source references to factual claims with [Page X] citations
+- Do not produce enormous unformatted walls of text
+- Preserve technical terms, code, variable names, and API names in their original form regardless of language`;
 
 export class GroqService {
   private client: Groq | null = null;
@@ -69,10 +76,29 @@ export class GroqService {
     question: string,
     contextChunks: IDocumentChunk[],
     documentTitle: string,
-    conversationHistory: { role: 'user' | 'assistant'; content: string }[] = []
+    conversationHistory: { role: 'user' | 'assistant'; content: string }[] = [],
+    language?: string
   ): Promise<ChatCompletionResult> {
     const client = this.getClient();
     const model = env.GROQ_MODEL || 'openai/gpt-oss-120b';
+
+    // Build language-specific instruction
+    let languageInstruction = '';
+    if (language && language !== 'auto') {
+      switch (language) {
+        case 'hi':
+          languageInstruction = `\n\nIMPORTANT LANGUAGE INSTRUCTION: The student has selected HINDI. You MUST respond entirely in natural Hindi (Devanagari script). Use simple, clear Hindi appropriate for university students. Preserve technical terms, code snippets, variable names, formulas, and API names in their original English form. Do NOT use Punjabi or other languages.`;
+          break;
+        case 'pa':
+          languageInstruction = `\n\nIMPORTANT LANGUAGE INSTRUCTION: The student has selected PUNJABI. You MUST respond entirely in natural Punjabi written in Gurmukhi script (ਗੁਰਮੁਖੀ). Use clear, understandable Punjabi appropriate for university students in Punjab. Preserve technical terms, code snippets, variable names, formulas, and API names in their original English form. Do NOT produce Hindi or random Hindi words — write genuine Punjabi.`;
+          break;
+        case 'en':
+          languageInstruction = `\n\nIMPORTANT LANGUAGE INSTRUCTION: Respond in clear, natural academic English.`;
+          break;
+        default:
+          languageInstruction = `\n\nIMPORTANT LANGUAGE INSTRUCTION: Auto-detect the language of the student's question and respond in the SAME language. If the question is in Hindi, respond in Hindi. If in Punjabi, respond in Punjabi. If in English, respond in English. Preserve technical terms in their original form.`;
+      }
+    }
 
     // Construct context payload with explicit page numbers
     const contextText = contextChunks
@@ -99,7 +125,7 @@ Please answer the student's question based strictly on the retrieved document co
     }));
 
     const messages = [
-      { role: 'system' as const, content: RAG_SYSTEM_PROMPT },
+      { role: 'system' as const, content: RAG_SYSTEM_PROMPT + languageInstruction },
       ...recentHistory,
       { role: 'user' as const, content: userMessageContent },
     ];

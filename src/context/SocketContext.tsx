@@ -36,9 +36,14 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const socketRef = useRef<Socket | null>(null);
 
+  // FIX: Use user?.id (string primitive) as dependency, NOT the full user object.
+  // Using the full object causes a new reference on every auth check → reconnect loop.
+  // Declared before fetchNotifications to prevent TS2448 / TS2454 TDZ error.
+  const userId = user?.id || user?._id || null;
+
   // Fetch notifications from REST API
   const fetchNotifications = useCallback(async () => {
-    if (!user) return;
+    if (!userId) return;
     try {
       setLoadingNotifications(true);
       const [notifsRes, unreadRes] = await Promise.all([
@@ -57,7 +62,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } finally {
       setLoadingNotifications(false);
     }
-  }, [user]);
+  }, [userId]);
 
   // Mark single notification as read
   const markAsRead = async (notificationId: string) => {
@@ -102,8 +107,10 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   // Manage real-time Socket.IO connection
+  // Using userId (string primitive) as dependency, NOT the full user object.
+  // Using the full object causes a new reference on every auth check → reconnect loop.
   useEffect(() => {
-    if (!user) {
+    if (!userId) {
       if (socketRef.current) {
         socketRef.current.disconnect();
         socketRef.current = null;
@@ -165,7 +172,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [user, fetchNotifications]);
+  }, [userId, fetchNotifications]);
 
   return (
     <SocketContext.Provider

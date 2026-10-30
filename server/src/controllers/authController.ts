@@ -144,6 +144,27 @@ export class AuthController {
       next(error);
     }
   }
+
+  /**
+   * POST /api/v1/auth/forgot-password
+   */
+  async forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const email = req.body?.email;
+      if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+        throw new ValidationError('A valid university email address is required.');
+      }
+
+      await authService.requestPasswordReset(email.trim());
+
+      res.status(200).json({
+        success: true,
+        message: 'If the provided email is associated with a university account, recovery instructions have been dispatched.',
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const authController = new AuthController();

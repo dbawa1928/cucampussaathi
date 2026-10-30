@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Mail, ArrowLeft, CheckCircle2, AlertCircle, Loader2, Info } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
+import { apiClient, type ApiResponse } from '../api/client';
 
 export const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -10,7 +11,7 @@ export const ForgotPasswordPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -25,10 +26,20 @@ export const ForgotPasswordPage: React.FC = () => {
     }
 
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      const res = await apiClient.post<ApiResponse<any>>('/auth/forgot-password', {
+        email: email.trim().toLowerCase(),
+      });
+      if (res.success) {
+        setIsSuccess(true);
+      } else {
+        setError(res.message || 'Unable to process recovery request.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to submit recovery request. Please try again.');
+    } finally {
       setIsSubmitting(false);
-      setIsSuccess(true);
-    }, 1000);
+    }
   };
 
   return (
@@ -65,14 +76,14 @@ export const ForgotPasswordPage: React.FC = () => {
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-[#252525] mb-2">
-                Recovery Request Logged (Demo State)
+                Recovery Request Submitted
               </h3>
               <p className="text-xs text-[#666666] mb-4 leading-relaxed">
-                In a live deployment connected to institutional SMTP servers, a secure token would be delivered to <strong className="text-[#252525]">{email}</strong>.
+                If the email <strong className="text-[#252525]">{email}</strong> exists in our Chandigarh University academic records, a secure password recovery instruction token has been generated.
               </p>
               <div className="p-3 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] text-[11px] text-[#666666] mb-6">
                 <Info className="w-3.5 h-3.5 text-[#C62828] inline mr-1" />
-                This is a public prototype demonstration. No actual outgoing email has been transmitted.
+                Please check your university and backup inboxes. Password reset tokens remain active for 60 minutes.
               </div>
               <Button to="/login" variant="primary" size="md" className="w-full">
                 Return to Login

@@ -120,9 +120,10 @@ export class DocumentExtractionService {
    * Extract text from PDF buffer preserving exact page numbers.
    */
   async extractPdfPages(buffer: Buffer): Promise<{ pages: ExtractedPage[]; totalTextLength: number }> {
-    let parser: any = null;
+    let parser: InstanceType<typeof PDFParse> | null = null;
     try {
-      parser = new PDFParse({ data: buffer });
+      // PDFParse expects a TypedArray; convert Buffer to Uint8Array
+      parser = new PDFParse({ data: new Uint8Array(buffer) });
       const parseResult = await parser.getText({ lineEnforce: true });
       const pages: ExtractedPage[] = [];
       let totalTextLength = 0;

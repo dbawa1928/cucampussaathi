@@ -837,7 +837,7 @@ export const AppointmentsPage: React.FC = () => {
                 <CalendarCheck className="w-4 h-4" /> Consultation Requests ({appointments.length})
               </button>
             </>
-          ) : (
+          ) : user.role === 'STUDENT' ? (
             <>
               <button
                 type="button"
@@ -870,8 +870,32 @@ export const AppointmentsPage: React.FC = () => {
                 <CalendarCheck className="w-4 h-4" /> My Appointments ({appointments.length})
               </button>
             </>
+          ) : (
+            <div className="px-4 py-2 text-xs font-bold text-[#C62828]">
+              Administrator Overview Mode
+            </div>
           )}
         </div>
+
+        {/* ADMIN APPOINTMENT ROUTE REDIRECT BANNER */}
+        {user.role === 'ADMIN' && (
+          <div className="bg-white rounded-3xl border border-[#E7DADA] p-8 sm:p-12 text-center shadow-xs">
+            <div className="w-14 h-14 rounded-2xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/25 flex items-center justify-center mx-auto mb-4">
+              <CalendarCheck className="w-7 h-7" />
+            </div>
+            <h2 className="text-xl font-bold text-[#252525] mb-2">
+              Campus Consultation Monitoring
+            </h2>
+            <p className="text-xs sm:text-sm text-[#666666] max-w-lg mx-auto mb-6 leading-relaxed">
+              As an Administrator, you can view, filter, and audit consultations across all students and faculty departments through the Admin Console.
+            </p>
+            <div className="flex justify-center gap-3">
+              <Button to="/admin?tab=appointments" variant="primary" size="md">
+                Open Admin Appointment Console
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* ==================================================================== */}
         {/* TEACHER TAB 1: CONSULTATION REQUESTS */}
