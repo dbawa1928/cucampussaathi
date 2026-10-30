@@ -73,6 +73,7 @@ export const Navbar: React.FC = () => {
     const links = [
       { name: 'Home', href: '/' },
       { name: 'About', href: '/about' },
+      { name: 'Events', href: '/events' },
       { name: 'Directory', href: '/directory' },
       { name: 'Contact', href: '/contact' },
     ];

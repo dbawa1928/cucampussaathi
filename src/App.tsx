@@ -37,6 +37,11 @@ import { LearningSessionsPage } from './pages/learnTeach/LearningSessionsPage';
 import { LearningGroupsPage } from './pages/learnTeach/LearningGroupsPage';
 import { LearningProgressPage } from './pages/learnTeach/LearningProgressPage';
 
+// Campus Events Calendar
+import { EventsCalendarPage } from './pages/events/EventsCalendarPage';
+import { EventDetailPage } from './pages/events/EventDetailPage';
+import { ManageEventsPage } from './pages/events/ManageEventsPage';
+
 export function App() {
   return (
     <BrowserRouter>
@@ -61,6 +66,12 @@ export function App() {
               <Route path="/learn-teach/sessions" element={<LearningSessionsPage />} />
               <Route path="/learn-teach/groups" element={<LearningGroupsPage />} />
               <Route path="/learn-teach/progress" element={<LearningProgressPage />} />
+
+              {/* Campus Events Calendar Routes */}
+              <Route path="/events" element={<EventsCalendarPage />} />
+              <Route path="/events/:eventId" element={<EventDetailPage />} />
+              <Route path="/events/manage" element={<ManageEventsPage />} />
+
               <Route path="/about" element={<AboutPage />} />
               <Route path="/features" element={<FeaturesPage />} />
               <Route path="/how-it-works" element={<HowItWorksPage />} />

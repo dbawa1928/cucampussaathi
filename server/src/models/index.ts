@@ -27,3 +27,8 @@ export * from './LearningMessage';
 export * from './LearningReview';
 export * from './SkillProgress';
 export * from './LearnTeachReport';
+
+// Campus Events Calendar Models
+export * from './CampusEvent';
+export * from './EventRegistration';
+export * from './EventReminderLog';

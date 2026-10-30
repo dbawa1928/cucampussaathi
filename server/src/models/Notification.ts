@@ -23,7 +23,14 @@ export type NotificationType =
   | 'LEARN_TEACH_SESSION_CONFIRMED'
   | 'LEARN_TEACH_SESSION_CANCELLED'
   | 'LEARN_TEACH_GROUP_INVITE'
-  | 'LEARN_TEACH_MESSAGE';
+  | 'LEARN_TEACH_MESSAGE'
+  | 'EVENT_REGISTRATION_CONFIRMED'
+  | 'EVENT_REGISTRATION_CANCELLED'
+  | 'EVENT_CANCELLED'
+  | 'EVENT_UPDATED'
+  | 'EVENT_REMINDER_24H'
+  | 'EVENT_REMINDER_1H'
+  | 'EVENT_PUBLISHED';
 
 export interface INotification extends Document {
   recipient: Types.ObjectId;
@@ -72,6 +79,13 @@ const NotificationSchema = new Schema<INotification>(
         'LEARN_TEACH_SESSION_CANCELLED',
         'LEARN_TEACH_GROUP_INVITE',
         'LEARN_TEACH_MESSAGE',
+        'EVENT_REGISTRATION_CONFIRMED',
+        'EVENT_REGISTRATION_CANCELLED',
+        'EVENT_CANCELLED',
+        'EVENT_UPDATED',
+        'EVENT_REMINDER_24H',
+        'EVENT_REMINDER_1H',
+        'EVENT_PUBLISHED',
       ],
       required: [true, 'Notification type is required'],
     },

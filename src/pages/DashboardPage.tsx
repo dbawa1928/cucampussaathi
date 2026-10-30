@@ -721,7 +721,7 @@ export const DashboardPage: React.FC = () => {
                 <span className="text-xs text-[#666666] font-medium">Tailored for your role</span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* FEATURE 0: AI DOCUMENT TUTOR */}
                 <div className="bg-white rounded-2xl border border-[#C62828]/40 shadow-xs p-6 hover:shadow-md hover:border-[#C62828] transition-all group flex flex-col justify-between relative overflow-hidden">
                   <div className="absolute top-0 right-0 bg-[#C62828] text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
@@ -920,6 +920,38 @@ export const DashboardPage: React.FC = () => {
                     className="inline-flex items-center justify-between text-xs font-bold text-[#C62828] hover:text-[#8E1717] pt-2 border-t border-[#E7DADA]"
                   >
                     <span>Launch Learn & Teach</span>
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+
+                {/* FEATURE 5: CAMPUS EVENTS CALENDAR */}
+                <div className="bg-white rounded-2xl border border-[#C62828]/40 shadow-xs p-6 hover:shadow-md hover:border-[#C62828] transition-all group flex flex-col justify-between relative overflow-hidden">
+                  <div className="absolute top-0 right-0 bg-[#C62828] text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
+                    University Life
+                  </div>
+                  <div>
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7F7] text-[#C62828] border border-[#C62828]/20 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                      <Calendar className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-base font-bold text-[#252525] mb-1.5">
+                      Campus Events Calendar
+                    </h3>
+                    <p className="text-xs text-[#666666] leading-relaxed mb-4">
+                      Explore university hackathons, workshops, guest lectures, cultural fests, and webinars. Sync to your personal calendar with 1-click.
+                    </p>
+                    <div className="p-3 bg-[#FFF7F7] rounded-xl border border-[#C62828]/20 mb-4 flex items-center justify-between text-xs">
+                      <span className="text-[#C62828] font-semibold">Calendar:</span>
+                      <span className="font-extrabold text-[#252525] px-2 py-0.5 bg-white rounded-md border border-[#C62828]/30">
+                        Live • Month & Week
+                      </span>
+                    </div>
+                  </div>
+
+                  <Link
+                    to="/events"
+                    className="inline-flex items-center justify-between text-xs font-bold text-[#C62828] hover:text-[#8E1717] pt-2 border-t border-[#E7DADA]"
+                  >
+                    <span>Open Events Calendar</span>
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>

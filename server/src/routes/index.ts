@@ -12,6 +12,7 @@ import aiTutorRoutes from './aiTutorRoutes';
 import teacherRestrictionRoutes from './teacherRestrictionRoutes';
 import contactRoutes from './contactRoutes';
 import learnTeachRoutes from './learnTeachRoutes';
+import eventRoutes from './eventRoutes';
 import { adminRouter } from './adminRoutes';
 import { authGuard, roleGuard } from '../middleware/authGuard';
 
@@ -56,6 +57,9 @@ router.use('/admin', adminRouter);
 
 // Contact & Support: /api/v1/contact
 router.use('/contact', contactRoutes);
+
+// Campus Events Calendar: /api/v1/events/*
+router.use('/events', eventRoutes);
 
 // RBAC Test Endpoints (For automated and manual verification of roleGuard)
 router.get('/test/student-only', authGuard, roleGuard('STUDENT'), (req, res) => {
