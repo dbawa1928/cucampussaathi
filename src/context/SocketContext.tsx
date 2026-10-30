@@ -16,6 +16,7 @@ export interface NotificationItem {
 }
 
 interface SocketContextType {
+  socket: Socket | null;
   isConnected: boolean;
   unreadCount: number;
   notifications: NotificationItem[];
@@ -177,6 +178,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   return (
     <SocketContext.Provider
       value={{
+        socket: socketRef.current,
         isConnected,
         unreadCount,
         notifications,

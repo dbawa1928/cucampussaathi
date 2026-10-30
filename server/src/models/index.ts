@@ -14,3 +14,16 @@ export * from './EmailLog';
 export * from './Document';
 export * from './DocumentChunk';
 export * from './DocumentConversation';
+
+// Learn & Teach Network Models
+export * from './Skill';
+export * from './TeachingListing';
+export * from './LearningGoal';
+export * from './SkillConnection';
+export * from './LearningSession';
+export * from './LearningGroup';
+export * from './GroupMembership';
+export * from './LearningMessage';
+export * from './LearningReview';
+export * from './SkillProgress';
+export * from './LearnTeachReport';

@@ -80,6 +80,36 @@ export function initSocketServer(httpServer: HttpServer): SocketIOServer {
     socket.join(userRoom);
     logger.info(`Socket connected: [${user.role}] ${user.email} (joined room: ${userRoom})`);
 
+    // Learn & Teach: Join accepted connection room
+    socket.on('learn_teach:join_connection', async (connectionId: string) => {
+      try {
+        const { SkillConnectionModel } = await import('./models');
+        const conn = await SkillConnectionModel.findOne({
+          _id: connectionId,
+          $or: [{ sender: user.sub }, { receiver: user.sub }],
+          status: 'ACCEPTED',
+        });
+        if (conn) {
+          socket.join(`connection:${connectionId}`);
+        }
+      } catch {}
+    });
+
+    // Learn & Teach: Join accepted group room
+    socket.on('learn_teach:join_group', async (groupId: string) => {
+      try {
+        const { GroupMembershipModel } = await import('./models');
+        const membership = await GroupMembershipModel.findOne({
+          group: groupId,
+          user: user.sub,
+          status: 'ACCEPTED',
+        });
+        if (membership) {
+          socket.join(`group:${groupId}`);
+        }
+      } catch {}
+    });
+
     socket.on('disconnect', (reason) => {
       logger.info(`Socket disconnected: ${user.email} (reason: ${reason})`);
     });
@@ -103,6 +133,26 @@ export function emitToUser(userId: string, event: string, data: any): void {
     return;
   }
   io.to(`user:${userId}`).emit(event, data);
+}
+
+/**
+ * Safely emit an event to a connection room.
+ */
+export function emitToConnection(connectionId: string, event: string, data: any): void {
+  if (!io) {
+    return;
+  }
+  io.to(`connection:${connectionId}`).emit(event, data);
+}
+
+/**
+ * Safely emit an event to a learning group room.
+ */
+export function emitToGroup(groupId: string, event: string, data: any): void {
+  if (!io) {
+    return;
+  }
+  io.to(`group:${groupId}`).emit(event, data);
 }
 
 /**

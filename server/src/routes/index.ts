@@ -11,6 +11,7 @@ import documentRoutes from './documentRoutes';
 import aiTutorRoutes from './aiTutorRoutes';
 import teacherRestrictionRoutes from './teacherRestrictionRoutes';
 import contactRoutes from './contactRoutes';
+import learnTeachRoutes from './learnTeachRoutes';
 import { adminRouter } from './adminRoutes';
 import { authGuard, roleGuard } from '../middleware/authGuard';
 
@@ -46,6 +47,9 @@ router.use('/reschedule-proposals', rescheduleRoutes);
 // AI Document Tutor & Documents: /api/v1/documents/* and /api/v1/ai/*
 router.use('/documents', documentRoutes);
 router.use('/ai', aiTutorRoutes);
+
+// Learn & Teach Network: /api/v1/learn-teach/*
+router.use('/learn-teach', learnTeachRoutes);
 
 // Admin Dashboard & Campus Management: /api/v1/admin/*
 router.use('/admin', adminRouter);

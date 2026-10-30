@@ -25,6 +25,18 @@ import { AiTutorPage } from './pages/AiTutorPage';
 import { StudentOnboardingPage } from './pages/StudentOnboardingPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
+// Learn & Teach Network
+import { LearnTeachDashboardPage } from './pages/learnTeach/LearnTeachDashboardPage';
+import { ExploreSkillsPage } from './pages/learnTeach/ExploreSkillsPage';
+import { DiscoverPeoplePage } from './pages/learnTeach/DiscoverPeoplePage';
+import { MyTeachingSkillsPage } from './pages/learnTeach/MyTeachingSkillsPage';
+import { MyLearningGoalsPage } from './pages/learnTeach/MyLearningGoalsPage';
+import { RecommendationsPage } from './pages/learnTeach/RecommendationsPage';
+import { ConnectionsPage } from './pages/learnTeach/ConnectionsPage';
+import { LearningSessionsPage } from './pages/learnTeach/LearningSessionsPage';
+import { LearningGroupsPage } from './pages/learnTeach/LearningGroupsPage';
+import { LearningProgressPage } from './pages/learnTeach/LearningProgressPage';
+
 export function App() {
   return (
     <BrowserRouter>
@@ -37,6 +49,18 @@ export function App() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/student/onboarding" element={<StudentOnboardingPage />} />
               <Route path="/ai-tutor" element={<AiTutorPage />} />
+
+              {/* Learn & Teach Network Routes */}
+              <Route path="/learn-teach" element={<LearnTeachDashboardPage />} />
+              <Route path="/learn-teach/explore" element={<ExploreSkillsPage />} />
+              <Route path="/learn-teach/discover" element={<DiscoverPeoplePage />} />
+              <Route path="/learn-teach/my-skills" element={<MyTeachingSkillsPage />} />
+              <Route path="/learn-teach/my-goals" element={<MyLearningGoalsPage />} />
+              <Route path="/learn-teach/recommendations" element={<RecommendationsPage />} />
+              <Route path="/learn-teach/connections" element={<ConnectionsPage />} />
+              <Route path="/learn-teach/sessions" element={<LearningSessionsPage />} />
+              <Route path="/learn-teach/groups" element={<LearningGroupsPage />} />
+              <Route path="/learn-teach/progress" element={<LearningProgressPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/features" element={<FeaturesPage />} />
               <Route path="/how-it-works" element={<HowItWorksPage />} />
