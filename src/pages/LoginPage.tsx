@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import { useAuth, type AuthUser } from '../context/AuthContext';
+import { useAuth, isStudentProfileComplete, type AuthUser } from '../context/AuthContext';
 
 export const LoginPage: React.FC = () => {
   const { login, user: currentUser, logout } = useAuth();
@@ -47,7 +47,13 @@ export const LoginPage: React.FC = () => {
     try {
       const user = await login(identifier.trim(), password);
       setAuthenticatedUser(user);
-      navigate('/dashboard');
+
+      // If user is a student and hasn't completed their mandatory profile details, target onboarding
+      if (user.role === 'STUDENT' && !isStudentProfileComplete(user)) {
+        navigate('/student/onboarding');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err: any) {
       setError(err.message || 'Authentication failed. Please verify your credentials.');
     } finally {
@@ -120,10 +126,28 @@ export const LoginPage: React.FC = () => {
                 </div>
               </div>
 
+              {activeSessionUser.role === 'STUDENT' && !isStudentProfileComplete(activeSessionUser) ? (
+                <div className="mb-4 p-3 rounded-xl bg-amber-50 border border-amber-200 text-left">
+                  <div className="flex items-center gap-2 text-amber-800 font-semibold text-xs mb-1">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    <span>Action Required</span>
+                  </div>
+                  <p className="text-[11px] text-amber-700 leading-relaxed">
+                    Please complete your mandatory student profile (skills, GitHub, LinkedIn, bio, emails) to unlock your dashboard.
+                  </p>
+                </div>
+              ) : null}
+
               <div className="flex flex-col gap-2.5">
-                <Button to="/dashboard" variant="primary" size="md" className="w-full">
-                  Go to Dashboard
-                </Button>
+                {activeSessionUser.role === 'STUDENT' && !isStudentProfileComplete(activeSessionUser) ? (
+                  <Button to="/student/onboarding" variant="primary" size="md" className="w-full">
+                    Complete Student Onboarding (Required)
+                  </Button>
+                ) : (
+                  <Button to="/dashboard" variant="primary" size="md" className="w-full">
+                    Go to Dashboard
+                  </Button>
+                )}
                 <Button to="/profile" variant="outline" size="md" className="w-full">
                   Manage My Profile & Skills
                 </Button>

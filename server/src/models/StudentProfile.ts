@@ -13,6 +13,9 @@ export interface IStudentProfile extends Document {
     linkedin?: string;
     portfolio?: string;
   };
+  personalEmail?: string;
+  contactNumber?: string;
+  isOnboardingCompleted: boolean;
   privacyLevel: PrivacyLevel;
   createdAt: Date;
   updatedAt: Date;
@@ -47,6 +50,22 @@ const StudentProfileSchema = new Schema<IStudentProfile>(
     skills: {
       type: [String],
       default: [],
+      index: true,
+    },
+    personalEmail: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      maxlength: [150, 'Personal email cannot exceed 150 characters'],
+    },
+    contactNumber: {
+      type: String,
+      trim: true,
+      maxlength: [20, 'Contact number cannot exceed 20 characters'],
+    },
+    isOnboardingCompleted: {
+      type: Boolean,
+      default: false,
       index: true,
     },
     socialLinks: {

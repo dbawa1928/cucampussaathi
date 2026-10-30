@@ -16,14 +16,33 @@ export interface AuthUser {
   profile?: any;
 }
 
+export function isStudentProfileComplete(user: AuthUser | null): boolean {
+  if (!user) return false;
+  if (user.role !== 'STUDENT') return true;
+
+  const p = user.profile;
+  if (!p) return false;
+  if (p.isOnboardingCompleted === true) return true;
+
+  const hasBio = Boolean(p.bio && p.bio.trim().length >= 10);
+  const hasSkills = Boolean(Array.isArray(p.skills) && p.skills.length > 0);
+  const hasGithub = Boolean(p.socialLinks?.github && p.socialLinks.github.trim().length > 0);
+  const hasLinkedin = Boolean(p.socialLinks?.linkedin && p.socialLinks.linkedin.trim().length > 0);
+  const hasPersonalEmail = Boolean(p.personalEmail && p.personalEmail.trim().length > 0);
+
+  return hasBio && hasSkills && hasGithub && hasLinkedin && hasPersonalEmail;
+}
+
 interface AuthContextType {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isOnboardingCompleted: boolean;
   login: (identifier: string, password: string) => Promise<AuthUser>;
   register: (payload: any) => Promise<AuthUser>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
+  updateUser: (updatedUser: AuthUser) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -88,16 +107,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateUser = (updatedUser: AuthUser) => {
+    setUser(updatedUser);
+  };
+
+  const isOnboardingCompleted = isStudentProfileComplete(user);
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isAuthenticated: !!user,
         isLoading,
+        isOnboardingCompleted,
         login,
         register,
         logout,
         checkAuth,
+        updateUser,
       }}
     >
       {children}

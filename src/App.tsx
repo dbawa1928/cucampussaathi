@@ -22,6 +22,7 @@ import { TermsPage } from './pages/TermsPage';
 import { AppointmentsPage } from './pages/AppointmentsPage';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AiTutorPage } from './pages/AiTutorPage';
+import { StudentOnboardingPage } from './pages/StudentOnboardingPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 export function App() {
@@ -34,6 +35,7 @@ export function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/student/onboarding" element={<StudentOnboardingPage />} />
               <Route path="/ai-tutor" element={<AiTutorPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/features" element={<FeaturesPage />} />

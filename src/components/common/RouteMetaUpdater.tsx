@@ -10,6 +10,10 @@ const ROUTE_TITLES: Record<string, { title: string; description: string }> = {
     title: 'Dashboard — CUCampusSaathi',
     description: 'Personalized student and faculty university hub for consultations, projects, and activities.',
   },
+  '/student/onboarding': {
+    title: 'Student Profile Setup — CUCampusSaathi',
+    description: 'Complete your mandatory academic profile to access the student dashboard and campus network.',
+  },
   '/ai-tutor': {
     title: 'AI Document Tutor — CUCampusSaathi',
     description: 'AI-powered grounded academic learning workspace for lecture slides, notes, and study materials.',

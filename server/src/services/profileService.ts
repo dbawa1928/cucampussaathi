@@ -66,6 +66,16 @@ export class ProfileService {
       throw new AppError('Only students can create or update a student profile', 403);
     }
 
+    const hasRequiredOnboarding = Boolean(
+      (data.personalEmail || '').trim() &&
+      (data.bio || '').trim() &&
+      Array.isArray(data.skills) && data.skills.length > 0 &&
+      (data.socialLinks?.github || '').trim() &&
+      (data.socialLinks?.linkedin || '').trim()
+    );
+
+    const isOnboardingCompleted = data.isOnboardingCompleted ?? hasRequiredOnboarding;
+
     const profile = await StudentProfile.findOneAndUpdate(
       { user: userId },
       {
@@ -75,6 +85,9 @@ export class ProfileService {
           semester: data.semester,
           bio: data.bio || '',
           skills: data.skills || [],
+          personalEmail: data.personalEmail || '',
+          contactNumber: data.contactNumber || '',
+          isOnboardingCompleted,
           socialLinks: data.socialLinks || {},
           privacyLevel: data.privacyLevel || 'CAMPUS_ONLY',
         },

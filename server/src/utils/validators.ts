@@ -158,6 +158,19 @@ export const studentProfileSchema = z.object({
     })
     .optional()
     .default({}),
+  personalEmail: z
+    .string()
+    .trim()
+    .email('Please enter a valid personal email address')
+    .optional()
+    .or(z.literal('')),
+  contactNumber: z
+    .string()
+    .trim()
+    .max(20, 'Contact number cannot exceed 20 characters')
+    .optional()
+    .or(z.literal('')),
+  isOnboardingCompleted: z.boolean().optional(),
   privacyLevel: z
     .enum(['PUBLIC', 'CAMPUS_ONLY', 'PRIVATE'], {
       errorMap: () => ({ message: 'Privacy level must be PUBLIC, CAMPUS_ONLY, or PRIVATE' }),

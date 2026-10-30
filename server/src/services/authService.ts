@@ -23,6 +23,7 @@ export interface AuthResult {
     department: string;
     isVerified: boolean;
     accountStatus: string;
+    profile?: any;
   };
   accessToken: string;
   refreshToken: string;
@@ -189,6 +190,13 @@ export class AuthService {
       userAgent: meta?.userAgent,
     });
 
+    let profile: any = null;
+    if (user.role === 'STUDENT') {
+      profile = await StudentProfile.findOne({ user: user._id });
+    } else if (user.role === 'TEACHER') {
+      profile = await TeacherProfile.findOne({ user: user._id });
+    }
+
     return {
       user: {
         id: userIdStr,
@@ -199,6 +207,7 @@ export class AuthService {
         department: user.department,
         isVerified: user.isVerified,
         accountStatus: user.accountStatus,
+        profile,
       },
       accessToken,
       refreshToken,
@@ -269,6 +278,13 @@ export class AuthService {
       userAgent: meta?.userAgent,
     });
 
+    let profile: any = null;
+    if (user.role === 'STUDENT') {
+      profile = await StudentProfile.findOne({ user: user._id });
+    } else if (user.role === 'TEACHER') {
+      profile = await TeacherProfile.findOne({ user: user._id });
+    }
+
     return {
       user: {
         id: userIdStr,
@@ -279,6 +295,7 @@ export class AuthService {
         department: user.department,
         isVerified: user.isVerified,
         accountStatus: user.accountStatus,
+        profile,
       },
       accessToken,
       refreshToken: newRefreshToken,

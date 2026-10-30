@@ -24,6 +24,8 @@ interface StudentProfileData {
   semester: number;
   bio: string;
   skills: string[];
+  personalEmail?: string;
+  contactNumber?: string;
   socialLinks: {
     github?: string;
     linkedin?: string;
@@ -56,6 +58,8 @@ export const ProfilePage: React.FC = () => {
     semester: 1,
     bio: '',
     skills: [],
+    personalEmail: '',
+    contactNumber: '',
     socialLinks: { github: '', linkedin: '', portfolio: '' },
     privacyLevel: 'CAMPUS_ONLY',
   });
@@ -89,6 +93,8 @@ export const ProfilePage: React.FC = () => {
             semester: p.semester || 1,
             bio: p.bio || '',
             skills: p.skills || [],
+            personalEmail: p.personalEmail || '',
+            contactNumber: p.contactNumber || '',
             socialLinks: {
               github: p.socialLinks?.github || '',
               linkedin: p.socialLinks?.linkedin || '',
@@ -387,10 +393,39 @@ export const ProfilePage: React.FC = () => {
                   </select>
                 </div>
 
+                <div>
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
+                    Personal Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={studentForm.personalEmail || ''}
+                    onChange={(e) => setStudentForm({ ...studentForm, personalEmail: e.target.value })}
+                    placeholder="e.g. yourname.personal@gmail.com"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
+                  />
+                  <span className="text-[10px] text-[#666666] mt-1 block">Backup personal inbox for important project notices</span>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
+                    Contact / Phone Number <span className="text-[#999999] font-normal">(Optional)</span>
+                  </label>
+                  <input
+                    type="tel"
+                    value={studentForm.contactNumber || ''}
+                    onChange={(e) => setStudentForm({ ...studentForm, contactNumber: e.target.value })}
+                    placeholder="e.g. +91 9876543210"
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828]/20 focus:border-[#C62828] transition-all text-[#252525]"
+                  />
+                  <span className="text-[10px] text-[#666666] mt-1 block">Optional phone for urgent team collaboration</span>
+                </div>
+
                 <div className="sm:col-span-2">
                   <div className="flex justify-between items-center mb-1.5">
                     <label className="block text-xs font-semibold text-[#252525]">
-                      Student Biography & Collaboration Goals
+                      Student Biography & Collaboration Goals *
                     </label>
                     <span className="text-[11px] text-[#999999]">
                       {studentForm.bio.length} / 500 characters
@@ -399,6 +434,7 @@ export const ProfilePage: React.FC = () => {
                   <textarea
                     rows={3}
                     maxLength={500}
+                    required
                     value={studentForm.bio}
                     onChange={(e) => setStudentForm({ ...studentForm, bio: e.target.value })}
                     placeholder="Briefly introduce your academic interests, hackathons, open-source work, or peer study goals..."

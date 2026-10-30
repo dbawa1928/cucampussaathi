@@ -21,7 +21,7 @@ import {
   ShieldCheck,
   UserCheck,
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, isStudentProfileComplete } from '../context/AuthContext';
 import { apiClient, API_BASE_URL, type ApiResponse } from '../api/client';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
@@ -32,6 +32,15 @@ interface StudentProfile {
   bio?: string;
   skills?: string[];
   privacyLevel?: string;
+  personalEmail?: string;
+  contactNumber?: string;
+  isOnboardingCompleted?: boolean;
+  socialLinks?: {
+    github?: string;
+    linkedin?: string;
+    portfolio?: string;
+    twitter?: string;
+  };
 }
 
 interface TeacherProfile {
@@ -103,6 +112,8 @@ export const DashboardPage: React.FC = () => {
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/login');
+    } else if (!authLoading && user && user.role === 'STUDENT' && !isStudentProfileComplete(user)) {
+      navigate('/student/onboarding');
     }
   }, [user, authLoading, navigate]);
 
@@ -128,7 +139,26 @@ export const DashboardPage: React.FC = () => {
               .get<ApiResponse<{ profile: StudentProfile }>>('/users/profile/student')
               .catch(() => null);
             if (profileRes?.data?.profile) {
-              setStudentProfile(profileRes.data.profile);
+              const p = profileRes.data.profile;
+              setStudentProfile(p);
+
+              // Verify mandatory fields are completed
+              const isDone = !!(
+                p.isOnboardingCompleted ||
+                (p.personalEmail &&
+                 p.bio && p.bio.trim().length > 0 &&
+                 p.skills && p.skills.length > 0 &&
+                 p.socialLinks?.github &&
+                 p.socialLinks?.linkedin)
+              );
+
+              if (!isDone) {
+                navigate('/student/onboarding');
+                return;
+              }
+            } else {
+              navigate('/student/onboarding');
+              return;
             }
           } else if (user.role === 'TEACHER') {
             const profileRes = await apiClient
