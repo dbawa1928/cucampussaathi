@@ -16,8 +16,13 @@ import {
   XCircle,
   Download,
   Clock,
+  FileText,
+  Sparkles,
+  BookOpen,
+  Layers,
+  ExternalLink,
 } from 'lucide-react';
-import { apiClient, type ApiResponse } from '../../api/client';
+import { apiClient, API_BASE_URL, type ApiResponse } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 import { AdminSidebar, type AdminTab } from '../../components/admin/AdminSidebar';
 import { AdminHeader } from '../../components/admin/AdminHeader';
@@ -72,6 +77,12 @@ export const AdminDashboardPage: React.FC = () => {
   // 7. Audit logs state
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [auditActionFilter, setAuditActionFilter] = useState('');
+
+  // 8. Documents state
+  const [adminDocs, setAdminDocs] = useState<any[]>([]);
+  const [adminDocsMetrics, setAdminDocsMetrics] = useState<any>(null);
+  const [docsSearch, setDocsSearch] = useState('');
+  const [docsStatusFilter, setDocsStatusFilter] = useState('');
 
   // Modal states
   const [actionModal, setActionModal] = useState<{
@@ -201,6 +212,22 @@ export const AdminDashboardPage: React.FC = () => {
     }
   }, [auditActionFilter]);
 
+  // Fetch Admin Documents & Storage Metrics
+  const fetchAdminDocuments = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await apiClient.get<ApiResponse<any>>('/documents/admin/all');
+      if (res.success && res.data) {
+        setAdminDocs(res.data.documents || []);
+        setAdminDocsMetrics(res.data.metrics || null);
+      }
+    } catch (err: any) {
+      setApiError(err.message || 'Failed to load campus documents.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   // Load data based on current tab
   useEffect(() => {
     if (!user || user.role !== 'ADMIN') return;
@@ -223,6 +250,9 @@ export const AdminDashboardPage: React.FC = () => {
       case 'appointments':
         fetchAppointments();
         break;
+      case 'documents':
+        fetchAdminDocuments();
+        break;
       case 'analytics':
         fetchAnalytics();
         break;
@@ -241,6 +271,7 @@ export const AdminDashboardPage: React.FC = () => {
     fetchTeachers,
     fetchVerifications,
     fetchAppointments,
+    fetchAdminDocuments,
     fetchAnalytics,
     fetchAuditLogs,
   ]);
@@ -392,6 +423,8 @@ export const AdminDashboardPage: React.FC = () => {
             ? 'Faculty Verification Queue'
             : currentTab === 'appointments'
             ? 'Campus Consultations'
+            : currentTab === 'documents'
+            ? 'Campus AI Study Documents & Storage'
             : currentTab === 'analytics'
             ? 'Platform Analytics & Trends'
             : currentTab === 'reports'
@@ -1160,6 +1193,190 @@ export const AdminDashboardPage: React.FC = () => {
                     </div>
                   )}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* ---------------------------------------------------- */}
+          {/* CAMPUS AI STUDY DOCUMENTS & STORAGE TAB */}
+          {/* ---------------------------------------------------- */}
+          {currentTab === 'documents' && (
+            <div className="space-y-6">
+              {/* Stat Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <StatCard
+                  title="Total Study Documents"
+                  value={adminDocsMetrics?.totalDocuments || adminDocs.length || 0}
+                  subtitle="Uploaded academic PDFs"
+                  icon={FileText}
+                  variant="primary"
+                />
+                <StatCard
+                  title="Campus Storage Used"
+                  value={`${adminDocsMetrics?.totalStorageMB || 0} MB`}
+                  subtitle="Encrypted document storage"
+                  icon={Layers}
+                  variant="neutral"
+                />
+                <StatCard
+                  title="Indexed Text Pages"
+                  value={adminDocsMetrics?.totalPages || 0}
+                  subtitle="Extracted & parsed pages"
+                  icon={BookOpen}
+                  variant="success"
+                />
+                <StatCard
+                  title="Indexed Chunks"
+                  value={adminDocsMetrics?.totalChunks || 0}
+                  subtitle="Searchable retrieval units"
+                  icon={Sparkles}
+                  variant="primary"
+                />
+              </div>
+
+              {/* Filter & Search Bar */}
+              <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-[280px]">
+                  <div className="relative flex-1">
+                    <Search className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="Search by title, original filename, student name, or email..."
+                      value={docsSearch}
+                      onChange={(e) => setDocsSearch(e.target.value)}
+                      className="w-full pl-9 pr-4 py-2 text-xs rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5]"
+                    />
+                  </div>
+                  <select
+                    value={docsStatusFilter}
+                    onChange={(e) => setDocsStatusFilter(e.target.value)}
+                    className="px-3 py-2 text-xs rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3157D5]"
+                  >
+                    <option value="">All Statuses</option>
+                    <option value="COMPLETED">Indexed / Completed</option>
+                    <option value="PROCESSING">Processing</option>
+                    <option value="FAILED">Failed</option>
+                  </select>
+                </div>
+
+                <div className="text-xs text-[#64748B]">
+                  Showing <strong className="text-[#17233B]">
+                    {adminDocs.filter((doc) => {
+                      const matchesStatus = !docsStatusFilter || doc.processingStatus === docsStatusFilter;
+                      const q = docsSearch.toLowerCase();
+                      const matchesQuery =
+                        !q ||
+                        doc.title?.toLowerCase().includes(q) ||
+                        doc.originalFilename?.toLowerCase().includes(q) ||
+                        doc.owner?.fullName?.toLowerCase().includes(q) ||
+                        doc.owner?.email?.toLowerCase().includes(q);
+                      return matchesStatus && matchesQuery;
+                    }).length}
+                  </strong> documents
+                </div>
+              </div>
+
+              {/* Documents Table */}
+              <div className="bg-white rounded-3xl border border-[#E2E8F0] overflow-hidden shadow-xs">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-bold text-[#64748B]">
+                      <th className="p-4">Document Title</th>
+                      <th className="p-4">Owner (Student)</th>
+                      <th className="p-4">Pages & Size</th>
+                      <th className="p-4">Chunks & Engine</th>
+                      <th className="p-4">Processing Status</th>
+                      <th className="p-4">Uploaded</th>
+                      <th className="p-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#F1F5F9] text-xs text-[#17233B]">
+                    {adminDocs.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="p-8 text-center text-xs text-[#64748B]">
+                          No campus documents found.
+                        </td>
+                      </tr>
+                    ) : (
+                      adminDocs
+                        .filter((doc) => {
+                          const matchesStatus = !docsStatusFilter || doc.processingStatus === docsStatusFilter;
+                          const q = docsSearch.toLowerCase();
+                          const matchesQuery =
+                            !q ||
+                            doc.title?.toLowerCase().includes(q) ||
+                            doc.originalFilename?.toLowerCase().includes(q) ||
+                            doc.owner?.fullName?.toLowerCase().includes(q) ||
+                            doc.owner?.email?.toLowerCase().includes(q);
+                          return matchesStatus && matchesQuery;
+                        })
+                        .map((doc) => (
+                          <tr key={doc._id} className="hover:bg-[#F8FAFC]/60 transition-colors">
+                            <td className="p-4">
+                              <div className="flex items-center gap-2.5">
+                                <div className="w-8 h-8 rounded-lg bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center shrink-0">
+                                  <FileText className="w-4 h-4" />
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="font-bold text-[#17233B] truncate max-w-[200px]">
+                                    {doc.title || doc.originalFilename}
+                                  </p>
+                                  <p className="text-[10px] text-[#64748B] font-mono truncate max-w-[200px]">
+                                    {doc.originalFilename}
+                                  </p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="p-4">
+                              <span className="font-bold block text-[#17233B]">{doc.owner?.fullName || 'Student'}</span>
+                              <span className="text-[11px] text-[#64748B] block">{doc.owner?.email}</span>
+                              <span className="text-[10px] text-slate-400">{doc.owner?.department}</span>
+                            </td>
+                            <td className="p-4 text-xs">
+                              <span className="font-semibold">{doc.pageCount || 0} Pages</span>
+                              <span className="text-[11px] text-[#64748B] block">
+                                {doc.fileSize ? `${(doc.fileSize / 1024).toFixed(1)} KB` : 'N/A'}
+                              </span>
+                            </td>
+                            <td className="p-4 text-xs">
+                              <span className="font-semibold">{doc.chunkCount || 0} Chunks</span>
+                              <span className="text-[10px] text-[#3157D5] font-mono block">
+                                {doc.embeddingProvider || 'bm25-lexical'}
+                              </span>
+                            </td>
+                            <td className="p-4">
+                              <span
+                                className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                  doc.processingStatus === 'COMPLETED'
+                                    ? 'bg-[#E6F5EF] text-[#16845B]'
+                                    : doc.processingStatus === 'PROCESSING'
+                                    ? 'bg-[#FEF3C7] text-[#D97706] animate-pulse'
+                                    : 'bg-[#FEF2F2] text-[#EF4444]'
+                                }`}
+                              >
+                                {doc.processingStatus}
+                              </span>
+                            </td>
+                            <td className="p-4 text-[11px] text-[#64748B]">
+                              {formatDate(doc.createdAt)}
+                            </td>
+                            <td className="p-4 text-right">
+                              <a
+                                href={`${API_BASE_URL}/documents/${doc._id}/file`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#F6F8FC] border border-[#E2E8F0] hover:border-[#3157D5]/40 text-xs font-semibold text-[#3157D5] transition-colors"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                                <span>Inspect PDF</span>
+                                <ExternalLink className="w-3 h-3 opacity-60" />
+                              </a>
+                            </td>
+                          </tr>
+                        ))
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}

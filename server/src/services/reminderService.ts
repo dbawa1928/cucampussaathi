@@ -1,5 +1,6 @@
 import { Appointment } from '../models/Appointment';
 import { notificationService } from './notificationService';
+import { emailService } from './emailService';
 import { logger } from '../utils/logger';
 
 export class ReminderService {
@@ -82,6 +83,43 @@ export class ReminderService {
             });
           } catch (err: any) {
             logger.warn(`Failed to send teacher reminder: ${err.message}`);
+          }
+
+          // 3. Email Reminders (idempotent with EmailLog)
+          try {
+            const dateStr = startTime.toLocaleDateString('en-IN', { dateStyle: 'medium' });
+            const timeStr = startTime.toLocaleTimeString('en-IN', { timeStyle: 'short' });
+            const locationOrLink =
+              appointment.meetingLink ||
+              (appointment.campusBlock ? `Block ${appointment.campusBlock}` : undefined);
+
+            await emailService.sendConsultationReminderEmail({
+              recipientEmail: student.email,
+              recipientName: student.fullName,
+              recipientRole: 'STUDENT',
+              otherPartyName: `Prof. ${teacherUser.fullName}`,
+              reminderType: '24h',
+              appointmentDate: dateStr,
+              appointmentTime: timeStr,
+              meetingMode: appointment.meetingMode,
+              locationOrLink,
+              appointmentId: appointment._id.toString(),
+            });
+
+            await emailService.sendConsultationReminderEmail({
+              recipientEmail: teacherUser.email,
+              recipientName: teacherUser.fullName,
+              recipientRole: 'TEACHER',
+              otherPartyName: student.fullName,
+              reminderType: '24h',
+              appointmentDate: dateStr,
+              appointmentTime: timeStr,
+              meetingMode: appointment.meetingMode,
+              locationOrLink,
+              appointmentId: appointment._id.toString(),
+            });
+          } catch (emailErr: any) {
+            logger.warn(`Failed to dispatch reminder emails: ${emailErr.message}`);
           }
 
           remindersSent++;

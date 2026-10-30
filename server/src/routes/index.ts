@@ -7,6 +7,9 @@ import availabilityRoutes from './availabilityRoutes';
 import appointmentRoutes from './appointmentRoutes';
 import notificationRoutes from './notificationRoutes';
 import rescheduleRoutes from './rescheduleRoutes';
+import documentRoutes from './documentRoutes';
+import aiTutorRoutes from './aiTutorRoutes';
+import teacherRestrictionRoutes from './teacherRestrictionRoutes';
 import { adminRouter } from './adminRoutes';
 import { authGuard, roleGuard } from '../middleware/authGuard';
 
@@ -27,6 +30,9 @@ router.use('/directory', directoryRoutes);
 // Faculty Availability: /api/v1/availability/*
 router.use('/availability', availabilityRoutes);
 
+// Faculty Student Restrictions: /api/v1/teachers/restrictions/*
+router.use('/teachers/restrictions', teacherRestrictionRoutes);
+
 // Appointment Booking & Lifecycle: /api/v1/appointments/*
 router.use('/appointments', appointmentRoutes);
 
@@ -35,6 +41,10 @@ router.use('/notifications', notificationRoutes);
 
 // Reschedule Proposals: /api/v1/reschedule-proposals/*
 router.use('/reschedule-proposals', rescheduleRoutes);
+
+// AI Document Tutor & Documents: /api/v1/documents/* and /api/v1/ai/*
+router.use('/documents', documentRoutes);
+router.use('/ai', aiTutorRoutes);
 
 // Admin Dashboard & Campus Management: /api/v1/admin/*
 router.use('/admin', adminRouter);

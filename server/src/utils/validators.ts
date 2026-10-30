@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CAMPUS_BLOCKS } from '../models/Appointment';
 
 export const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
@@ -200,6 +201,13 @@ export const teacherProfileSchema = z.object({
     .trim()
     .min(2, 'Office location must be at least 2 characters')
     .max(100, 'Office location cannot exceed 100 characters'),
+  campusBlock: z.enum(CAMPUS_BLOCKS).optional(),
+  roomNumber: z.string().trim().max(50).optional(),
+  officeHours: z.string().trim().max(100).optional(),
+  weekendAvailability: z.boolean().optional().default(false),
+  qualification: z.string().trim().max(150).optional(),
+  specialization: z.string().trim().max(150).optional(),
+  teachingSubjects: z.array(z.string().trim().max(100)).optional(),
   bookingPreference: z
     .string()
     .trim()
@@ -297,15 +305,83 @@ export const updateAvailabilitySlotSchema = z
     }
   });
 
-export const bookAppointmentSchema = z.object({
-  slotId: z
-    .string({ required_error: 'Availability slot ID is required' })
-    .regex(objectIdRegex, 'Invalid slot ID format'),
-  agenda: z
-    .string({ required_error: 'Discussion agenda is required' })
+export const bookAppointmentSchema = z
+  .object({
+    slotId: z
+      .string({ required_error: 'Availability slot ID is required' })
+      .regex(objectIdRegex, 'Invalid slot ID format'),
+    agenda: z
+      .string({ required_error: 'Discussion agenda is required' })
+      .trim()
+      .min(3, 'Agenda is required describing the consultation purpose')
+      .refine((v) => {
+        const words = v.trim().split(/\s+/).filter(Boolean).length;
+        return words <= 400;
+      }, 'Discussion agenda cannot exceed 400 words'),
+    meetingMode: z.enum(['ONLINE', 'IN_PERSON']).optional().default('IN_PERSON'),
+    campusBlock: z.enum(CAMPUS_BLOCKS).optional(),
+    roomNumber: z.string().trim().max(50).optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.meetingMode === 'IN_PERSON' && !data.campusBlock) {
+      // In-person appointments should have a valid campus block
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['campusBlock'],
+        message: 'Campus block is required for in-person consultations',
+      });
+    }
+  });
+
+export const blockStudentSchema = z.object({
+  studentId: z
+    .string({ required_error: 'Student ID is required' })
+    .regex(objectIdRegex, 'Invalid student ID format'),
+  reason: z
+    .string({ required_error: 'Blocking reason is required' })
     .trim()
-    .min(10, 'Agenda must be at least 10 characters describing the consultation purpose')
-    .max(500, 'Agenda cannot exceed 500 characters'),
+    .min(5, 'Reason must be at least 5 characters')
+    .max(500, 'Reason cannot exceed 500 characters'),
+  notes: z.string().trim().max(1000).optional(),
+});
+
+export const unblockStudentSchema = z.object({
+  unblockReason: z.string().trim().max(500).optional(),
+});
+
+export const markAttendanceSchema = z
+  .object({
+    attendanceStatus: z.enum(['ATTENDED', 'NO_SHOW'], {
+      required_error: 'Attendance status is required (ATTENDED or NO_SHOW)',
+    }),
+    noShowReason: z.string().trim().max(500).optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.attendanceStatus === 'NO_SHOW' &&
+      (!data.noShowReason || data.noShowReason.trim().length < 5)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['noShowReason'],
+        message: 'A clear reason is required when marking a student as NO_SHOW (at least 5 characters)',
+      });
+    }
+  });
+
+export const appealNoShowSchema = z.object({
+  reason: z
+    .string({ required_error: 'Appeal explanation is required' })
+    .trim()
+    .min(10, 'Appeal explanation must be at least 10 characters')
+    .max(1000, 'Appeal explanation cannot exceed 1000 characters'),
+});
+
+export const reviewNoShowAppealSchema = z.object({
+  decision: z.enum(['RESOLVE', 'REJECT'], {
+    required_error: 'Decision is required (RESOLVE or REJECT)',
+  }),
+  notes: z.string().trim().max(1000).optional(),
 });
 
 export const rejectAppointmentSchema = z.object({

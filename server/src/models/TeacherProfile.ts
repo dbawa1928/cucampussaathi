@@ -1,13 +1,68 @@
 import { Schema, model, Document, Model, Types } from 'mongoose';
+import { CAMPUS_BLOCKS, type CampusBlock } from './Appointment';
 
 export type FacultyVerificationStatus = 'PENDING' | 'VERIFIED' | 'REJECTED';
+
+export const RESEARCH_DOMAINS = [
+  'Artificial Intelligence',
+  'Machine Learning',
+  'Deep Learning',
+  'Generative AI',
+  'Natural Language Processing',
+  'Computer Vision',
+  'Data Science',
+  'Big Data Analytics',
+  'Cloud Computing',
+  'Cybersecurity',
+  'Network Security',
+  'Blockchain',
+  'Internet of Things',
+  'Robotics',
+  'Human Computer Interaction',
+  'Software Engineering',
+  'Distributed Systems',
+  'Database Management',
+  'Operating Systems',
+  'Computer Networks',
+  'Web Development',
+  'Mobile Application Development',
+  'Quantum Computing',
+  'Information Retrieval',
+  'Bioinformatics',
+  'Computational Mathematics',
+  'Statistics',
+  'Wireless Communication',
+  'VLSI Design',
+  'Embedded Systems',
+  'Renewable Energy',
+  'Power Systems',
+  'Mechanical Design',
+  'Manufacturing Technology',
+  'Civil Engineering',
+  'Structural Engineering',
+  'Business Analytics',
+  'Finance',
+  'Marketing',
+  'Entrepreneurship',
+  'Management',
+  'Other',
+] as const;
+
+export type ResearchDomain = (typeof RESEARCH_DOMAINS)[number];
 
 export interface ITeacherProfile extends Document {
   user: Types.ObjectId;
   designation: string;
   department: string;
+  qualification?: string;
+  specialization?: string;
+  teachingSubjects?: string[];
   researchDomains: string[];
   officeLocation: string;
+  campusBlock?: CampusBlock;
+  roomNumber?: string;
+  officeHours?: string;
+  weekendAvailability: boolean;
   bookingPreference: string;
   maxDailySlots: number;
   isAcceptingBookings: boolean;
@@ -40,6 +95,20 @@ const TeacherProfileSchema = new Schema<ITeacherProfile>(
       trim: true,
       index: true,
     },
+    qualification: {
+      type: String,
+      trim: true,
+      maxlength: [150, 'Qualification cannot exceed 150 characters'],
+    },
+    specialization: {
+      type: String,
+      trim: true,
+      maxlength: [150, 'Specialization cannot exceed 150 characters'],
+    },
+    teachingSubjects: {
+      type: [String],
+      default: [],
+    },
     researchDomains: {
       type: [String],
       default: [],
@@ -50,6 +119,24 @@ const TeacherProfileSchema = new Schema<ITeacherProfile>(
       required: [true, 'Office or cabin location is required'],
       trim: true,
       maxlength: [100, 'Office location cannot exceed 100 characters'],
+    },
+    campusBlock: {
+      type: String,
+      enum: CAMPUS_BLOCKS,
+    },
+    roomNumber: {
+      type: String,
+      trim: true,
+      maxlength: [50, 'Room number cannot exceed 50 characters'],
+    },
+    officeHours: {
+      type: String,
+      trim: true,
+      maxlength: [100, 'Office hours description cannot exceed 100 characters'],
+    },
+    weekendAvailability: {
+      type: Boolean,
+      default: false,
     },
     bookingPreference: {
       type: String,

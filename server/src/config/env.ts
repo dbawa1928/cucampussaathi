@@ -40,6 +40,30 @@ const envSchema = z
     JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
     JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
     SEED_DEFAULT_PASSWORD: z.string().default('CampusSaathi@2026'),
+    GROQ_API_KEY: z.string().optional().default(''),
+    GROQ_MODEL: z.string().default('openai/gpt-oss-120b'),
+    RAG_CHUNK_SIZE: z
+      .string()
+      .default('800')
+      .transform((val) => parseInt(val, 10))
+      .refine((val) => !isNaN(val) && val >= 100 && val <= 4000, {
+        message: 'RAG_CHUNK_SIZE must be between 100 and 4000',
+      }),
+    RAG_CHUNK_OVERLAP: z
+      .string()
+      .default('150')
+      .transform((val) => parseInt(val, 10))
+      .refine((val) => !isNaN(val) && val >= 0 && val <= 1000, {
+        message: 'RAG_CHUNK_OVERLAP must be between 0 and 1000',
+      }),
+    MAX_DOCUMENT_SIZE_MB: z
+      .string()
+      .default('15')
+      .transform((val) => parseInt(val, 10))
+      .refine((val) => !isNaN(val) && val >= 1 && val <= 100, {
+        message: 'MAX_DOCUMENT_SIZE_MB must be between 1 and 100',
+      }),
+    DOCUMENTS_STORAGE_PATH: z.string().default('uploads/documents'),
   })
   .refine(
     (data) => {

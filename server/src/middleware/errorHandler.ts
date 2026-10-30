@@ -68,9 +68,12 @@ export function errorHandler(
     message = err.message || 'Internal server error';
   }
 
+  const errorCode = (err as any).code || (err as any).errorCode;
+
   res.status(statusCode).json({
     success: false,
     message,
+    ...(errorCode ? { errorCode } : {}),
     ...(errors ? { errors } : {}),
     ...(env.NODE_ENV === 'development' ? { stack: err.stack } : {}),
   });

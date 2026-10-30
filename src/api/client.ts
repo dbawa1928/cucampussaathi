@@ -45,9 +45,12 @@ async function request<T>(
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
-  const defaultHeaders: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
+  const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+  const defaultHeaders: Record<string, string> = isFormData
+    ? {}
+    : {
+        'Content-Type': 'application/json',
+      };
 
   const config: RequestInit = {
     ...options,
@@ -132,6 +135,12 @@ export const apiClient = {
       ...options,
       method: 'POST',
       body: body ? JSON.stringify(body) : undefined,
+    }),
+  postFormData: <T = any>(endpoint: string, formData: FormData, options?: RequestInit) =>
+    request<T>(endpoint, {
+      ...options,
+      method: 'POST',
+      body: formData,
     }),
   put: <T = any>(endpoint: string, body?: any, options?: RequestInit) =>
     request<T>(endpoint, {

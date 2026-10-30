@@ -9,3 +9,8 @@ export * from './ContactMessage';
 export * from './Notification';
 export * from './RescheduleProposal';
 export * from './AdminAuditLog';
+export * from './TeacherStudentRestriction';
+export * from './EmailLog';
+export * from './Document';
+export * from './DocumentChunk';
+export * from './DocumentConversation';

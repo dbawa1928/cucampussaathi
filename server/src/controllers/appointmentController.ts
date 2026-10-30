@@ -6,6 +6,8 @@ import {
   cancelAppointmentSchema,
   completeAppointmentSchema,
   updateMeetingDetailsSchema,
+  markAttendanceSchema,
+  appealNoShowSchema,
 } from '../utils/validators';
 import { AppointmentStatus } from '../models/Appointment';
 
@@ -183,7 +185,7 @@ export class AppointmentController {
       const validatedData = updateMeetingDetailsSchema.parse(req.body);
 
       const appointment = await appointmentService.updateMeetingDetails(
-        req.user!.id,
+        req.user!._id.toString(),
         req.user!.role,
         appointmentId,
         validatedData
@@ -193,6 +195,102 @@ export class AppointmentController {
         success: true,
         message: 'Meeting details updated successfully.',
         data: { appointment },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/v1/appointments/:appointmentId/attendance
+   * Teacher marks attendance (ATTENDED or NO_SHOW).
+   */
+  async markAttendance(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const appointmentId = req.params.appointmentId;
+      const validatedData = markAttendanceSchema.parse(req.body);
+      const appointment = await appointmentService.markAttendance(
+        req.user!._id.toString(),
+        appointmentId,
+        validatedData.attendanceStatus,
+        validatedData.noShowReason
+      );
+
+      res.status(200).json({
+        success: true,
+        message: `Attendance marked as ${validatedData.attendanceStatus}.`,
+        data: { appointment },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/v1/appointments/:appointmentId/appeal
+   * Student appeals a no-show mark.
+   */
+  async appealNoShow(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const appointmentId = req.params.appointmentId;
+      const validatedData = appealNoShowSchema.parse(req.body);
+      const appointment = await appointmentService.appealNoShow(
+        req.user!._id.toString(),
+        appointmentId,
+        validatedData.reason
+      );
+
+      res.status(200).json({
+        success: true,
+        message: 'No-show appeal submitted for administrative review.',
+        data: { appointment },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/v1/appointments/:appointmentId/appeal-review
+   * Admin reviews a no-show appeal.
+   */
+  async reviewNoShowAppeal(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const appointmentId = req.params.appointmentId;
+      const rawDecision = req.body.decision || (req.body.status === 'RESOLVED' ? 'RESOLVE' : req.body.status === 'REJECTED' ? 'REJECT' : req.body.status);
+      const decision = rawDecision === 'RESOLVE' || rawDecision === 'RESOLVED' ? 'RESOLVE' : 'REJECT';
+      const notes = req.body.notes || req.body.adminReviewNotes;
+
+      const appointment = await appointmentService.reviewNoShowAppeal(
+        req.user!._id.toString(),
+        appointmentId,
+        decision,
+        notes
+      );
+
+      res.status(200).json({
+        success: true,
+        message: `No-show appeal has been ${decision === 'RESOLVE' ? 'resolved' : 'rejected'}.`,
+        data: { appointment },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /api/v1/appointments/attendance/history
+   * Student views their attendance history and metrics.
+   */
+  async getAttendanceHistory(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const history = await appointmentService.getStudentAttendanceHistory(
+        req.user!._id.toString()
+      );
+
+      res.status(200).json({
+        success: true,
+        data: history,
       });
     } catch (error) {
       next(error);

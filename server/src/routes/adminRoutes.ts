@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { adminController } from '../controllers/adminController';
+import { teacherRestrictionController } from '../controllers/teacherRestrictionController';
 import { authGuard, roleGuard } from '../middleware/authGuard';
 
 const router = Router();
@@ -31,10 +32,14 @@ router.get('/appointments', (req, res, next) => adminController.listAppointments
 router.get('/appointments/:id', (req, res, next) => adminController.getAppointmentById(req, res, next));
 router.post('/appointments/:id/cancel', (req, res, next) => adminController.cancelAppointment(req, res, next));
 
-// 6. Reports & Data Export (CSV)
+// 6. Teacher-Student Restrictions Management
+router.get('/restrictions', (req, res) => teacherRestrictionController.adminListRestrictions(req, res));
+router.post('/restrictions/:id/override', (req, res) => teacherRestrictionController.adminOverrideRestriction(req, res));
+
+// 7. Reports & Data Export (CSV)
 router.get('/reports', (req, res, next) => adminController.exportReport(req, res, next));
 
-// 7. Admin Activity Logs
+// 8. Admin Activity Logs
 router.get('/audit-logs', (req, res, next) => adminController.getAuditLogs(req, res, next));
 
 export { router as adminRouter };

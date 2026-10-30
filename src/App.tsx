@@ -21,6 +21,7 @@ import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { AppointmentsPage } from './pages/AppointmentsPage';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
+import { AiTutorPage } from './pages/AiTutorPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 export function App() {
@@ -33,6 +34,7 @@ export function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/ai-tutor" element={<AiTutorPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/features" element={<FeaturesPage />} />
               <Route path="/how-it-works" element={<HowItWorksPage />} />

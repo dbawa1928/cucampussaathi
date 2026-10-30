@@ -289,6 +289,24 @@ export const DashboardPage: React.FC = () => {
               ) : (
                 <>
                   <Button
+                    to="/ai-tutor"
+                    variant="primary"
+                    size="sm"
+                    icon={<Sparkles className="w-3.5 h-3.5" />}
+                    className="flex-1 md:flex-none justify-center shadow-xs"
+                  >
+                    AI Document Tutor
+                  </Button>
+                  <Button
+                    to="/appointments"
+                    variant="outline"
+                    size="sm"
+                    icon={<Calendar className="w-3.5 h-3.5" />}
+                    className="flex-1 md:flex-none justify-center"
+                  >
+                    FacultyConnect
+                  </Button>
+                  <Button
                     to="/profile"
                     variant="outline"
                     size="sm"
@@ -296,15 +314,6 @@ export const DashboardPage: React.FC = () => {
                     className="flex-1 md:flex-none justify-center"
                   >
                     Manage Profile
-                  </Button>
-                  <Button
-                    to="/appointments"
-                    variant="primary"
-                    size="sm"
-                    icon={<Calendar className="w-3.5 h-3.5" />}
-                    className="flex-1 md:flex-none justify-center"
-                  >
-                    FacultyConnect
                   </Button>
                 </>
               )}
@@ -713,7 +722,39 @@ export const DashboardPage: React.FC = () => {
                 <span className="text-xs text-[#64748B] font-medium">Tailored for your role</span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* FEATURE 0: AI DOCUMENT TUTOR */}
+                <div className="bg-white rounded-2xl border border-[#3157D5]/40 shadow-xs p-6 hover:shadow-md hover:border-[#3157D5] transition-all group flex flex-col justify-between relative overflow-hidden">
+                  <div className="absolute top-0 right-0 bg-[#3157D5] text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
+                    New • RAG AI
+                  </div>
+                  <div>
+                    <div className="w-12 h-12 rounded-xl bg-[#EAF1FF] text-[#3157D5] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                      <Sparkles className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-base font-bold text-[#17233B] mb-1.5">
+                      AI Document Tutor
+                    </h3>
+                    <p className="text-xs text-[#64748B] leading-relaxed mb-4">
+                      Upload course PDFs and lecture notes. Ask questions grounded strictly in your files with page citations and summaries.
+                    </p>
+                    <div className="p-3 bg-[#EAF1FF]/40 rounded-xl border border-[#3157D5]/20 mb-4 flex items-center justify-between text-xs">
+                      <span className="text-[#3157D5] font-semibold">Engine:</span>
+                      <span className="font-extrabold text-[#17233B] px-2 py-0.5 bg-white rounded-md border border-[#3157D5]/30">
+                        Groq • RAG
+                      </span>
+                    </div>
+                  </div>
+
+                  <Link
+                    to="/ai-tutor"
+                    className="inline-flex items-center justify-between text-xs font-bold text-[#3157D5] hover:text-[#2544ad] pt-2 border-t border-[#E2E8F0]"
+                  >
+                    <span>Launch AI Tutor</span>
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+
                 {/* FEATURE 1: PROFILE MANAGEMENT */}
                 <div className="bg-white rounded-2xl border border-[#E2E8F0] p-6 hover:shadow-md hover:border-[#3157D5]/40 transition-all group flex flex-col justify-between">
                   <div>
