@@ -1,4 +1,5 @@
 import http from 'http';
+import mongoose from 'mongoose';
 import { createApp } from './app';
 import { env } from './config/env';
 import { connectDatabase, disconnectDatabase } from './config/database';
@@ -20,8 +21,20 @@ async function bootstrap(): Promise<void> {
     reminderService.startReminderScheduler();
   } catch (error) {
     logger.warn(
-      'Server started with MongoDB disconnected. Health check will report degraded status until Atlas connectivity is confirmed.'
+      'Server started with MongoDB disconnected. Background auto-reconnect loop active...'
     );
+    const retryInterval = setInterval(async () => {
+      try {
+        if (mongoose.connection.readyState === 0) {
+          await connectDatabase();
+          reminderService.startReminderScheduler();
+          clearInterval(retryInterval);
+          logger.info('MongoDB Atlas connected successfully via background retry loop.');
+        }
+      } catch {
+        // Continue retrying every 5 seconds
+      }
+    }, 5000);
   }
 
   // Start HTTP Server
