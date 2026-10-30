@@ -19,7 +19,10 @@ let io: SocketIOServer | null = null;
 export function initSocketServer(httpServer: HttpServer): SocketIOServer {
   io = new SocketIOServer(httpServer, {
     cors: {
-      origin: [env.CLIENT_ORIGIN, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+      origin:
+        env.CLIENT_ORIGIN === '*'
+          ? true
+          : [env.CLIENT_ORIGIN, 'http://localhost:5173', 'http://127.0.0.1:5173'],
       credentials: true,
       methods: ['GET', 'POST'],
     },

@@ -18,8 +18,11 @@ const envSchema = z
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     CLIENT_ORIGIN: z
       .string()
-      .url({ message: 'CLIENT_ORIGIN must be a valid URL (e.g. http://localhost:5173)' })
-      .default('http://localhost:5173'),
+      .default('http://localhost:5173')
+      .refine(
+        (val) => val === '*' || val.startsWith('http://') || val.startsWith('https://'),
+        { message: 'CLIENT_ORIGIN must be a valid URL (e.g. http://localhost:5173) or "*"' }
+      ),
     MONGODB_URI: z
       .string({ required_error: 'MONGODB_URI is required' })
       .refine(
