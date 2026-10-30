@@ -1,0 +1,188 @@
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
+import { io, Socket } from 'socket.io-client';
+import { useAuth } from './AuthContext';
+import { apiClient, type ApiResponse } from '../api/client';
+
+export interface NotificationItem {
+  _id: string;
+  recipient: string;
+  type: string;
+  title: string;
+  message: string;
+  relatedAppointment?: any;
+  isRead: boolean;
+  readAt?: string;
+  createdAt: string;
+}
+
+interface SocketContextType {
+  isConnected: boolean;
+  unreadCount: number;
+  notifications: NotificationItem[];
+  loadingNotifications: boolean;
+  fetchNotifications: () => Promise<void>;
+  markAsRead: (notificationId: string) => Promise<void>;
+  markAllAsRead: () => Promise<void>;
+  deleteNotification: (notificationId: string) => Promise<void>;
+}
+
+const SocketContext = createContext<SocketContextType | undefined>(undefined);
+
+export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
+  const [isConnected, setIsConnected] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const socketRef = useRef<Socket | null>(null);
+
+  // Fetch notifications from REST API
+  const fetchNotifications = useCallback(async () => {
+    if (!user) return;
+    try {
+      setLoadingNotifications(true);
+      const [notifsRes, unreadRes] = await Promise.all([
+        apiClient.get<ApiResponse<{ notifications: NotificationItem[] }>>('/notifications?limit=20'),
+        apiClient.get<ApiResponse<{ count: number }>>('/notifications/unread-count'),
+      ]);
+
+      if (notifsRes.success && notifsRes.data?.notifications) {
+        setNotifications(notifsRes.data.notifications);
+      }
+      if (unreadRes.success && unreadRes.data?.count !== undefined) {
+        setUnreadCount(unreadRes.data.count);
+      }
+    } catch {
+      // Gracefully handle network/API errors
+    } finally {
+      setLoadingNotifications(false);
+    }
+  }, [user]);
+
+  // Mark single notification as read
+  const markAsRead = async (notificationId: string) => {
+    try {
+      const res = await apiClient.patch<ApiResponse<{ notification: NotificationItem }>>(
+        `/notifications/${notificationId}/read`
+      );
+      if (res.success) {
+        setNotifications((prev) =>
+          prev.map((n) => (n._id === notificationId ? { ...n, isRead: true, readAt: new Date().toISOString() } : n))
+        );
+        setUnreadCount((c) => Math.max(0, c - 1));
+      }
+    } catch {}
+  };
+
+  // Mark all notifications as read
+  const markAllAsRead = async () => {
+    try {
+      const res = await apiClient.patch<ApiResponse<any>>('/notifications/read-all');
+      if (res.success) {
+        setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true, readAt: new Date().toISOString() })));
+        setUnreadCount(0);
+      }
+    } catch {}
+  };
+
+  // Delete notification
+  const deleteNotification = async (notificationId: string) => {
+    try {
+      const res = await apiClient.delete<ApiResponse<any>>(`/notifications/${notificationId}`);
+      if (res.success) {
+        setNotifications((prev) => {
+          const target = prev.find((n) => n._id === notificationId);
+          if (target && !target.isRead) {
+            setUnreadCount((c) => Math.max(0, c - 1));
+          }
+          return prev.filter((n) => n._id !== notificationId);
+        });
+      }
+    } catch {}
+  };
+
+  // Manage real-time Socket.IO connection
+  useEffect(() => {
+    if (!user) {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+      setIsConnected(false);
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
+
+    // Initial fetch of notifications
+    fetchNotifications();
+
+    // Connect to WebSocket server using HttpOnly credentials
+    const socket = io('http://localhost:5000', {
+      withCredentials: true,
+      transports: ['websocket', 'polling'],
+      reconnectionAttempts: 10,
+      reconnectionDelay: 2000,
+    });
+
+    socketRef.current = socket;
+
+    socket.on('connect', () => {
+      setIsConnected(true);
+    });
+
+    socket.on('disconnect', () => {
+      setIsConnected(false);
+    });
+
+    socket.on('connect_error', () => {
+      setIsConnected(false);
+    });
+
+    // Real-time event listeners
+    socket.on('notification:new', (newNotification: NotificationItem) => {
+      setNotifications((prev) => [newNotification, ...prev.filter((n) => n._id !== newNotification._id)]);
+      setUnreadCount((c) => c + 1);
+    });
+
+    socket.on('notification:unread-count', ({ count }: { count: number }) => {
+      setUnreadCount(count);
+    });
+
+    socket.on('notification:read', ({ notificationId }: { notificationId: string }) => {
+      setNotifications((prev) =>
+        prev.map((n) => (n._id === notificationId ? { ...n, isRead: true } : n))
+      );
+    });
+
+    return () => {
+      socket.disconnect();
+      socketRef.current = null;
+    };
+  }, [user, fetchNotifications]);
+
+  return (
+    <SocketContext.Provider
+      value={{
+        isConnected,
+        unreadCount,
+        notifications,
+        loadingNotifications,
+        fetchNotifications,
+        markAsRead,
+        markAllAsRead,
+        deleteNotification,
+      }}
+    >
+      {children}
+    </SocketContext.Provider>
+  );
+};
+
+export const useSocket = (): SocketContextType => {
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error('useSocket must be used within a SocketProvider');
+  }
+  return context;
+};
