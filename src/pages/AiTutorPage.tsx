@@ -116,7 +116,6 @@ export const AiTutorPage: React.FC = () => {
   const [chatError, setChatError] = useState<string>('');
   const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState<boolean>(false);
-  const chatFileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Voice Input (Speech Recognition) state
   const [selectedLanguage, setSelectedLanguage] = useState<'auto' | 'en' | 'hi' | 'pa'>('auto');
@@ -328,7 +327,7 @@ export const AiTutorPage: React.FC = () => {
     }
 
     try {
-      setUploadProgress(50);
+      setUploadProgress(40);
       let res: any;
       try {
         res = await apiClient.postFormData<any>('/documents/upload', formData);
@@ -339,21 +338,27 @@ export const AiTutorPage: React.FC = () => {
           throw postErr;
         }
       }
-      setUploadProgress(90);
+      setUploadProgress(85);
 
-      const uploadedDoc = res.data?.document || res.data;
-      if (res.success && uploadedDoc?._id) {
+      const uploadedDoc = res?.data?.document || res?.data || res?.document;
+      if ((res?.success || uploadedDoc?._id) && uploadedDoc?._id) {
         setUploadProgress(100);
         setUploadModalOpen(false);
         setUploadFile(null);
         setUploadTitle('');
-        await fetchDocuments(false);
+        setUploadError('');
         setSelectedDoc(uploadedDoc);
+        // Sync document library in background without blocking UI
+        fetchDocuments(false).catch((err) => {
+          console.warn('Background document refresh notice:', err);
+        });
       } else {
-        setUploadError(res.message || 'Upload failed. Please check the file.');
+        setUploadError(res?.message || 'Upload failed. Please ensure the file is an uncorrupted PDF, PPTX, or DOCX.');
       }
     } catch (err: any) {
-      setUploadError(err.message || 'File upload failed. Ensure file is a valid PDF, PPTX, or DOCX under 15MB.');
+      console.error('File upload exception:', err);
+      const msg = err?.message || 'File upload failed. Ensure file is a valid PDF, PPTX, or DOCX under 15MB.';
+      setUploadError(msg);
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
@@ -839,14 +844,34 @@ export const AiTutorPage: React.FC = () => {
 
           {/* Quick Actions (matching clean design) */}
           <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end">
-            <button
-              type="button"
-              onClick={() => chatFileInputRef.current?.click()}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#C62828] hover:bg-[#8E1717] text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer"
-            >
-              <Upload className="w-4 h-4" />
-              <span>Upload Study Material</span>
-            </button>
+            <label className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#C62828] hover:bg-[#8E1717] text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer ${
+              isUploading ? 'opacity-70 pointer-events-none' : ''
+            }`}>
+              <input
+                type="file"
+                accept=".pdf,.pptx,.docx,.PDF,.PPTX,.DOCX,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    handleFileUpload(file);
+                    e.target.value = '';
+                  }
+                }}
+                className="hidden"
+                disabled={isUploading}
+              />
+              {isUploading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Uploading...</span>
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4" />
+                  <span>Upload Study Material</span>
+                </>
+              )}
+            </label>
 
             <button
               type="button"
@@ -1162,14 +1187,25 @@ export const AiTutorPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => chatFileInputRef.current?.click()}
-                    className="px-2.5 py-1 rounded-lg bg-white border border-[#E7DADA] hover:border-[#C62828] text-[11px] font-semibold text-[#252525] transition-all cursor-pointer shadow-2xs"
+                  <label
+                    className="px-2.5 py-1 rounded-lg bg-white border border-[#E7DADA] hover:border-[#C62828] text-[11px] font-semibold text-[#252525] transition-all cursor-pointer shadow-2xs inline-flex items-center"
                     title="Change or upload a different study document"
                   >
-                    Change Document
-                  </button>
+                    <input
+                      type="file"
+                      accept=".pdf,.pptx,.docx,.PDF,.PPTX,.DOCX,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handleFileUpload(file);
+                          e.target.value = '';
+                        }
+                      }}
+                      className="hidden"
+                      disabled={isUploading}
+                    />
+                    <span>Change Document</span>
+                  </label>
                   <button
                     type="button"
                     onClick={() => setShowViewer(!showViewer)}
@@ -1234,13 +1270,23 @@ export const AiTutorPage: React.FC = () => {
                       </span>
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
-                      <button
-                        type="button"
-                        onClick={() => chatFileInputRef.current?.click()}
-                        disabled={isUploading}
-                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#C62828] hover:bg-[#8E1717] text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer"
-                      >
+                    <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
+                      <label className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#C62828] hover:bg-[#8E1717] text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer ${
+                        isUploading ? 'opacity-70 pointer-events-none' : ''
+                      }`}>
+                        <input
+                          type="file"
+                          accept=".pdf,.pptx,.docx,.PDF,.PPTX,.DOCX,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              handleFileUpload(file);
+                              e.target.value = '';
+                            }
+                          }}
+                          className="hidden"
+                          disabled={isUploading}
+                        />
                         {isUploading ? (
                           <>
                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -1252,7 +1298,7 @@ export const AiTutorPage: React.FC = () => {
                             <span>Upload Study Document</span>
                           </>
                         )}
-                      </button>
+                      </label>
                       <button
                         type="button"
                         onClick={() => setUploadModalOpen(true)}
@@ -1261,6 +1307,53 @@ export const AiTutorPage: React.FC = () => {
                         <span>More Upload Options</span>
                       </button>
                     </div>
+
+                    {/* In-Chat Real-time Upload Progress */}
+                    {isUploading && (
+                      <div className="w-full max-w-md my-3 p-4 rounded-xl bg-white border border-red-200 shadow-sm space-y-2">
+                        <div className="flex items-center justify-between text-xs font-semibold text-[#6B7280]">
+                          <span className="flex items-center gap-2 text-[#C62828]">
+                            <Loader2 className="w-4 h-4 animate-spin text-[#C62828]" />
+                            Uploading & Indexing with Grounded AI...
+                          </span>
+                          <span className="font-bold text-[#C62828]">{uploadProgress}%</span>
+                        </div>
+                        <div className="w-full h-2 rounded-full bg-red-100 overflow-hidden">
+                          <div
+                            className="h-full bg-[#C62828] transition-all duration-300 rounded-full"
+                            style={{ width: `${uploadProgress}%` }}
+                          />
+                        </div>
+                        <p className="text-[11px] text-[#6B7280] text-center">
+                          Extracting text, generating citations, and preparing tutor workspace...
+                        </p>
+                      </div>
+                    )}
+
+                    {/* In-Chat Real-time Upload Error Display */}
+                    {uploadError && (
+                      <div className="w-full max-w-md my-3 p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-[#C62828] flex items-start gap-2.5 text-left shadow-2xs">
+                        <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#C62828]" />
+                        <div className="flex-1">
+                          <span className="font-semibold block">{uploadError}</span>
+                          {uploadError.toLowerCase().includes('sign in') && (
+                            <a
+                              href="/login"
+                              className="inline-block mt-1 font-bold underline text-[#C62828] hover:text-[#8E1717]"
+                            >
+                              Click here to sign in →
+                            </a>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setUploadError('')}
+                          className="text-[#6B7280] hover:text-[#C62828] p-0.5 cursor-pointer"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
 
                     {/* Quick Select from existing library documents if available */}
                     {docsLoading ? (
@@ -1496,73 +1589,75 @@ export const AiTutorPage: React.FC = () => {
                   {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                 </button>
 
-                {/* Hidden File Input for Direct In-Chat Upload */}
-                <input
-                  type="file"
-                  ref={chatFileInputRef}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      handleFileUpload(file);
-                      e.target.value = '';
-                    }
-                  }}
-                  accept=".pdf,.pptx,.docx"
-                  className="hidden"
-                />
-
                 {/* Direct Attach / Upload Document Button */}
-                <button
-                  type="button"
-                  onClick={() => chatFileInputRef.current?.click()}
-                  disabled={isUploading || isChatLoading}
-                  className="p-2.5 rounded-xl border border-[#E7DADA] bg-[#FFF7F7] text-[#6B7280] hover:text-[#C62828] hover:border-[#C62828] transition-all cursor-pointer shadow-2xs shrink-0"
+                <label
+                  className={`p-2.5 rounded-xl border border-[#E7DADA] bg-[#FFF7F7] text-[#6B7280] hover:text-[#C62828] hover:border-[#C62828] transition-all cursor-pointer shadow-2xs shrink-0 ${
+                    isUploading || isChatLoading ? 'opacity-50 pointer-events-none' : ''
+                  }`}
                   title="Upload / Attach Study Document (.pdf, .pptx, .docx)"
                 >
+                  <input
+                    type="file"
+                    accept=".pdf,.pptx,.docx,.PDF,.PPTX,.DOCX,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        handleFileUpload(file);
+                        e.target.value = '';
+                      }
+                    }}
+                    className="hidden"
+                    disabled={isUploading || isChatLoading}
+                  />
                   {isUploading ? (
                     <Loader2 className="w-4 h-4 text-[#C62828] animate-spin" />
                   ) : (
                     <Paperclip className="w-4 h-4" />
                   )}
-                </button>
+                </label>
 
                 {/* Input Text Box */}
                 <input
                   type="text"
                   value={inputQuery}
                   onChange={(e) => setInputQuery(e.target.value)}
-                  onClick={() => {
-                    if (!selectedDoc) {
-                      chatFileInputRef.current?.click();
-                    }
-                  }}
                   placeholder={
                     selectedDoc
                       ? `Ask a question about ${selectedDoc.title}...`
-                      : 'Upload or select a study document first (click here to attach)...'
+                      : 'Upload or select a study document above to begin asking questions...'
                   }
                   disabled={!selectedDoc || selectedDoc.processingStatus !== 'COMPLETED' || isChatLoading}
-                  className={`flex-1 bg-[#FFF7F7] border border-[#E7DADA] rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#252525] focus:outline-none focus:border-[#C62828] focus:bg-white placeholder:text-gray-400 ${
-                    !selectedDoc ? 'cursor-pointer hover:border-[#C62828]/50' : ''
-                  }`}
+                  className="flex-1 bg-[#FFF7F7] border border-[#E7DADA] rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#252525] focus:outline-none focus:border-[#C62828] focus:bg-white placeholder:text-gray-400"
                 />
 
                 {/* Send / Stop / Upload CTA Button */}
                 {!selectedDoc ? (
-                  <button
-                    type="button"
-                    onClick={() => chatFileInputRef.current?.click()}
-                    disabled={isUploading}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#C62828] hover:bg-[#8E1717] text-white text-xs font-bold transition-all shadow-xs cursor-pointer shrink-0"
+                  <label
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#C62828] hover:bg-[#8E1717] text-white text-xs font-bold transition-all shadow-xs cursor-pointer shrink-0 ${
+                      isUploading ? 'opacity-70 pointer-events-none' : ''
+                    }`}
                     title="Upload Study Material"
                   >
+                    <input
+                      type="file"
+                      accept=".pdf,.pptx,.docx,.PDF,.PPTX,.DOCX,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handleFileUpload(file);
+                          e.target.value = '';
+                        }
+                      }}
+                      className="hidden"
+                      disabled={isUploading}
+                    />
                     {isUploading ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
                     ) : (
                       <Upload className="w-3.5 h-3.5" />
                     )}
                     <span>{isUploading ? 'Uploading...' : 'Upload'}</span>
-                  </button>
+                  </label>
                 ) : isChatLoading ? (
                   <button
                     type="button"
