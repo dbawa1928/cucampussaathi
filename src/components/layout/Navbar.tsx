@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, LogOut, User as UserIcon } from 'lucide-react';
+import { Menu, X, LogOut, User as UserIcon, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { NotificationBell } from './NotificationBell';
 
@@ -8,8 +8,32 @@ export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('cucampus_theme');
+      if (saved) return saved === 'dark';
+      return (
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches
+      );
+    }
+    return false;
+  });
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add('dark');
+      localStorage.setItem('cucampus_theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('cucampus_theme', 'light');
+    }
+  }, [isDark]);
+
+  const toggleTheme = () => setIsDark((prev) => !prev);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -131,10 +155,25 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Desktop Auth Controls */}
-          <div className="hidden lg:flex items-center gap-2.5">
+          {/* Desktop Right Controls: Theme Toggle + Auth */}
+          <div className="hidden lg:flex items-center gap-2">
+            {/* Theme Toggle (Dark / Light) */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              className="p-2 rounded-xl text-[#666666] hover:text-[#C62828] hover:bg-[#FFF7F7] border border-[#E7DADA] transition-all cursor-pointer flex items-center justify-center group"
+            >
+              {isDark ? (
+                <Sun className="w-4 h-4 text-amber-400 group-hover:rotate-45 transition-transform duration-200" />
+              ) : (
+                <Moon className="w-4 h-4 text-[#666666] group-hover:text-[#C62828] group-hover:-rotate-12 transition-transform duration-200" />
+              )}
+            </button>
+
             {user ? (
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2">
                 <NotificationBell />
                 <button
                   type="button"
@@ -156,9 +195,25 @@ export const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* Mobile Right Controls: Notification (if logged in) + Hamburger Button */}
-          <div className="flex items-center gap-2 lg:hidden">
+          {/* Mobile Right Controls: Theme Toggle + Notification (if logged in) + Hamburger Button */}
+          <div className="flex items-center gap-1.5 lg:hidden">
+            {/* Mobile Theme Toggle */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              className="p-2 rounded-xl text-[#666666] hover:text-[#C62828] hover:bg-[#FFF7F7] border border-[#E7DADA] cursor-pointer"
+            >
+              {isDark ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-[#666666]" />
+              )}
+            </button>
+
             {user && <NotificationBell />}
+
             <button
               type="button"
               id="mobile-menu-toggle"
@@ -195,6 +250,27 @@ export const Navbar: React.FC = () => {
                 </span>
               </div>
             )}
+
+            {/* Theme Toggle in Mobile Drawer */}
+            <div className="p-3 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {isDark ? (
+                  <Sun className="w-4 h-4 text-amber-500" />
+                ) : (
+                  <Moon className="w-4 h-4 text-[#C62828]" />
+                )}
+                <span className="text-xs font-bold text-[#252525]">
+                  Theme: {isDark ? 'Dark Mode' : 'Light Mode'}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="px-3 py-1 rounded-lg text-xs font-bold bg-white border border-[#E7DADA] text-[#C62828] hover:bg-red-50 cursor-pointer shadow-xs transition-colors"
+              >
+                {isDark ? 'Switch to Light' : 'Switch to Dark'}
+              </button>
+            </div>
 
             {/* Strictly Compliant Navigation Links */}
             <div className="flex flex-col gap-1">
