@@ -7,15 +7,12 @@ import {
   Sparkles,
   BookOpen,
   AlertCircle,
-  CheckCircle2,
   Loader2,
   ChevronRight,
   ExternalLink,
   Layers,
   Clock,
-  Eye,
   X,
-  Search,
   Mic,
   MicOff,
   Volume2,
@@ -100,8 +97,6 @@ export const AiTutorPage: React.FC = () => {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [selectedDoc, setSelectedDoc] = useState<DocumentItem | null>(null);
   const [docsLoading, setDocsLoading] = useState<boolean>(true);
-  const [docSearchQuery, setDocSearchQuery] = useState<string>('');
-  const [docFormatFilter, setDocFormatFilter] = useState<'ALL' | 'pdf' | 'pptx' | 'docx'>('ALL');
 
   // Upload modal & drag-drop
   const [uploadModalOpen, setUploadModalOpen] = useState<boolean>(false);
@@ -696,27 +691,6 @@ export const AiTutorPage: React.FC = () => {
     };
   };
 
-  // Filtered documents
-  const safeDocs = Array.isArray(documents) ? documents : [];
-  const filteredDocuments = safeDocs.filter((doc) => {
-    if (!doc) return false;
-    const title = doc.title || '';
-    const filename = doc.originalFilename || '';
-    const matchesSearch =
-      title.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
-      filename.toLowerCase().includes(docSearchQuery.toLowerCase());
-    const ext = (doc.documentFormat || filename.split('.').pop() || '').toLowerCase();
-    const matchesFormat =
-      docFormatFilter === 'ALL'
-        ? true
-        : docFormatFilter === 'pptx'
-        ? ext === 'pptx' || ext === 'ppt'
-        : docFormatFilter === 'docx'
-        ? ext === 'docx' || ext === 'doc'
-        : ext === 'pdf';
-    return matchesSearch && matchesFormat;
-  });
-
   // Calculate Quiz Score
   const calculateQuizScore = () => {
     let correct = 0;
@@ -836,70 +810,72 @@ export const AiTutorPage: React.FC = () => {
       <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-1 flex flex-col gap-8">
         {/* DASHBOARD TOP CONTROL BAR */}
         <div className="bg-white rounded-2xl border border-[#E7DADA] p-4 sm:p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Document Switcher or Indicator */}
+          {/* Active Study Material Indicator */}
           <div className="flex items-center gap-3 w-full md:w-auto">
-            <div className="w-10 h-10 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] flex items-center justify-center text-[#C62828] shrink-0">
-              <BookOpen className="w-5 h-5" />
-            </div>
+            {selectedDoc ? (
+              (() => {
+                const details = getFormatDetails(selectedDoc.documentFormat, selectedDoc.originalFilename);
+                const FormatIcon = details.icon;
+                return (
+                  <div className={`w-11 h-11 rounded-xl border ${details.bgColor} flex items-center justify-center shrink-0 shadow-2xs`}>
+                    <FormatIcon className="w-5 h-5" />
+                  </div>
+                );
+              })()
+            ) : (
+              <div className="w-11 h-11 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] flex items-center justify-center text-[#C62828] shrink-0 shadow-2xs">
+                <BookOpen className="w-5 h-5" />
+              </div>
+            )}
             <div className="truncate">
-              <span className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Active Study Material</span>
+              <span className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">
+                {selectedDoc ? 'Active Study Material' : 'AI Academic Tutor'}
+              </span>
               <h2 className="text-sm sm:text-base font-bold text-[#252525] truncate max-w-xs sm:max-w-md">
-                {selectedDoc ? selectedDoc.title : 'No study material selected'}
+                {selectedDoc ? selectedDoc.title : 'Select or upload a document to begin'}
               </h2>
             </div>
           </div>
 
-          {/* Quick Actions */}
-          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowViewer(!showViewer)}
-              className="gap-1.5 text-xs border-[#E7DADA]"
+          {/* Quick Actions (matching clean design) */}
+          <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end">
+            <button
+              type="button"
+              onClick={() => chatFileInputRef.current?.click()}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#C62828] hover:bg-[#8E1717] text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer"
             >
-              <Split className="w-3.5 h-3.5" />
-              {showViewer ? 'Hide Viewer' : 'Show Viewer'}
-            </Button>
+              <Upload className="w-4 h-4" />
+              <span>Upload Study Material</span>
+            </button>
 
-            <Button
-              variant="outline"
-              size="sm"
+            <button
+              type="button"
               onClick={() => {
-                setActiveToolTab('quiz');
-                setToolsModalOpen(true);
-                handleGenerateQuiz();
+                if (selectedDoc) {
+                  setActiveToolTab('quiz');
+                  setToolsModalOpen(true);
+                  if (quizQuestions.length === 0) handleGenerateQuiz();
+                } else {
+                  setUploadModalOpen(true);
+                }
               }}
-              disabled={!selectedDoc || selectedDoc.processingStatus !== 'COMPLETED'}
-              className="gap-1.5 text-xs border-[#E7DADA] text-amber-700 hover:bg-amber-50"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-[#E7DADA] hover:border-[#C62828] hover:bg-red-50/50 text-xs sm:text-sm font-bold text-[#C62828] shadow-2xs transition-all cursor-pointer"
             >
-              <Award className="w-3.5 h-3.5" />
-              Practice Quiz
-            </Button>
+              <Lightbulb className="w-4 h-4 text-[#C62828]" />
+              <span>AI Learning Tools & Quiz</span>
+            </button>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setActiveToolTab('summary');
-                setToolsModalOpen(true);
-                handleRunLearningTool('summary');
-              }}
-              disabled={!selectedDoc || selectedDoc.processingStatus !== 'COMPLETED'}
-              className="gap-1.5 text-xs border-[#E7DADA] text-[#C62828] hover:bg-[#FFF7F7]"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              Summarizer & Tools
-            </Button>
-
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => setUploadModalOpen(true)}
-              className="gap-1.5 text-xs shadow-sm"
-            >
-              <Upload className="w-3.5 h-3.5" />
-              Upload Material
-            </Button>
+            {selectedDoc && (
+              <button
+                type="button"
+                onClick={() => setShowViewer(!showViewer)}
+                className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-white border border-[#E7DADA] hover:bg-gray-50 text-xs font-semibold text-[#252525] shadow-2xs transition-all cursor-pointer"
+                title={showViewer ? 'Hide Document Viewer' : 'Show Document Viewer'}
+              >
+                <Split className="w-3.5 h-3.5 text-[#6B7280]" />
+                <span className="hidden sm:inline">{showViewer ? 'Hide Viewer' : 'View Document'}</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -1147,26 +1123,123 @@ export const AiTutorPage: React.FC = () => {
               </div>
             )}
 
+            {/* Attached Study Document Banner inside Chat Workspace */}
+            {selectedDoc && (
+              <div className="bg-[#FFF7F7] border-b border-[#E7DADA] px-4 py-2.5 flex items-center justify-between gap-3 shadow-2xs">
+                <div className="flex items-center gap-2.5 truncate">
+                  {(() => {
+                    const details = getFormatDetails(selectedDoc.documentFormat, selectedDoc.originalFilename);
+                    const DocIcon = details.icon;
+                    return (
+                      <span className={`px-2.5 py-1 rounded-lg text-xs font-bold border ${details.bgColor} flex items-center gap-1.5 shrink-0`}>
+                        <DocIcon className="w-3.5 h-3.5" />
+                        {details.label}
+                      </span>
+                    );
+                  })()}
+                  <div className="truncate">
+                    <div className="flex items-center gap-2 truncate">
+                      <p className="text-xs sm:text-sm font-bold text-[#252525] truncate">
+                        {selectedDoc.title}
+                      </p>
+                      <span className="text-[10px] text-[#6B7280] font-mono shrink-0 hidden sm:inline">
+                        ({selectedDoc.originalFilename})
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] text-[#6B7280]">
+                      <span>
+                        {selectedDoc.pageCount || 1} {selectedDoc.documentFormat === 'pptx' ? 'Slides' : 'Pages'}
+                      </span>
+                      <span>•</span>
+                      <span>{formatBytes(selectedDoc.fileSize || 0)}</span>
+                      <span>•</span>
+                      <span className="text-emerald-700 font-semibold flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Ready to Chat
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => chatFileInputRef.current?.click()}
+                    className="px-2.5 py-1 rounded-lg bg-white border border-[#E7DADA] hover:border-[#C62828] text-[11px] font-semibold text-[#252525] transition-all cursor-pointer shadow-2xs"
+                    title="Change or upload a different study document"
+                  >
+                    Change Document
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowViewer(!showViewer)}
+                    className="px-2.5 py-1 rounded-lg bg-white border border-[#E7DADA] hover:border-[#C62828] text-[11px] font-semibold text-[#C62828] transition-all cursor-pointer shadow-2xs"
+                    title="View Document Pages"
+                  >
+                    {showViewer ? 'Hide Viewer' : 'View Pages'}
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Chat Message List */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.length === 0 ? (
                 !selectedDoc ? (
                   // In-Chat Empty State: Direct Document Upload & Library Selector
-                  <div className="flex flex-col items-center justify-center h-full text-center py-8 px-4">
-                    <div className="w-14 h-14 rounded-2xl bg-[#FFF7F7] border border-[#C62828]/25 text-[#C62828] flex items-center justify-center shadow-xs mb-3">
-                      <UploadCloud className="w-7 h-7" />
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsDragging(false);
+                      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        handleFileUpload(e.dataTransfer.files[0]);
+                      }
+                    }}
+                    className={`flex flex-col items-center justify-center h-full text-center py-8 px-4 transition-all rounded-2xl border-2 border-dashed ${
+                      isDragging
+                        ? 'border-[#C62828] bg-red-50/60'
+                        : 'border-[#E7DADA]/80 bg-gradient-to-b from-white to-[#FFF7F7]/50'
+                    }`}
+                  >
+                    <div className="w-16 h-16 rounded-2xl bg-red-50 border border-red-100 text-[#C62828] flex items-center justify-center shadow-xs mb-3">
+                      <UploadCloud className="w-8 h-8" />
                     </div>
-                    <h4 className="text-base font-extrabold text-[#252525]">Upload or Select Study Material</h4>
-                    <p className="text-xs text-[#6B7280] max-w-sm mt-1 mb-5 leading-relaxed">
+
+                    <h4 className="text-base sm:text-lg font-extrabold text-[#252525]">
+                      Upload or Select Study Material
+                    </h4>
+
+                    <p className="text-xs sm:text-sm text-[#6B7280] max-w-md mt-1.5 mb-4 leading-relaxed">
                       Attach your course lecture notes, PowerPoint slides, or Word study materials to start asking grounded questions with page citations.
                     </p>
 
-                    <div className="flex flex-wrap items-center justify-center gap-2.5 mb-6">
+                    {/* Format Badges: PDF, PPTX, Word */}
+                    <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-[#C62828] border border-red-200">
+                        <FileText className="w-3.5 h-3.5" />
+                        PDF (.pdf)
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                        <Presentation className="w-3.5 h-3.5" />
+                        PowerPoint (.pptx)
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                        <FileCode className="w-3.5 h-3.5" />
+                        Word (.docx)
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
                       <button
                         type="button"
                         onClick={() => chatFileInputRef.current?.click()}
                         disabled={isUploading}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#C62828] hover:bg-[#8E1717] text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#C62828] hover:bg-[#8E1717] text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer"
                       >
                         {isUploading ? (
                           <>
@@ -1183,38 +1256,55 @@ export const AiTutorPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setUploadModalOpen(true)}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white border border-[#E7DADA] hover:border-[#C62828] text-xs font-semibold text-[#252525] transition-all cursor-pointer shadow-2xs"
+                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white border border-[#E7DADA] hover:border-[#C62828] text-xs font-semibold text-[#252525] transition-all cursor-pointer shadow-2xs"
                       >
                         <span>More Upload Options</span>
                       </button>
                     </div>
 
                     {/* Quick Select from existing library documents if available */}
-                    {documents.length > 0 && (
-                      <div className="w-full max-w-md pt-4 border-t border-[#E7DADA]/60 text-left">
+                    {docsLoading ? (
+                      <div className="w-full max-w-lg pt-4 border-t border-[#E7DADA]/60 text-center text-xs text-[#6B7280] flex items-center justify-center gap-2">
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-[#C62828]" />
+                        <span>Loading your study materials...</span>
+                      </div>
+                    ) : documents.length > 0 ? (
+                      <div className="w-full max-w-lg pt-4 border-t border-[#E7DADA]/60 text-left">
                         <p className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-2 text-center">
-                          Or select an existing document:
+                          Or select an existing document to start chatting:
                         </p>
-                        <div className="flex flex-col gap-1.5 max-h-48 overflow-y-auto pr-1">
-                          {documents.slice(0, 5).map((doc) => (
-                            <button
-                              key={doc._id}
-                              type="button"
-                              onClick={() => setSelectedDoc(doc)}
-                              className="w-full text-left p-2.5 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] hover:border-[#C62828] hover:bg-white text-xs flex items-center justify-between transition-all group cursor-pointer shadow-2xs"
-                            >
-                              <div className="flex items-center gap-2 truncate">
-                                <FileText className="w-3.5 h-3.5 text-[#C62828] shrink-0" />
-                                <span className="font-semibold text-[#252525] truncate">{doc.title}</span>
-                              </div>
-                              <span className="text-[10px] text-[#6B7280] group-hover:text-[#C62828] shrink-0 font-bold uppercase">
-                                Select →
-                              </span>
-                            </button>
-                          ))}
+                        <div className="flex flex-col gap-2 max-h-52 overflow-y-auto pr-1">
+                          {documents.slice(0, 6).map((doc) => {
+                            const details = getFormatDetails(doc.documentFormat, doc.originalFilename);
+                            const DocIcon = details.icon;
+                            return (
+                              <button
+                                key={doc._id}
+                                type="button"
+                                onClick={() => setSelectedDoc(doc)}
+                                className="w-full text-left p-3 rounded-xl bg-white border border-[#E7DADA] hover:border-[#C62828] hover:bg-[#FFF7F7] text-xs flex items-center justify-between transition-all group cursor-pointer shadow-2xs"
+                              >
+                                <div className="flex items-center gap-2.5 truncate">
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${details.bgColor} flex items-center gap-1 shrink-0`}>
+                                    <DocIcon className="w-3 h-3" />
+                                    {details.label}
+                                  </span>
+                                  <span className="font-bold text-[#252525] truncate">{doc.title}</span>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <span className="text-[10px] text-[#6B7280]">
+                                    {doc.pageCount ? `${doc.pageCount} ${doc.documentFormat === 'pptx' ? 'slides' : 'pages'}` : ''}
+                                  </span>
+                                  <span className="text-[11px] font-bold text-[#C62828] group-hover:translate-x-0.5 transition-transform">
+                                    Start Chat →
+                                  </span>
+                                </div>
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 ) : (
                   // Empty Chat State with Suggested Prompts for selected document
@@ -1222,7 +1312,7 @@ export const AiTutorPage: React.FC = () => {
                     <div className="w-14 h-14 rounded-2xl bg-[#FFF7F7] border border-[#E7DADA] text-[#C62828] flex items-center justify-center shadow-sm mb-3">
                       <Sparkles className="w-7 h-7" />
                     </div>
-                    <h4 className="text-sm font-bold text-[#252525]">Ask Anything About: {selectedDoc.title}</h4>
+                    <h4 className="text-base font-bold text-[#252525]">Ask Anything About This Study Material</h4>
                     <p className="text-xs text-[#6B7280] max-w-sm mt-1 mb-6">
                       The AI Tutor retrieves grounded context from your document and provides verified citations.
                     </p>
@@ -1496,168 +1586,6 @@ export const AiTutorPage: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* 3. MY STUDY MATERIALS SECTION */}
-        <section className="bg-white rounded-2xl border border-[#E7DADA] p-6 shadow-card-3d">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-5 border-b border-[#E7DADA]">
-            <div>
-              <h2 className="text-xl font-extrabold text-[#252525]">My Study Materials</h2>
-              <p className="text-xs text-[#6B7280] mt-0.5">
-                Manage, search, and interrogate your uploaded course documents with AI.
-              </p>
-            </div>
-
-            {/* Filter Pills */}
-            <div className="flex flex-wrap items-center gap-1.5 bg-[#FFF7F7] p-1 rounded-xl border border-[#E7DADA]">
-              {(['ALL', 'pdf', 'pptx', 'docx'] as const).map((fmt) => (
-                <button
-                  key={fmt}
-                  onClick={() => setDocFormatFilter(fmt)}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                    docFormatFilter === fmt
-                      ? 'bg-[#C62828] text-white shadow-xs'
-                      : 'text-[#6B7280] hover:text-[#252525]'
-                  }`}
-                >
-                  {fmt === 'ALL' ? 'All Files' : fmt.toUpperCase()}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Search bar */}
-          <div className="pt-4 pb-2">
-            <div className="relative max-w-md">
-              <Search className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={docSearchQuery}
-                onChange={(e) => setDocSearchQuery(e.target.value)}
-                placeholder="Search by document title or filename..."
-                className="w-full bg-[#FFF7F7] border border-[#E7DADA] rounded-xl pl-9 pr-4 py-2 text-xs text-[#252525] focus:outline-none focus:border-[#C62828] focus:bg-white"
-              />
-            </div>
-          </div>
-
-          {/* Document Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
-            {docsLoading ? (
-              <div className="col-span-full py-12 text-center text-[#6B7280]">
-                <Loader2 className="w-6 h-6 text-[#C62828] animate-spin mx-auto mb-2" />
-                <p className="text-xs font-semibold">Loading your library...</p>
-              </div>
-            ) : filteredDocuments.length === 0 ? (
-              <div className="col-span-full py-12 text-center border-2 border-dashed border-[#E7DADA] rounded-2xl bg-[#FFF7F7]">
-                <FileText className="w-10 h-10 text-gray-400 mx-auto mb-2" />
-                <p className="text-sm font-bold text-[#252525]">No study materials found</p>
-                <p className="text-xs text-[#6B7280] max-w-sm mx-auto mt-1 mb-4">
-                  Upload your PDFs, PowerPoint lecture slides (.pptx), or Word notes (.docx) to start learning.
-                </p>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => setUploadModalOpen(true)}
-                  className="gap-1.5 text-xs"
-                >
-                  <Upload className="w-3.5 h-3.5" />
-                  Upload First Document
-                </Button>
-              </div>
-            ) : (
-              Array.isArray(filteredDocuments) && filteredDocuments.map((doc) => {
-                const details = getFormatDetails(doc.documentFormat, doc.originalFilename);
-                const IconComp = details.icon;
-                const isSelected = selectedDoc?._id === doc._id;
-
-                return (
-                  <div
-                    key={doc._id}
-                    className={`rounded-xl border p-4 transition-all card-3d-tilt flex flex-col justify-between ${
-                      isSelected
-                        ? 'border-[#C62828] bg-white ring-2 ring-red-100 shadow-md'
-                        : 'border-[#E7DADA] bg-white hover:border-[#C62828]/50 shadow-xs'
-                    }`}
-                  >
-                    <div>
-                      <div className="flex items-start justify-between gap-2 mb-2.5">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${details.bgColor} flex items-center gap-1`}>
-                          <IconComp className="w-3 h-3" />
-                          {details.label}
-                        </span>
-
-                        {/* Processing Status */}
-                        {doc.processingStatus === 'COMPLETED' ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                            <CheckCircle2 className="w-3 h-3" />
-                            Ready
-                          </span>
-                        ) : doc.processingStatus === 'PROCESSING' ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                            Indexing
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200">
-                            <AlertCircle className="w-3 h-3" />
-                            Failed
-                          </span>
-                        )}
-                      </div>
-
-                      <h3 className="text-sm font-bold text-[#252525] line-clamp-1 mb-1" title={doc.title}>
-                        {doc.title}
-                      </h3>
-                      <p className="text-xs text-[#6B7280] line-clamp-1 mb-3" title={doc.originalFilename}>
-                        {doc.originalFilename}
-                      </p>
-
-                      <div className="flex items-center gap-3 text-[11px] text-[#6B7280] border-t border-gray-100 pt-2 mb-4">
-                        <span>{formatBytes(doc.fileSize)}</span>
-                        <span>•</span>
-                        <span>
-                          {doc.pageCount} {doc.documentFormat === 'pptx' ? 'slides' : 'pages'}
-                        </span>
-                        <span>•</span>
-                        <span>{new Date(doc.createdAt).toLocaleDateString()}</span>
-                      </div>
-                    </div>
-
-                    {/* Card Actions */}
-                    <div className="flex items-center justify-between gap-1.5 pt-2 border-t border-gray-100">
-                      <Button
-                        variant={isSelected ? 'primary' : 'outline'}
-                        size="sm"
-                        onClick={() => setSelectedDoc(doc)}
-                        className="flex-1 text-xs py-1.5"
-                      >
-                        {isSelected ? 'Selected' : 'Ask AI'}
-                      </Button>
-
-                      <button
-                        onClick={() => {
-                          setSelectedDoc(doc);
-                          setShowViewer(true);
-                        }}
-                        className="p-2 rounded-lg bg-[#FFF7F7] border border-[#E7DADA] text-[#6B7280] hover:text-[#C62828] hover:border-[#C62828] transition-colors"
-                        title="View Document"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                      </button>
-
-                      <button
-                        onClick={() => setDeleteConfirmDoc(doc)}
-                        className="p-2 rounded-lg bg-red-50 border border-red-100 text-[#C62828] hover:bg-red-100 transition-colors"
-                        title="Delete Document"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </section>
       </main>
 
       {/* 4. MODAL: UPLOAD STUDY MATERIAL */}
