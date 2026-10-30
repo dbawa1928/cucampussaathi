@@ -18,8 +18,12 @@ import { Badge } from '../components/ui/Badge';
 import { SectionHeading } from '../components/ui/SectionHeading';
 import { FeatureCard } from '../components/ui/FeatureCard';
 import { HeroDashboardMockup } from '../components/home/HeroDashboardMockup';
+import { useAuth } from '../context/AuthContext';
 
 export const HomePage: React.FC = () => {
+  const { user } = useAuth();
+  const dashboardUrl = user?.role === 'ADMIN' ? '/admin' : '/dashboard';
+  const getStartedUrl = user ? dashboardUrl : '/register';
   return (
     <div className="flex flex-col w-full">
       {/* 1. HERO SECTION */}
@@ -48,14 +52,14 @@ export const HomePage: React.FC = () => {
           {/* CTA Buttons */}
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5">
             <Button
-              to="/register"
+              to={getStartedUrl}
               variant="primary"
               size="lg"
               icon={<ArrowRight className="w-4 h-4" />}
               iconPosition="right"
               className="w-full sm:w-auto"
             >
-              Get Started
+              {user ? 'Go to Dashboard' : 'Get Started'}
             </Button>
             <Button
               to="/features"
@@ -300,10 +304,10 @@ export const HomePage: React.FC = () => {
 
               <div className="mt-8 pt-4 border-t border-[#E7DADA]">
                 <Link
-                  to="/register"
+                  to={user ? dashboardUrl : '/register'}
                   className="text-xs font-bold text-[#C62828] hover:text-[#8E1717] hover:underline flex items-center gap-1"
                 >
-                  Join as Student →
+                  {user ? 'Go to Dashboard →' : 'Join as Student →'}
                 </Link>
               </div>
             </div>
@@ -336,10 +340,10 @@ export const HomePage: React.FC = () => {
 
               <div className="mt-8 pt-4 border-t border-[#E7DADA]">
                 <Link
-                  to="/register"
+                  to={user ? dashboardUrl : '/register'}
                   className="text-xs font-bold text-[#C62828] hover:text-[#8E1717] hover:underline flex items-center gap-1"
                 >
-                  Join as Faculty →
+                  {user ? 'Go to Dashboard →' : 'Join as Faculty →'}
                 </Link>
               </div>
             </div>
@@ -475,12 +479,12 @@ export const HomePage: React.FC = () => {
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button
-                to="/register"
+                to={getStartedUrl}
                 variant="secondary"
                 size="lg"
                 className="w-full sm:w-auto bg-white text-[#C62828] hover:bg-[#FFF7F7] font-bold border-transparent"
               >
-                Create Free Account
+                {user ? 'Go to Dashboard' : 'Create Free Account'}
               </Button>
               <Button
                 to="/contact"

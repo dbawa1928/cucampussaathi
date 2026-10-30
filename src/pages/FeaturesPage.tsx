@@ -3,8 +3,11 @@ import { FEATURE_CATEGORIES } from '../data/featuresData';
 import { FeatureCard } from '../components/ui/FeatureCard';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import { useAuth } from '../context/AuthContext';
 
 export const FeaturesPage: React.FC = () => {
+  const { user } = useAuth();
+  const ctaUrl = user ? (user.role === 'ADMIN' ? '/admin' : '/dashboard') : '/register';
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   const filteredCategories =
@@ -102,8 +105,8 @@ export const FeaturesPage: React.FC = () => {
             Sign up now with your campus ID to explore our interactive modules.
           </p>
           <div className="mt-6 flex justify-center gap-3">
-            <Button to="/register" variant="primary" size="md">
-              Get Started Free
+            <Button to={ctaUrl} variant="primary" size="md">
+              {user ? 'Go to Dashboard' : 'Get Started Free'}
             </Button>
             <Button to="/how-it-works" variant="outline" size="md">
               Learn How It Works

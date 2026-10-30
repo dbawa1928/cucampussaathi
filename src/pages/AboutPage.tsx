@@ -19,8 +19,11 @@ import { Badge } from '../components/ui/Badge';
 import { SectionHeading } from '../components/ui/SectionHeading';
 import { TeamCard } from '../components/ui/TeamCard';
 import { TEAM_MEMBERS } from '../data/teamData';
+import { useAuth } from '../context/AuthContext';
 
 export const AboutPage: React.FC = () => {
+  const { user } = useAuth();
+  const ctaUrl = user ? (user.role === 'ADMIN' ? '/admin' : '/dashboard') : '/register';
   return (
     <div className="flex flex-col w-full">
       {/* 1. HERO SECTION */}
@@ -310,8 +313,8 @@ export const AboutPage: React.FC = () => {
             Get started in minutes with your university credentials and explore what your campus is building.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5">
-            <Button to="/register" variant="primary" size="lg">
-              Create University Account
+            <Button to={ctaUrl} variant="primary" size="lg">
+              {user ? 'Go to Dashboard' : 'Create University Account'}
             </Button>
             <Button to="/how-it-works" variant="outline" size="lg">
               Explore How It Works

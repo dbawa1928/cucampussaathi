@@ -20,8 +20,11 @@ import {
 import { SectionHeading } from '../components/ui/SectionHeading';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import { useAuth } from '../context/AuthContext';
 
 export const HowItWorksPage: React.FC = () => {
+  const { user } = useAuth();
+  const ctaUrl = user ? (user.role === 'ADMIN' ? '/admin' : '/dashboard') : '/register';
   const [activeWorkflow, setActiveWorkflow] = useState<'students' | 'teachers' | 'admin'>('students');
 
   const studentSteps = [
@@ -309,8 +312,8 @@ export const HowItWorksPage: React.FC = () => {
             Join the students and teachers currently building our connected university network.
           </p>
           <div className="mt-6 flex justify-center gap-3">
-            <Button to="/register" variant="primary" size="md">
-              Create Account
+            <Button to={ctaUrl} variant="primary" size="md">
+              {user ? 'Go to Dashboard' : 'Create Account'}
             </Button>
             <Button to="/contact" variant="outline" size="md">
               Speak with Campus Team
