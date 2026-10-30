@@ -1,11 +1,13 @@
 {
-  "name": "temp_app",
+  "name": "cucampussaathi",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:all": "npm run build && cd server && npm install && npm run build",
+    "start": "node server/dist/index.js",
     "lint": "oxlint",
     "preview": "vite preview"
   },

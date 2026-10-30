@@ -121,7 +121,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       import.meta.env.VITE_SOCKET_URL ||
       (import.meta.env.VITE_API_BASE_URL
         ? (import.meta.env.VITE_API_BASE_URL as string).replace(/\/api\/v1\/?$/, '')
-        : 'http://localhost:5000');
+        : (typeof window !== 'undefined' && import.meta.env.PROD ? window.location.origin : 'http://localhost:5000'));
 
     // Connect to WebSocket server using HttpOnly credentials
     const socket = io(socketUrl, {

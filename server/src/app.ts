@@ -2,6 +2,8 @@ import express, { Application } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import fs from 'fs';
 import { env } from './config/env';
 import apiRoutes from './routes';
 import { notFoundHandler } from './middleware/notFoundHandler';
@@ -10,13 +12,18 @@ import { errorHandler } from './middleware/errorHandler';
 export function createApp(): Application {
   const app = express();
 
-  // 1. Security Headers
-  app.use(helmet());
+  // 1. Security Headers (configured to allow Vite SPA assets and scripts)
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+      crossOriginEmbedderPolicy: false,
+    })
+  );
 
   // 2. CORS configuration restricted to authorized client origin
   app.use(
     cors({
-      origin: env.CLIENT_ORIGIN,
+      origin: env.CLIENT_ORIGIN === '*' ? true : env.CLIENT_ORIGIN,
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
@@ -31,10 +38,30 @@ export function createApp(): Application {
   // 4. API v1 Routes
   app.use('/api/v1', apiRoutes);
 
-  // 5. 404 Not Found Handler for unknown routes
+  // 5. Serve Frontend static files for All-in-One deployment (if dist exists)
+  const candidatePaths = [
+    path.resolve(process.cwd(), 'dist'),
+    path.resolve(__dirname, '../../dist'),
+    path.resolve(__dirname, '../dist'),
+  ];
+  const frontendDistPath = candidatePaths.find((p) => fs.existsSync(p));
+
+  if (frontendDistPath) {
+    app.use(express.static(frontendDistPath));
+
+    // Wildcard SPA route fallback for React Router
+    app.get('*', (req, res, next) => {
+      if (req.path.startsWith('/api')) {
+        return next();
+      }
+      res.sendFile(path.join(frontendDistPath, 'index.html'));
+    });
+  }
+
+  // 6. 404 Not Found Handler for unknown API routes
   app.use(notFoundHandler);
 
-  // 6. Centralized Error Handling Middleware
+  // 7. Centralized Error Handling Middleware
   app.use(errorHandler);
 
   return app;
