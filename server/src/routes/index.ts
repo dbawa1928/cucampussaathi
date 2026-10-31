@@ -33,8 +33,9 @@ router.use('/directory', directoryRoutes);
 // Faculty Availability: /api/v1/availability/*
 router.use('/availability', availabilityRoutes);
 
-// Faculty Student Restrictions: /api/v1/teachers/restrictions/*
+// Faculty Student Restrictions: /api/v1/teachers/restrictions/* and alias /api/v1/teacher-restrictions/*
 router.use('/teachers/restrictions', teacherRestrictionRoutes);
+router.use('/teacher-restrictions', teacherRestrictionRoutes);
 
 // Appointment Booking & Lifecycle: /api/v1/appointments/*
 router.use('/appointments', appointmentRoutes);

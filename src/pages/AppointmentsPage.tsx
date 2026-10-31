@@ -21,11 +21,33 @@ import {
   ExternalLink,
   Edit3,
   RefreshCw,
+  ShieldAlert,
+  UserCheck,
+  ShieldCheck,
 } from 'lucide-react';
 import { apiClient, type ApiResponse } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+
+export interface BlockedStudentItem {
+  restrictionId: string;
+  student: {
+    _id: string;
+    fullName: string;
+    email: string;
+    uid?: string;
+    department?: string;
+  };
+  totalAppointmentsWithTeacher?: number;
+  consultationCount?: number;
+  attendedCount?: number;
+  noShowCount?: number;
+  reason: string;
+  notes?: string;
+  blockedAt: string;
+  isActive: boolean;
+}
 
 interface AvailabilitySlot {
   _id: string;
@@ -101,7 +123,7 @@ export const AppointmentsPage: React.FC = () => {
   const [searchParams] = useSearchParams();
 
   // Active Tab:
-  // For teacher: 'manage_slots' (default) | 'requests'
+  // For teacher: 'manage_slots' (default) | 'requests' | 'blocked_students'
   // For student: 'book_slot' (default) | 'my_bookings'
   const getInitialTab = () => {
     const tabParam = searchParams.get('tab');
@@ -110,6 +132,8 @@ export const AppointmentsPage: React.FC = () => {
       if (tabParam === 'book' || tabParam === 'book_slot') return 'book_slot';
       if (tabParam === 'requests') return 'requests';
       if (tabParam === 'my_bookings' || tabParam === 'bookings') return 'my_bookings';
+      if (tabParam === 'blocked' || tabParam === 'restrictions' || tabParam === 'blocked_students')
+        return 'blocked_students';
     }
     return user?.role === 'TEACHER' ? 'manage_slots' : 'book_slot';
   };
@@ -124,6 +148,8 @@ export const AppointmentsPage: React.FC = () => {
       else if (tabParam === 'book' || tabParam === 'book_slot') setActiveTab('book_slot');
       else if (tabParam === 'requests') setActiveTab('requests');
       else if (tabParam === 'my_bookings' || tabParam === 'bookings') setActiveTab('my_bookings');
+      else if (tabParam === 'blocked' || tabParam === 'restrictions' || tabParam === 'blocked_students')
+        setActiveTab('blocked_students');
     }
   }, [searchParams]);
 
@@ -132,6 +158,27 @@ export const AppointmentsPage: React.FC = () => {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [apiError, setApiError] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string>('');
+
+  // ----------------------------------------------------
+  // TEACHER RESTRICTIONS / BLOCKED STUDENTS STATE
+  // ----------------------------------------------------
+  const [blockedStudents, setBlockedStudents] = useState<BlockedStudentItem[]>([]);
+  const [loadingRestrictions, setLoadingRestrictions] = useState<boolean>(false);
+  const [blockModal, setBlockModal] = useState<{
+    studentId: string;
+    studentName: string;
+    studentUid?: string;
+    studentEmail?: string;
+    reasonCategory: string;
+    reasonText: string;
+    notes: string;
+  } | null>(null);
+
+  const [unblockModal, setUnblockModal] = useState<{
+    studentId: string;
+    studentName: string;
+    reason: string;
+  } | null>(null);
 
   // ----------------------------------------------------
   // APPOINTMENT & PROPOSAL DATA
@@ -276,6 +323,23 @@ export const AppointmentsPage: React.FC = () => {
     }
   }, [user]);
 
+  // Load blocked students for authenticated teacher
+  const fetchBlockedStudents = useCallback(async () => {
+    if (user?.role !== 'TEACHER') return;
+    setLoadingRestrictions(true);
+    try {
+      const res = await apiClient.get<
+        ApiResponse<{ blockedStudents?: BlockedStudentItem[]; restrictions?: BlockedStudentItem[] }>
+      >('/teachers/restrictions');
+      const list = res.data?.blockedStudents || res.data?.restrictions || [];
+      setBlockedStudents(list);
+    } catch (err: any) {
+      console.error('Failed to load blocked students:', err);
+    } finally {
+      setLoadingRestrictions(false);
+    }
+  }, [user]);
+
   // Load teachers list for booking tab
   const fetchTeachersList = useCallback(async () => {
     if (user?.role !== 'STUDENT') return;
@@ -318,11 +382,12 @@ export const AppointmentsPage: React.FC = () => {
     if (user?.role === 'TEACHER') {
       fetchAppointments();
       fetchTeacherSlots();
+      fetchBlockedStudents();
     } else if (user?.role === 'STUDENT') {
       fetchAppointments();
       fetchTeachersList();
     }
-  }, [user, fetchAppointments, fetchTeacherSlots, fetchTeachersList]);
+  }, [user, fetchAppointments, fetchTeacherSlots, fetchBlockedStudents, fetchTeachersList]);
 
   useEffect(() => {
     if (selectedTeacherId) {
@@ -692,6 +757,73 @@ export const AppointmentsPage: React.FC = () => {
     }
   };
 
+  // Block a student from future consultations
+  const handleConfirmBlockStudent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!blockModal) return;
+
+    const fullReason = blockModal.reasonText.trim()
+      ? `${blockModal.reasonCategory}: ${blockModal.reasonText.trim()}`
+      : blockModal.reasonCategory;
+
+    if (fullReason.length < 5) {
+      setApiError('Please provide a descriptive reason for blocking this student (at least 5 characters).');
+      return;
+    }
+
+    setApiError('');
+    setSuccessMessage('');
+    setActionLoading(`block_${blockModal.studentId}`);
+
+    try {
+      const res = await apiClient.post<ApiResponse<any>>('/teachers/restrictions/block', {
+        studentId: blockModal.studentId,
+        reason: fullReason,
+        notes: blockModal.notes.trim() || undefined,
+      });
+
+      if (res.success) {
+        setSuccessMessage(
+          `Student ${blockModal.studentName} has been restricted from booking consultations with you.`
+        );
+        setBlockModal(null);
+        fetchBlockedStudents();
+        fetchAppointments();
+      }
+    } catch (err: any) {
+      setApiError(err.message || 'Failed to restrict student booking access.');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // Unblock a student
+  const handleConfirmUnblockStudent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!unblockModal) return;
+
+    setApiError('');
+    setSuccessMessage('');
+    setActionLoading(`unblock_${unblockModal.studentId}`);
+
+    try {
+      const res = await apiClient.post<ApiResponse<any>>('/teachers/restrictions/unblock', {
+        studentId: unblockModal.studentId,
+        unblockReason: unblockModal.reason.trim() || 'Access restored by faculty member',
+      });
+
+      if (res.success) {
+        setSuccessMessage(`Booking access restored for ${unblockModal.studentName}.`);
+        setUnblockModal(null);
+        fetchBlockedStudents();
+      }
+    } catch (err: any) {
+      setApiError(err.message || 'Failed to restore student booking access.');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   // Status badge helper
   const renderStatusBadge = (status: string) => {
     switch (status) {
@@ -835,6 +967,21 @@ export const AppointmentsPage: React.FC = () => {
                 }`}
               >
                 <CalendarCheck className="w-4 h-4" /> Consultation Requests ({appointments.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('blocked_students');
+                  setApiError('');
+                  setSuccessMessage('');
+                }}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                  activeTab === 'blocked_students'
+                    ? 'bg-[#C62828] text-white shadow-xs'
+                    : 'text-[#666666] hover:text-[#252525]'
+                }`}
+              >
+                <ShieldAlert className="w-4 h-4" /> Blocked Students ({blockedStudents.length})
               </button>
             </>
           ) : user.role === 'STUDENT' ? (
@@ -1065,6 +1212,30 @@ export const AppointmentsPage: React.FC = () => {
                               Reschedule
                             </Button>
                           )}
+
+                          {/* Block Abusive or Fraudulent Student */}
+                          {appt.student?._id && (
+                            <Button
+                              onClick={() =>
+                                setBlockModal({
+                                  studentId: appt.student._id,
+                                  studentName: appt.student.fullName || 'Student',
+                                  studentUid: appt.student.uid,
+                                  studentEmail: appt.student.email,
+                                  reasonCategory: 'Fraudulent representation / Fake identity',
+                                  reasonText: '',
+                                  notes: '',
+                                })
+                              }
+                              variant="ghost"
+                              size="sm"
+                              className="w-full text-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#DC2626] border border-[#EF4444]/20 hover:border-[#EF4444]/50"
+                              icon={<ShieldAlert className="w-3.5 h-3.5" />}
+                              title="Restrict or block this student from future bookings"
+                            >
+                              Block Student
+                            </Button>
+                          )}
                         </div>
                       </div>
 
@@ -1216,7 +1387,38 @@ export const AppointmentsPage: React.FC = () => {
         {/* TEACHER TAB 2: MANAGE AVAILABILITY SLOTS */}
         {/* ==================================================================== */}
         {user.role === 'TEACHER' && activeTab === 'manage_slots' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="space-y-6">
+            {/* Quick Status / Blocked Students Notice Banner */}
+            <div className="p-4 rounded-2xl border border-[#E7DADA] bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-2xs">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-[#FEF2F2] text-[#C62828] shrink-0">
+                  <ShieldAlert className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="font-bold text-[#252525] block text-sm">
+                    Faculty Booking & Student Restriction Shield
+                  </span>
+                  <span className="text-[#666666]">
+                    {blockedStudents.length > 0
+                      ? `You currently have ${blockedStudents.length} restricted student(s) barred from booking your slots.`
+                      : 'You can restrict fraudulent students, fake accounts, or continuous no-shows from reserving your time.'}
+                  </span>
+                </div>
+              </div>
+              <Button
+                onClick={() => setActiveTab('blocked_students')}
+                variant="outline"
+                size="sm"
+                className="shrink-0 text-[#C62828] border-[#C62828]/30 hover:bg-[#FFF7F7]"
+                icon={<ShieldAlert className="w-3.5 h-3.5" />}
+              >
+                {blockedStudents.length > 0
+                  ? `Manage Blocked (${blockedStudents.length})`
+                  : 'View Blocked Students'}
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Slot Creator Form */}
             <div className="lg:col-span-5 bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs h-fit">
               <h2 className="text-lg font-bold text-[#252525] mb-1 flex items-center gap-2">
@@ -1399,6 +1601,151 @@ export const AppointmentsPage: React.FC = () => {
                 </div>
               )}
             </div>
+          </div>
+          </div>
+        )}
+
+        {/* ==================================================================== */}
+        {/* TEACHER TAB 3: BLOCKED STUDENTS / RESTRICTIONS */}
+        {/* ==================================================================== */}
+        {user.role === 'TEACHER' && activeTab === 'blocked_students' && (
+          <div className="bg-white rounded-3xl border border-[#E7DADA] p-6 sm:p-8 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-[#E7DADA]">
+              <div>
+                <h2 className="text-xl font-bold text-[#252525] flex items-center gap-2">
+                  <ShieldAlert className="w-5 h-5 text-[#C62828]" /> Restricted & Blocked Students
+                </h2>
+                <p className="text-xs text-[#666666] mt-1">
+                  Students listed below are barred from booking your consultation slots due to fraud, fake identity, or repeated no-shows.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <Button
+                  onClick={fetchBlockedStudents}
+                  variant="outline"
+                  size="sm"
+                  icon={<RefreshCw className="w-3.5 h-3.5" />}
+                  disabled={loadingRestrictions}
+                >
+                  Refresh
+                </Button>
+                <Button
+                  onClick={() => setActiveTab('requests')}
+                  variant="outline"
+                  size="sm"
+                  icon={<CalendarCheck className="w-4 h-4" />}
+                >
+                  Consultation Requests
+                </Button>
+              </div>
+            </div>
+
+            {loadingRestrictions ? (
+              <div className="py-20 flex flex-col items-center justify-center">
+                <Loader2 className="w-8 h-8 text-[#C62828] animate-spin mb-3" />
+                <p className="text-sm font-semibold text-[#252525]">Loading restricted students...</p>
+              </div>
+            ) : blockedStudents.length === 0 ? (
+              <div className="py-16 px-6 text-center">
+                <div className="w-14 h-14 rounded-2xl bg-[#E6F5EF] text-[#16845B] flex items-center justify-center mx-auto mb-3">
+                  <ShieldCheck className="w-7 h-7" />
+                </div>
+                <h3 className="text-base font-bold text-[#252525] mb-1">No Blocked Students</h3>
+                <p className="text-xs sm:text-sm text-[#666666] max-w-md mx-auto mb-4">
+                  You currently have no active student restrictions. If you encounter fraudulent requests, fake accounts, or continuous unexcused no-shows, you can restrict them directly from the Consultation Requests tab.
+                </p>
+                <Button onClick={() => setActiveTab('requests')} variant="primary" size="sm">
+                  View Consultation Requests
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="border-b border-[#E7DADA] bg-[#FFF7F7] text-[#252525] font-bold">
+                        <th className="py-3 px-4 rounded-l-xl">Student Details</th>
+                        <th className="py-3 px-4">UID / Department</th>
+                        <th className="py-3 px-4">Restriction Reason</th>
+                        <th className="py-3 px-4">Blocked Date</th>
+                        <th className="py-3 px-4 text-center">History</th>
+                        <th className="py-3 px-4 text-right rounded-r-xl">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#E7DADA]">
+                      {blockedStudents.map((item) => (
+                        <tr
+                          key={item.restrictionId || item.student._id}
+                          className="hover:bg-[#FFF7F7]/30 transition-colors"
+                        >
+                          <td className="py-3 px-4">
+                            <div className="font-bold text-[#252525] text-sm">
+                              {item.student.fullName || 'Unknown Student'}
+                            </div>
+                            <div className="text-[11px] text-[#666666] font-mono">
+                              {item.student.email}
+                            </div>
+                          </td>
+                          <td className="py-3 px-4">
+                            <div className="font-semibold text-[#252525]">
+                              {item.student.uid || 'N/A'}
+                            </div>
+                            <div className="text-[11px] text-[#666666]">
+                              {item.student.department || 'Chandigarh University'}
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 max-w-xs">
+                            <div className="font-semibold text-[#991B1B] bg-[#FEF2F2] px-2.5 py-1 rounded-md border border-[#FCA5A5] inline-block">
+                              {item.reason}
+                            </div>
+                            {item.notes && (
+                              <div className="text-[11px] text-[#666666] mt-1 italic">
+                                Note: {item.notes}
+                              </div>
+                            )}
+                          </td>
+                          <td className="py-3 px-4 text-[#666666]">
+                            {formatDateTime(item.blockedAt)}
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <span className="font-semibold text-[#252525]">
+                              {item.totalAppointmentsWithTeacher ?? item.consultationCount ?? 0} appts
+                            </span>
+                            {item.noShowCount ? (
+                              <span className="text-[11px] text-[#EF4444] block font-medium">
+                                {item.noShowCount} no-shows
+                              </span>
+                            ) : null}
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <Button
+                              onClick={() =>
+                                setUnblockModal({
+                                  studentId: item.student._id,
+                                  studentName: item.student.fullName || 'Student',
+                                  reason: '',
+                                })
+                              }
+                              disabled={actionLoading === `unblock_${item.student._id}`}
+                              variant="outline"
+                              size="sm"
+                              className="text-[#16845B] border-[#16845B]/30 hover:bg-[#E6F5EF]"
+                              icon={<UserCheck className="w-3.5 h-3.5" />}
+                            >
+                              {actionLoading === `unblock_${item.student._id}` ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : (
+                                'Unblock'
+                              )}
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -2070,6 +2417,200 @@ export const AppointmentsPage: React.FC = () => {
                   </div>
                 </form>
               )}
+            </div>
+          </div>
+        )}
+        {/* ==================================================================== */}
+        {/* BLOCK STUDENT MODAL */}
+        {/* ==================================================================== */}
+        {blockModal && (
+          <div className="fixed inset-0 z-50 bg-[#252525]/50 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xl max-w-lg w-full p-6 animate-in zoom-in-95 duration-150">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2.5 rounded-2xl bg-[#FEF2F2] text-[#EF4444]">
+                  <ShieldAlert className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#252525]">
+                    Restrict Student from Consultations
+                  </h3>
+                  <p className="text-xs text-[#666666]">
+                    Bar this student from booking future appointments with you.
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-3 mb-4 rounded-xl bg-[#FFF7F7] border border-[#E7DADA] text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-[#666666]">Student Name:</span>
+                  <span className="font-bold text-[#252525]">{blockModal.studentName}</span>
+                </div>
+                {blockModal.studentUid && (
+                  <div className="flex justify-between">
+                    <span className="text-[#666666]">University UID:</span>
+                    <span className="font-semibold text-[#252525]">{blockModal.studentUid}</span>
+                  </div>
+                )}
+                {blockModal.studentEmail && (
+                  <div className="flex justify-between">
+                    <span className="text-[#666666]">Email:</span>
+                    <span className="font-mono text-[11px] text-[#252525]">
+                      {blockModal.studentEmail}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <form onSubmit={handleConfirmBlockStudent} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-[#252525] mb-1.5">
+                    Primary Reason Category *
+                  </label>
+                  <select
+                    value={blockModal.reasonCategory}
+                    onChange={(e) =>
+                      setBlockModal({ ...blockModal, reasonCategory: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] transition-all"
+                  >
+                    <option value="Fraudulent representation / Fake identity">
+                      Fraudulent representation / Fake identity
+                    </option>
+                    <option value="Repeated unexcused no-shows">Repeated unexcused no-shows</option>
+                    <option value="Unprofessional or abusive conduct">
+                      Unprofessional or abusive conduct
+                    </option>
+                    <option value="Academic dishonesty or falsified documentation">
+                      Academic dishonesty or falsified documentation
+                    </option>
+                    <option value="Policy violation / Disruptive behavior">
+                      Policy violation / Disruptive behavior
+                    </option>
+                    <option value="Other serious violation">Other serious violation</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#252525] mb-1">
+                    Specific Reason / Incident Details * (Min 5 chars)
+                  </label>
+                  <textarea
+                    rows={3}
+                    required
+                    value={blockModal.reasonText}
+                    onChange={(e) =>
+                      setBlockModal({ ...blockModal, reasonText: e.target.value })
+                    }
+                    placeholder="Describe why this student is being restricted (e.g. Student booked 3 slots and never showed up; falsified UID)..."
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#252525] mb-1">
+                    Internal Faculty Notes (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={blockModal.notes}
+                    onChange={(e) => setBlockModal({ ...blockModal, notes: e.target.value })}
+                    placeholder="Private faculty notes (e.g. Discussed with Department Coordinator)..."
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C62828] transition-all"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E7DADA]">
+                  <Button
+                    onClick={() => setBlockModal(null)}
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={actionLoading === `block_${blockModal.studentId}`}
+                    variant="primary"
+                    size="sm"
+                    className="bg-[#DC2626] hover:bg-[#B91C1C]"
+                  >
+                    {actionLoading === `block_${blockModal.studentId}` ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      'Confirm Block Student'
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* ==================================================================== */}
+        {/* UNBLOCK STUDENT MODAL */}
+        {/* ==================================================================== */}
+        {unblockModal && (
+          <div className="fixed inset-0 z-50 bg-[#252525]/50 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl border border-[#E7DADA] shadow-xl max-w-md w-full p-6 animate-in zoom-in-95 duration-150">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2.5 rounded-2xl bg-[#E6F5EF] text-[#16845B]">
+                  <UserCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#252525]">
+                    Restore Student Booking Access
+                  </h3>
+                  <p className="text-xs text-[#666666]">
+                    Lift restriction and allow future consultation bookings.
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-xs text-[#252525] mb-4">
+                Are you sure you want to unblock <strong>{unblockModal.studentName}</strong>? This will allow them to view and reserve your upcoming consultation slots again.
+              </p>
+
+              <form onSubmit={handleConfirmUnblockStudent} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-[#252525] mb-1">
+                    Unblock Reason / Resolution (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={unblockModal.reason}
+                    onChange={(e) =>
+                      setUnblockModal({ ...unblockModal, reason: e.target.value })
+                    }
+                    placeholder="e.g. Student apologized, verified UID with HOD"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-[#E7DADA] bg-[#FFF7F7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#16845B] transition-all"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E7DADA]">
+                  <Button
+                    onClick={() => setUnblockModal(null)}
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={actionLoading === `unblock_${unblockModal.studentId}`}
+                    variant="primary"
+                    size="sm"
+                    className="bg-[#16845B] hover:bg-[#126b4a]"
+                  >
+                    {actionLoading === `unblock_${unblockModal.studentId}` ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      'Restore Booking Access'
+                    )}
+                  </Button>
+                </div>
+              </form>
             </div>
           </div>
         )}
