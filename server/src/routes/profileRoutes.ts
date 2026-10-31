@@ -34,4 +34,12 @@ router.put(
   profileController.updateTeacherProfile.bind(profileController)
 );
 
+// Live Cabin Availability Toggle
+router.patch(
+  '/teacher/cabin-status',
+  authGuard,
+  roleGuard('TEACHER'),
+  profileController.updateCabinStatus.bind(profileController)
+);
+
 export default router;

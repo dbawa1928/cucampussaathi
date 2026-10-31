@@ -66,6 +66,23 @@ export class ProfileController {
       next(error);
     }
   }
+
+  /**
+   * PATCH /api/v1/users/profile/teacher/cabin-status
+   */
+  async updateCabinStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { status, note } = req.body;
+      const profile = await profileService.updateCabinStatus(req.user!.id, status, note);
+      res.status(200).json({
+        success: true,
+        message: 'Cabin availability status updated successfully.',
+        data: { profile },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const profileController = new ProfileController();

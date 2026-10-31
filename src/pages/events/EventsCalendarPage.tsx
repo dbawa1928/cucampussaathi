@@ -83,7 +83,20 @@ export const EventsCalendarPage: React.FC = () => {
       }
     } catch (err: any) {
       console.error('Failed to load events:', err);
-      setError(err?.message || err?.response?.data?.message || 'Unable to load events calendar');
+      const isColdStart =
+        err?.statusCode === 502 ||
+        err?.statusCode === 503 ||
+        err?.statusCode === 0 ||
+        err?.message?.includes('502') ||
+        err?.message?.includes('503') ||
+        err?.message?.includes('Failed to fetch') ||
+        err?.message?.includes('Network connection');
+
+      if (isColdStart) {
+        setError('Server is spinning up on Render (free tier cold start takes ~20-30s). Please click Retry below.');
+      } else {
+        setError(err?.message || err?.response?.data?.message || 'Unable to load events calendar');
+      }
     } finally {
       setIsLoading(false);
     }

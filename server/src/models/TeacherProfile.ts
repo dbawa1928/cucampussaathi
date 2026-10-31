@@ -62,6 +62,9 @@ export interface ITeacherProfile extends Document {
   campusBlock?: CampusBlock;
   roomNumber?: string;
   officeHours?: string;
+  cabinLiveStatus?: 'IN_CABIN' | 'IN_LECTURE' | 'BUSY' | 'AWAY';
+  cabinStatusNote?: string;
+  cabinStatusUpdatedAt?: Date;
   weekendAvailability: boolean;
   bookingPreference: string;
   maxDailySlots: number;
@@ -133,6 +136,20 @@ const TeacherProfileSchema = new Schema<ITeacherProfile>(
       type: String,
       trim: true,
       maxlength: [100, 'Office hours description cannot exceed 100 characters'],
+    },
+    cabinLiveStatus: {
+      type: String,
+      enum: ['IN_CABIN', 'IN_LECTURE', 'BUSY', 'AWAY'],
+      default: 'IN_CABIN',
+    },
+    cabinStatusNote: {
+      type: String,
+      default: '',
+      maxlength: [120, 'Cabin status note cannot exceed 120 characters'],
+    },
+    cabinStatusUpdatedAt: {
+      type: Date,
+      default: Date.now,
     },
     weekendAvailability: {
       type: Boolean,

@@ -21,6 +21,24 @@ const router = Router();
 // Health Check: /api/v1/health
 router.use('/', healthRoutes);
 
+// Public System Announcement: /api/v1/public/announcement
+router.get('/public/announcement', async (_req, res, next) => {
+  try {
+    const { PlatformSetting } = await import('../models/PlatformSetting');
+    const settings = await PlatformSetting.findOne().lean();
+    res.status(200).json({
+      success: true,
+      data: {
+        announcementBanner: settings?.announcementBanner || { enabled: false, message: '', type: 'INFO' },
+        platformName: settings?.platformName || 'CUCampusSaathi',
+        maintenanceMode: settings?.maintenanceMode || false,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Auth Endpoints: /api/v1/auth/*
 router.use('/auth', authRoutes);
 

@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Megaphone,
 } from 'lucide-react';
 import { apiClient, API_BASE_URL, type ApiResponse } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
@@ -2165,6 +2166,81 @@ export const AdminDashboardPage: React.FC = () => {
                       }
                       className="w-4 h-4 accent-[#C62828] cursor-pointer"
                     />
+                  </div>
+                </div>
+
+                {/* Campus-Wide Announcement Banner Controls */}
+                <div className="pt-4 border-t border-[#E7DADA] space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-xs font-bold text-[#252525] uppercase tracking-wider flex items-center gap-1.5">
+                        <Megaphone className="w-4 h-4 text-[#C62828]" /> Campus-Wide Broadcast Announcement
+                      </h4>
+                      <p className="text-[11px] text-[#666666]">
+                        Broadcast an immediate alert banner at the very top of the platform to all students, teachers, and website visitors.
+                      </p>
+                    </div>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <span className="text-xs font-bold text-[#252525]">
+                        {platformSettings.announcementBanner?.enabled ? 'Active (ON)' : 'Disabled (OFF)'}
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={platformSettings.announcementBanner?.enabled || false}
+                        onChange={(e) =>
+                          setPlatformSettings({
+                            ...platformSettings,
+                            announcementBanner: {
+                              ...(platformSettings.announcementBanner || { type: 'INFO', message: '' }),
+                              enabled: e.target.checked,
+                            },
+                          })
+                        }
+                        className="w-4 h-4 accent-[#C62828] cursor-pointer"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div className="md:col-span-1">
+                      <label className="block text-[11px] font-bold text-[#666666] mb-1">Banner Type</label>
+                      <select
+                        value={platformSettings.announcementBanner?.type || 'INFO'}
+                        onChange={(e) =>
+                          setPlatformSettings({
+                            ...platformSettings,
+                            announcementBanner: {
+                              ...(platformSettings.announcementBanner || { enabled: false, message: '' }),
+                              type: e.target.value,
+                            },
+                          })
+                        }
+                        className="w-full text-xs p-2.5 rounded-xl border border-[#E7DADA] bg-[#FFF7F7]"
+                      >
+                        <option value="INFO">🔵 INFO (University Update)</option>
+                        <option value="WARNING">🟡 WARNING (Notice / Timetable)</option>
+                        <option value="ALERT">🔴 ALERT (Urgent Announcement)</option>
+                      </select>
+                    </div>
+
+                    <div className="md:col-span-3">
+                      <label className="block text-[11px] font-bold text-[#666666] mb-1">Announcement Message</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Mid-term examination schedule released. Academic Block 3 labs closed Saturday."
+                        value={platformSettings.announcementBanner?.message || ''}
+                        onChange={(e) =>
+                          setPlatformSettings({
+                            ...platformSettings,
+                            announcementBanner: {
+                              ...(platformSettings.announcementBanner || { enabled: false, type: 'INFO' }),
+                              message: e.target.value,
+                            },
+                          })
+                        }
+                        className="w-full text-xs p-2.5 rounded-xl border border-[#E7DADA]"
+                      />
+                    </div>
                   </div>
                 </div>
 

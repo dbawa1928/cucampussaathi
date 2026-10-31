@@ -25,6 +25,9 @@ export interface DirectoryItem {
   designation?: string;
   researchDomains?: string[];
   officeLocation?: string;
+  cabinLiveStatus?: string;
+  cabinStatusNote?: string;
+  cabinStatusUpdatedAt?: Date;
   bookingPreference?: string;
   maxDailySlots?: number;
   isAcceptingBookings?: boolean;
@@ -225,6 +228,9 @@ export class DirectoryService {
             designation: tp.designation,
             researchDomains: tp.researchDomains || [],
             officeLocation: tp.officeLocation,
+            cabinLiveStatus: tp.cabinLiveStatus || 'IN_CABIN',
+            cabinStatusNote: tp.cabinStatusNote || '',
+            cabinStatusUpdatedAt: tp.cabinStatusUpdatedAt,
             bookingPreference: tp.bookingPreference,
             maxDailySlots: tp.maxDailySlots,
             isAcceptingBookings: tp.isAcceptingBookings,
@@ -282,6 +288,9 @@ export class DirectoryService {
             designation: tp.designation,
             researchDomains: tp.researchDomains || [],
             officeLocation: tp.officeLocation,
+            cabinLiveStatus: tp.cabinLiveStatus || 'IN_CABIN',
+            cabinStatusNote: tp.cabinStatusNote || '',
+            cabinStatusUpdatedAt: tp.cabinStatusUpdatedAt,
             bookingPreference: tp.bookingPreference,
             maxDailySlots: tp.maxDailySlots,
             isAcceptingBookings: tp.isAcceptingBookings,

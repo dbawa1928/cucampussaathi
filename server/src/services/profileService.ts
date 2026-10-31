@@ -177,6 +177,38 @@ export class ProfileService {
       user: toSafeUser(user),
     };
   }
+
+  /**
+   * Update teacher's live cabin availability status (e.g. IN_CABIN, IN_LECTURE, BUSY, AWAY).
+   */
+  async updateCabinStatus(
+    userId: string,
+    status: 'IN_CABIN' | 'IN_LECTURE' | 'BUSY' | 'AWAY',
+    note?: string
+  ): Promise<ITeacherProfile> {
+    const validStatuses = ['IN_CABIN', 'IN_LECTURE', 'BUSY', 'AWAY'];
+    if (!validStatuses.includes(status)) {
+      throw new AppError('Invalid cabin status. Must be IN_CABIN, IN_LECTURE, BUSY, or AWAY.', 400);
+    }
+
+    const profile = await TeacherProfile.findOneAndUpdate(
+      { user: userId },
+      {
+        $set: {
+          cabinLiveStatus: status,
+          cabinStatusNote: (note || '').trim().slice(0, 120),
+          cabinStatusUpdatedAt: new Date(),
+        },
+      },
+      { new: true }
+    );
+
+    if (!profile) {
+      throw new AppError('Teacher profile not found. Please initialize your profile first.', 404);
+    }
+
+    return profile;
+  }
 }
 
 export const profileService = new ProfileService();
