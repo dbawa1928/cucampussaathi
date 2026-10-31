@@ -2,6 +2,8 @@ import { Schema, model, Document, Model, Types } from 'mongoose';
 
 export type UserRole = 'STUDENT' | 'TEACHER' | 'ADMIN';
 
+export type AdminRole = 'SUPER_ADMIN' | 'ADMIN' | 'MODERATOR';
+
 export type AccountStatus = 'ACTIVE' | 'SUSPENDED' | 'DEACTIVATED';
 
 export interface IUser extends Document {
@@ -10,6 +12,8 @@ export interface IUser extends Document {
   uid: string;
   passwordHash: string;
   role: UserRole;
+  adminRole?: AdminRole;
+  adminNotes?: string;
   department: string;
   isVerified: boolean;
   accountStatus: AccountStatus;
@@ -61,6 +65,16 @@ const UserSchema = new Schema<IUser>(
       default: 'STUDENT',
       index: true,
     },
+    adminRole: {
+      type: String,
+      enum: ['SUPER_ADMIN', 'ADMIN', 'MODERATOR'],
+      default: 'ADMIN',
+    },
+    adminNotes: {
+      type: String,
+      trim: true,
+      maxlength: [2000, 'Admin notes cannot exceed 2000 characters'],
+    },
     department: {
       type: String,
       required: [true, 'Department is required'],
@@ -101,4 +115,5 @@ const UserSchema = new Schema<IUser>(
     },
   }
 );
+
 export const User: Model<IUser> = model<IUser>('User', UserSchema);

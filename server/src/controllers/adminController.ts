@@ -338,6 +338,338 @@ export class AdminController {
       next(error);
     }
   }
+
+  /**
+   * GET /api/v1/admin/users
+   */
+  async listAllUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await adminService.listAllUsers({
+        search: req.query.search as string,
+        role: req.query.role as any,
+        department: req.query.department as string,
+        accountStatus: req.query.accountStatus as any,
+        page: req.query.page ? Number(req.query.page) : undefined,
+        limit: req.query.limit ? Number(req.query.limit) : undefined,
+        sortBy: req.query.sortBy as string,
+        sortOrder: req.query.sortOrder as any,
+      });
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /api/v1/admin/users/:id
+   */
+  async getUser360(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const dossier = await adminService.getUser360(req.params.id);
+      res.status(200).json({
+        success: true,
+        data: dossier,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * PATCH /api/v1/admin/users/:id/status
+   */
+  async updateUniversalUserStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { status, reason } = req.body;
+      const updated = await adminService.updateUniversalUserStatus(
+        req.params.id,
+        status,
+        reason,
+        req.user!._id.toString(),
+        req.ip
+      );
+      res.status(200).json({
+        success: true,
+        message: `User status updated to ${status}`,
+        data: updated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * PATCH /api/v1/admin/users/:id/notes
+   */
+  async updateUserAdminNotes(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { notes } = req.body;
+      const updated = await adminService.updateUserAdminNotes(
+        req.params.id,
+        notes,
+        req.user!._id.toString(),
+        req.ip
+      );
+      res.status(200).json({
+        success: true,
+        message: 'Admin notes updated',
+        data: updated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /api/v1/admin/attendance
+   */
+  async getAttendanceAndAppeals(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await adminService.getAttendanceAndAppeals({
+        page: req.query.page ? Number(req.query.page) : undefined,
+        limit: req.query.limit ? Number(req.query.limit) : undefined,
+        status: req.query.status as string,
+        hasAppeal: req.query.hasAppeal === 'true',
+        search: req.query.search as string,
+      });
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/v1/admin/appointments/:id/review-appeal
+   */
+  async reviewAppointmentAppeal(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { decision, adminNotes } = req.body;
+      const result = await adminService.reviewAppointmentAppeal(
+        req.params.id,
+        decision,
+        adminNotes,
+        req.user!._id.toString(),
+        req.ip
+      );
+      res.status(200).json({
+        success: true,
+        message: `Appeal has been ${decision.toLowerCase()}ed`,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /api/v1/admin/learn-teach
+   */
+  async listLearnTeachAdministration(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await adminService.listLearnTeachAdministration({
+        tab: req.query.tab as any,
+        search: req.query.search as string,
+        page: req.query.page ? Number(req.query.page) : undefined,
+        limit: req.query.limit ? Number(req.query.limit) : undefined,
+      });
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/v1/admin/learn-teach/listings/:id/moderate
+   */
+  async moderateTeachingListing(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { action, reason } = req.body;
+      const result = await adminService.moderateTeachingListing(
+        req.params.id,
+        action,
+        reason,
+        req.user!._id.toString(),
+        req.ip
+      );
+      res.status(200).json({
+        success: true,
+        message: `Listing status updated to ${result.status}`,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/v1/admin/learn-teach/reports/:id/resolve
+   */
+  async resolveLearnTeachReport(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { action, resolutionNotes } = req.body;
+      const result = await adminService.resolveLearnTeachReport(
+        req.params.id,
+        action,
+        resolutionNotes,
+        req.user!._id.toString(),
+        req.ip
+      );
+      res.status(200).json({
+        success: true,
+        message: `Report resolved with status ${result.status}`,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /api/v1/admin/events
+   */
+  async listCampusEvents(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await adminService.listCampusEvents({
+        status: req.query.status as string,
+        search: req.query.search as string,
+        page: req.query.page ? Number(req.query.page) : undefined,
+        limit: req.query.limit ? Number(req.query.limit) : undefined,
+      });
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/v1/admin/events/:id/moderate
+   */
+  async moderateCampusEvent(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { action, reason } = req.body;
+      const result = await adminService.moderateCampusEvent(
+        req.params.id,
+        action,
+        reason,
+        req.user!._id.toString(),
+        req.ip
+      );
+      res.status(200).json({
+        success: true,
+        message: `Event ${action.toLowerCase()}ed successfully`,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /api/v1/admin/contact-messages
+   */
+  async listContactMessages(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await adminService.listContactMessages({
+        status: req.query.status as string,
+        search: req.query.search as string,
+        page: req.query.page ? Number(req.query.page) : undefined,
+        limit: req.query.limit ? Number(req.query.limit) : undefined,
+      });
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * PATCH /api/v1/admin/contact-messages/:id
+   */
+  async updateContactMessage(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { status, adminNotes } = req.body;
+      const result = await adminService.updateContactMessage(
+        req.params.id,
+        status,
+        adminNotes,
+        req.user!._id.toString(),
+        req.ip
+      );
+      res.status(200).json({
+        success: true,
+        message: `Contact message updated to ${status}`,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /api/v1/admin/settings
+   */
+  async getPlatformSettings(_req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const settings = await adminService.getPlatformSettings();
+      res.status(200).json({
+        success: true,
+        data: settings,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * PATCH /api/v1/admin/settings
+   */
+  async updatePlatformSettings(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const settings = await adminService.updatePlatformSettings(
+        req.body,
+        req.user!._id.toString(),
+        req.ip
+      );
+      res.status(200).json({
+        success: true,
+        message: 'Platform settings updated successfully',
+        data: settings,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /api/v1/admin/search
+   */
+  async globalSearch(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const query = (req.query.q as string) || '';
+      const results = await adminService.globalSearch(query);
+      res.status(200).json({
+        success: true,
+        data: results,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
 }
 
 export const adminController = new AdminController();

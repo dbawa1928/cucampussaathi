@@ -32,3 +32,6 @@ export * from './LearnTeachReport';
 export * from './CampusEvent';
 export * from './EventRegistration';
 export * from './EventReminderLog';
+
+// Platform Administration Models
+export * from './PlatformSetting';

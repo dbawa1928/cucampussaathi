@@ -12,6 +12,7 @@ export interface AuthUser {
   role: UserRole;
   department: string;
   isVerified: boolean;
+  adminRole?: string;
   accountStatus?: 'ACTIVE' | 'SUSPENDED' | 'DEACTIVATED';
   profile?: any;
 }

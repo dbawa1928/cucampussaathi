@@ -7,11 +7,33 @@ export type AuditAction =
   | 'STUDENT_REACTIVATED'
   | 'TEACHER_SUSPENDED'
   | 'TEACHER_REACTIVATED'
+  | 'USER_SUSPENDED'
+  | 'USER_REACTIVATED'
   | 'APPOINTMENT_ADMIN_CANCELLED'
+  | 'APPEAL_APPROVED'
+  | 'APPEAL_REJECTED'
+  | 'RESTRICTION_OVERRIDDEN'
+  | 'LISTING_HIDDEN'
+  | 'LISTING_RESTORED'
+  | 'REPORT_RESOLVED'
+  | 'REPORT_DISMISSED'
+  | 'EVENT_UNPUBLISHED'
+  | 'EVENT_RESTORED'
+  | 'DOCUMENT_DELETED'
+  | 'CONTACT_STATUS_UPDATED'
   | 'REPORT_EXPORTED'
   | 'SETTINGS_UPDATED';
 
-export type AuditEntityType = 'USER' | 'TEACHER_PROFILE' | 'APPOINTMENT' | 'REPORT' | 'SYSTEM';
+export type AuditEntityType =
+  | 'USER'
+  | 'TEACHER_PROFILE'
+  | 'APPOINTMENT'
+  | 'REPORT'
+  | 'EVENT'
+  | 'LEARN_TEACH'
+  | 'DOCUMENT'
+  | 'CONTACT'
+  | 'SYSTEM';
 
 export interface IAdminAuditLog extends Document {
   adminUser: Types.ObjectId;
@@ -51,14 +73,13 @@ const AdminAuditLogSchema = new Schema<IAdminAuditLog>(
     },
     entityType: {
       type: String,
-      enum: ['USER', 'TEACHER_PROFILE', 'APPOINTMENT', 'REPORT', 'SYSTEM'],
+      enum: ['USER', 'TEACHER_PROFILE', 'APPOINTMENT', 'REPORT', 'EVENT', 'LEARN_TEACH', 'DOCUMENT', 'CONTACT', 'SYSTEM'],
       required: [true, 'Entity type is required'],
       index: true,
     },
     reason: {
       type: String,
       trim: true,
-      maxlength: [1000, 'Reason cannot exceed 1000 characters'],
     },
     metadata: {
       type: Schema.Types.Mixed,
@@ -71,16 +92,12 @@ const AdminAuditLogSchema = new Schema<IAdminAuditLog>(
   },
   {
     timestamps: true,
+    // Audit logs are strictly immutable: no updates or direct deletes
   }
 );
 
-// Compound indexes for query efficiency
 AdminAuditLogSchema.index({ createdAt: -1 });
-AdminAuditLogSchema.index({ adminUser: 1, createdAt: -1 });
 AdminAuditLogSchema.index({ action: 1, createdAt: -1 });
-AdminAuditLogSchema.index({ entityType: 1, createdAt: -1 });
 
-export const AdminAuditLog: Model<IAdminAuditLog> = model<IAdminAuditLog>(
-  'AdminAuditLog',
-  AdminAuditLogSchema
-);
+export const AdminAuditLog: Model<IAdminAuditLog> =
+  model<IAdminAuditLog>('AdminAuditLog', AdminAuditLogSchema);

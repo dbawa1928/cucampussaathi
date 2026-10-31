@@ -9,6 +9,18 @@ import { auditService } from './auditService';
 import { notificationService } from './notificationService';
 import { generateCsv } from '../utils/csvExport';
 import { AppError } from '../utils/errors';
+import { CampusEvent } from '../models/CampusEvent';
+import { TeachingListingModel } from '../models/TeachingListing';
+import { LearningGoalModel } from '../models/LearningGoal';
+import { SkillConnectionModel } from '../models/SkillConnection';
+import { LearningGroupModel } from '../models/LearningGroup';
+import { LearnTeachReportModel } from '../models/LearnTeachReport';
+import { DocumentModel } from '../models/Document';
+import { ContactMessage } from '../models/ContactMessage';
+import { PlatformSetting } from '../models/PlatformSetting';
+import { TeacherStudentRestriction } from '../models/TeacherStudentRestriction';
+import { AdminAuditLog } from '../models/AdminAuditLog';
+
 
 export class AdminService {
   /**
@@ -30,6 +42,16 @@ export class AdminService {
       cancelledAppointments,
       departmentStats,
       recentAuditLogs,
+      publishedEvents,
+      totalEvents,
+      activeTeachingListings,
+      activeLearningGoals,
+      activeConnections,
+      activeGroups,
+      pendingLearnTeachReports,
+      totalStudyDocuments,
+      pendingContactMessages,
+      activeRestrictions,
     ] = await Promise.all([
       User.countDocuments({ role: 'STUDENT' }),
       User.countDocuments({ role: 'TEACHER' }),
@@ -48,6 +70,16 @@ export class AdminService {
         { $limit: 8 },
       ]),
       auditService.getAuditLogs({ limit: 10 }),
+      CampusEvent.countDocuments({ status: 'PUBLISHED' }),
+      CampusEvent.countDocuments(),
+      TeachingListingModel.countDocuments({ status: 'ACTIVE' }),
+      LearningGoalModel.countDocuments({ status: 'ACTIVE' }),
+      SkillConnectionModel.countDocuments({ status: 'ACCEPTED' }),
+      LearningGroupModel.countDocuments({ status: 'ACTIVE' }),
+      LearnTeachReportModel.countDocuments({ status: 'PENDING' }),
+      DocumentModel.countDocuments(),
+      ContactMessage.countDocuments({ status: 'NEW' }),
+      TeacherStudentRestriction.countDocuments({ isActive: true }),
     ]);
 
     return {
@@ -78,11 +110,31 @@ export class AdminService {
             ? Number(((cancelledAppointments / totalAppointments) * 100).toFixed(1))
             : 0,
       },
-      departments: departmentStats.map((d) => ({
+      departments: departmentStats.map((d: any) => ({
         department: d._id || 'Unassigned',
         userCount: d.count,
       })),
       recentActivity: recentAuditLogs.logs,
+      events: {
+        published: publishedEvents,
+        total: totalEvents,
+      },
+      learnTeach: {
+        activeListings: activeTeachingListings,
+        activeGoals: activeLearningGoals,
+        connections: activeConnections,
+        activeGroups: activeGroups,
+        pendingReports: pendingLearnTeachReports,
+      },
+      aiTutor: {
+        totalDocuments: totalStudyDocuments,
+      },
+      communication: {
+        pendingContactMessages,
+      },
+      restrictions: {
+        active: activeRestrictions,
+      },
     };
   }
 
@@ -1030,6 +1082,733 @@ export class AdminService {
       }
     }
   }
+
+  /**
+   * 9. UNIVERSAL USER MANAGEMENT
+   * Paginated, filtered search across all platform accounts (STUDENTS, TEACHERS, ADMINS).
+   */
+  async listAllUsers(query: {
+    search?: string;
+    role?: 'STUDENT' | 'TEACHER' | 'ADMIN';
+    department?: string;
+    accountStatus?: 'ACTIVE' | 'SUSPENDED' | 'DEACTIVATED';
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }) {
+    const page = Math.max(1, Number(query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(query.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    const filter: Record<string, any> = {};
+
+    if (query.role) {
+      filter.role = query.role;
+    }
+    if (query.department && query.department !== 'ALL') {
+      filter.department = query.department;
+    }
+    if (query.accountStatus && (query.accountStatus as string) !== 'ALL') {
+      filter.accountStatus = query.accountStatus;
+    }
+    if (query.search && query.search.trim()) {
+      const q = query.search.trim();
+      filter.$or = [
+        { fullName: { $regex: q, $options: 'i' } },
+        { email: { $regex: q, $options: 'i' } },
+        { uid: { $regex: q, $options: 'i' } },
+      ];
+    }
+
+    const sortField = query.sortBy || 'createdAt';
+    const sortDir = query.sortOrder === 'asc' ? 1 : -1;
+
+    const [users, total] = await Promise.all([
+      User.find(filter)
+        .sort({ [sortField]: sortDir })
+        .skip(skip)
+        .limit(limit)
+        .select('-passwordHash')
+        .lean(),
+      User.countDocuments(filter),
+    ]);
+
+    const studentUserIds = users.filter((u) => u.role === 'STUDENT').map((u) => u._id);
+    const teacherUserIds = users.filter((u) => u.role === 'TEACHER').map((u) => u._id);
+
+    const [studentProfiles, teacherProfiles] = await Promise.all([
+      StudentProfile.find({ user: { $in: studentUserIds } }).lean(),
+      TeacherProfile.find({ user: { $in: teacherUserIds } }).lean(),
+    ]);
+
+    const sMap = new Map(studentProfiles.map((p) => [p.user.toString(), p]));
+    const tMap = new Map(teacherProfiles.map((p) => [p.user.toString(), p]));
+
+    const enrichedUsers = users.map((u) => {
+      const uidStr = u._id.toString();
+      return {
+        ...u,
+        profile: u.role === 'STUDENT' ? sMap.get(uidStr) : u.role === 'TEACHER' ? tMap.get(uidStr) : null,
+      };
+    });
+
+    return {
+      users: enrichedUsers,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
+  }
+
+  /**
+   * 10. 360-DEGREE USER DOSSIER
+   */
+  async getUser360(userId: string) {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new AppError('Invalid User ID provided.', 400);
+    }
+    const user = await User.findById(userId).select('-passwordHash').lean();
+    if (!user) {
+      throw new AppError('User account not found.', 404);
+    }
+
+    const [
+      studentProfile,
+      teacherProfile,
+      appointmentsAsStudent,
+      teachingListings,
+      learningGoals,
+      skillConnections,
+      createdEvents,
+      documentsCount,
+      auditLogs,
+    ] = await Promise.all([
+      user.role === 'STUDENT' ? StudentProfile.findOne({ user: user._id }).lean() : null,
+      user.role === 'TEACHER' ? TeacherProfile.findOne({ user: user._id }).lean() : null,
+      Appointment.find({ student: user._id }).sort({ createdAt: -1 }).limit(10).lean(),
+      TeachingListingModel.find({ user: user._id }).sort({ createdAt: -1 }).lean(),
+      LearningGoalModel.find({ user: user._id }).sort({ createdAt: -1 }).lean(),
+      SkillConnectionModel.find({ $or: [{ requester: user._id }, { receiver: user._id }] }).sort({ createdAt: -1 }).lean(),
+      CampusEvent.find({ createdBy: user._id }).sort({ createdAt: -1 }).lean(),
+      DocumentModel.countDocuments({ owner: user._id }),
+      AdminAuditLog.find({ targetUser: user._id }).sort({ createdAt: -1 }).limit(15).populate('adminUser', 'fullName email role').lean(),
+    ]);
+
+    let teacherAppointments: any[] = [];
+    if (teacherProfile) {
+      teacherAppointments = await Appointment.find({ teacherProfile: teacherProfile._id })
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .populate('student', 'fullName email uid')
+        .lean();
+    }
+
+    return {
+      user,
+      profile: studentProfile || teacherProfile,
+      appointments: user.role === 'STUDENT' ? appointmentsAsStudent : teacherAppointments,
+      learnTeach: {
+        listings: teachingListings,
+        goals: learningGoals,
+        connections: skillConnections,
+      },
+      events: createdEvents,
+      aiTutor: {
+        documentsCount,
+      },
+      auditHistory: auditLogs,
+    };
+  }
+
+  /**
+   * 11. UNIVERSAL USER STATUS UPDATE (SUSPENSION / REACTIVATION)
+   */
+  async updateUniversalUserStatus(
+    userId: string,
+    status: 'ACTIVE' | 'SUSPENDED' | 'DEACTIVATED',
+    reason: string | undefined,
+    adminId: string,
+    ipAddress?: string
+  ) {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new AppError('Invalid user ID format.', 400);
+    }
+    if (userId === adminId && status !== 'ACTIVE') {
+      throw new AppError('Security constraint: You cannot suspend or deactivate your own administrator account.', 400);
+    }
+
+    const targetUser = await User.findById(userId);
+    if (!targetUser) {
+      throw new AppError('User not found.', 404);
+    }
+
+    if (targetUser.role === 'ADMIN' && status !== 'ACTIVE') {
+      const activeAdmins = await User.countDocuments({ role: 'ADMIN', accountStatus: 'ACTIVE' });
+      if (activeAdmins <= 1) {
+        throw new AppError('Security constraint: Cannot suspend or deactivate the final active platform administrator.', 400);
+      }
+    }
+
+    if (status === 'SUSPENDED' && (!reason || reason.trim().length < 5)) {
+      throw new AppError('A valid suspension reason of at least 5 characters is mandatory.', 400);
+    }
+
+    const previousStatus = targetUser.accountStatus;
+    targetUser.accountStatus = status;
+    if (status === 'SUSPENDED') {
+      targetUser.suspensionReason = reason?.trim();
+      targetUser.suspendedAt = new Date();
+      targetUser.suspendedBy = new Types.ObjectId(adminId);
+    } else if (status === 'ACTIVE') {
+      targetUser.suspensionReason = undefined;
+      targetUser.suspendedAt = undefined;
+      targetUser.suspendedBy = undefined;
+    }
+
+    await targetUser.save();
+
+    await auditService.logAdminAction({
+      adminId,
+      action: status === 'ACTIVE' ? 'USER_REACTIVATED' : 'USER_SUSPENDED',
+      targetUserId: targetUser._id,
+      entityType: 'USER',
+      reason: reason?.trim() || `User status updated to ${status}`,
+      metadata: { previousStatus, newStatus: status },
+      ipAddress,
+    });
+
+    await notificationService.createNotification({
+      recipient: targetUser._id,
+      type: 'ACCOUNT_SUSPENDED',
+      title: status === 'ACTIVE' ? 'Account Reactivated' : 'Account Suspended',
+      message:
+        status === 'ACTIVE'
+          ? 'Your CUCampusSaathi account has been reactivated. You have regained full access to university platform tools.'
+          : `Your CUCampusSaathi account has been suspended by administration. Reason: ${reason || 'Violation of campus collaboration terms.'}`,
+    });
+
+    return targetUser;
+  }
+
+  /**
+   * 12. UPDATE ADMIN NOTES
+   */
+  async updateUserAdminNotes(userId: string, notes: string, adminId: string, ipAddress?: string) {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new AppError('Invalid User ID.', 400);
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new AppError('User not found.', 404);
+    }
+    user.adminNotes = notes?.trim() || '';
+    await user.save();
+
+    await auditService.logAdminAction({
+      adminId,
+      action: 'SETTINGS_UPDATED',
+      targetUserId: user._id,
+      entityType: 'USER',
+      reason: 'Admin internal notes updated.',
+      ipAddress,
+    });
+
+    return user;
+  }
+
+  /**
+   * 13. ATTENDANCE & NO-SHOW MANAGEMENT
+   */
+  async getAttendanceAndAppeals(query: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    hasAppeal?: boolean;
+    search?: string;
+  }) {
+    const page = Math.max(1, Number(query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(query.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    const filter: Record<string, any> = {};
+
+    if (query.status && query.status !== 'ALL') {
+      filter.attendanceStatus = query.status;
+    } else if (query.hasAppeal) {
+      filter['noShowAppeal.status'] = { $in: ['PENDING', 'APPROVED', 'REJECTED'] };
+    } else {
+      filter.$or = [
+        { attendanceStatus: { $in: ['ATTENDED', 'NO_SHOW'] } },
+        { 'noShowAppeal.status': { $exists: true } },
+      ];
+    }
+
+    const [appointments, total, totalNoShows, pendingAppeals] = await Promise.all([
+      Appointment.find(filter)
+        .populate('student', 'fullName email uid department')
+        .populate({
+          path: 'teacherProfile',
+          populate: { path: 'user', select: 'fullName email uid department' },
+        })
+        .populate('slot')
+        .sort({ updatedAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Appointment.countDocuments(filter),
+      Appointment.countDocuments({ attendanceStatus: 'NO_SHOW' }),
+      Appointment.countDocuments({ 'noShowAppeal.status': 'PENDING' }),
+    ]);
+
+    return {
+      appointments,
+      metrics: {
+        totalAttendanceMarked: total,
+        totalNoShows,
+        pendingAppeals,
+      },
+      page,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
+  }
+
+  /**
+   * 14. REVIEW NO-SHOW APPEAL
+   */
+  async reviewAppointmentAppeal(
+    appointmentId: string,
+    decision: 'APPROVE' | 'REJECT',
+    adminNotes: string,
+    adminId: string,
+    ipAddress?: string
+  ) {
+    if (!Types.ObjectId.isValid(appointmentId)) {
+      throw new AppError('Invalid appointment ID.', 400);
+    }
+    const appointment = await Appointment.findById(appointmentId).populate('student', 'fullName email');
+    if (!appointment) {
+      throw new AppError('Appointment not found.', 404);
+    }
+    if (!appointment.noShowAppeal || appointment.noShowAppeal.status !== 'PENDING') {
+      throw new AppError('No pending student appeal found for this consultation.', 400);
+    }
+
+    appointment.noShowAppeal.status = decision === 'APPROVE' ? 'RESOLVED' : 'REJECTED';
+    appointment.noShowAppeal.resolvedAt = new Date();
+    appointment.noShowAppeal.resolvedBy = new Types.ObjectId(adminId);
+    appointment.noShowAppeal.adminReviewNotes = adminNotes?.trim() || `Administrative decision: ${decision}.`;
+
+    if (decision === 'APPROVE') {
+      appointment.attendanceStatus = 'ATTENDED';
+    }
+
+    await appointment.save();
+
+    await auditService.logAdminAction({
+      adminId,
+      action: decision === 'APPROVE' ? 'APPEAL_APPROVED' : 'APPEAL_REJECTED',
+      targetAppointmentId: appointment._id,
+      entityType: 'APPOINTMENT',
+      reason: adminNotes?.trim() || `Admin reviewed student no-show appeal with verdict: ${decision}`,
+      metadata: { decision, appointmentId },
+      ipAddress,
+    });
+
+    if (appointment.student) {
+      await notificationService.createNotification({
+        recipient: (appointment.student as any)._id || appointment.student,
+        type: 'APPOINTMENT_COMPLETED',
+        title: `No-Show Appeal ${decision === 'APPROVE' ? 'Approved' : 'Declined'}`,
+        message:
+          decision === 'APPROVE'
+            ? 'Your consultation no-show appeal was approved by administration. Attendance record adjusted.'
+            : `Your no-show appeal was declined by administration. Notes: ${adminNotes || 'Insufficient medical/academic documentation.'}`,
+      });
+    }
+
+    return appointment;
+  }
+
+  /**
+   * 15. LEARN & TEACH NETWORK ADMINISTRATION
+   */
+  async listLearnTeachAdministration(query: {
+    tab?: 'listings' | 'groups' | 'reports';
+    search?: string;
+    page?: number;
+    limit?: number;
+  }) {
+    const tab = query.tab || 'listings';
+    const page = Math.max(1, Number(query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(query.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    if (tab === 'listings') {
+      const filter: Record<string, any> = {};
+      if (query.search && query.search.trim()) {
+        filter.$or = [
+          { 'skill.name': { $regex: query.search.trim(), $options: 'i' } },
+          { description: { $regex: query.search.trim(), $options: 'i' } },
+        ];
+      }
+      const [listings, total] = await Promise.all([
+        TeachingListingModel.find(filter)
+          .populate('user', 'fullName email uid department role')
+          .populate('skill')
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+        TeachingListingModel.countDocuments(filter),
+      ]);
+      return { listings, total, page, totalPages: Math.ceil(total / limit) || 1 };
+    } else if (tab === 'groups') {
+      const filter: Record<string, any> = {};
+      if (query.search && query.search.trim()) {
+        filter.name = { $regex: query.search.trim(), $options: 'i' };
+      }
+      const [groups, total] = await Promise.all([
+        LearningGroupModel.find(filter)
+          .populate('createdBy', 'fullName email uid department')
+          .populate('skill')
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+        LearningGroupModel.countDocuments(filter),
+      ]);
+      return { groups, total, page, totalPages: Math.ceil(total / limit) || 1 };
+    } else {
+      const filter: Record<string, any> = {};
+      const [reports, total] = await Promise.all([
+        LearnTeachReportModel.find(filter)
+          .populate('reporter', 'fullName email uid role')
+          .populate('reportedUser', 'fullName email uid role')
+          .populate('reviewedBy', 'fullName email')
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+        LearnTeachReportModel.countDocuments(filter),
+      ]);
+      return { reports, total, page, totalPages: Math.ceil(total / limit) || 1 };
+    }
+  }
+
+  async moderateTeachingListing(
+    listingId: string,
+    action: 'HIDE' | 'RESTORE',
+    reason: string,
+    adminId: string,
+    ipAddress?: string
+  ) {
+    if (!Types.ObjectId.isValid(listingId)) {
+      throw new AppError('Invalid listing ID.', 400);
+    }
+    const listing = await TeachingListingModel.findById(listingId);
+    if (!listing) {
+      throw new AppError('Teaching listing not found.', 404);
+    }
+
+    listing.status = action === 'HIDE' ? 'PAUSED' : 'ACTIVE';
+    await listing.save();
+
+    await auditService.logAdminAction({
+      adminId,
+      action: action === 'HIDE' ? 'LISTING_HIDDEN' : 'LISTING_RESTORED',
+      entityType: 'LEARN_TEACH',
+      reason: reason?.trim() || `Listing status updated to ${listing.status}`,
+      metadata: { listingId, action },
+      ipAddress,
+    });
+
+    return listing;
+  }
+
+  async resolveLearnTeachReport(
+    reportId: string,
+    action: 'RESOLVE' | 'DISMISS',
+    resolutionNotes: string,
+    adminId: string,
+    ipAddress?: string
+  ) {
+    if (!Types.ObjectId.isValid(reportId)) {
+      throw new AppError('Invalid report ID.', 400);
+    }
+    const report = await LearnTeachReportModel.findById(reportId);
+    if (!report) {
+      throw new AppError('Report not found.', 404);
+    }
+
+    report.status = action === 'RESOLVE' ? 'ACTION_TAKEN' : 'DISMISSED';
+    report.reviewedBy = new Types.ObjectId(adminId);
+    report.adminNotes = resolutionNotes?.trim() || `Report marked ${action}.`;
+    await report.save();
+
+    await auditService.logAdminAction({
+      adminId,
+      action: action === 'RESOLVE' ? 'REPORT_RESOLVED' : 'REPORT_DISMISSED',
+      entityType: 'REPORT',
+      reason: resolutionNotes?.trim(),
+      metadata: { reportId, action },
+      ipAddress,
+    });
+
+    return report;
+  }
+
+  /**
+   * 16. CAMPUS EVENTS MODERATION
+   */
+  async listCampusEvents(query: {
+    status?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }) {
+    const page = Math.max(1, Number(query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(query.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    const filter: Record<string, any> = {};
+    if (query.status && query.status !== 'ALL') {
+      filter.status = query.status;
+    }
+    if (query.search && query.search.trim()) {
+      filter.$or = [
+        { title: { $regex: query.search.trim(), $options: 'i' } },
+        { organizerName: { $regex: query.search.trim(), $options: 'i' } },
+      ];
+    }
+
+    const [events, total] = await Promise.all([
+      CampusEvent.find(filter)
+        .populate('createdBy', 'fullName email role department')
+        .sort({ startDateTime: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      CampusEvent.countDocuments(filter),
+    ]);
+
+    return { events, total, page, totalPages: Math.ceil(total / limit) || 1 };
+  }
+
+  async moderateCampusEvent(
+    eventId: string,
+    action: 'UNPUBLISH' | 'RESTORE',
+    reason: string,
+    adminId: string,
+    ipAddress?: string
+  ) {
+    if (!Types.ObjectId.isValid(eventId)) {
+      throw new AppError('Invalid event ID.', 400);
+    }
+    const event = await CampusEvent.findById(eventId);
+    if (!event) {
+      throw new AppError('Event not found.', 404);
+    }
+
+    event.status = action === 'UNPUBLISH' ? 'CANCELLED' : 'PUBLISHED';
+    if (action === 'UNPUBLISH') {
+      event.cancelledAt = new Date();
+      event.cancellationReason = reason?.trim() || 'Event unpublished by administration.';
+    } else {
+      event.cancelledAt = undefined;
+      event.cancellationReason = undefined;
+    }
+    await event.save();
+
+    await auditService.logAdminAction({
+      adminId,
+      action: action === 'UNPUBLISH' ? 'EVENT_UNPUBLISHED' : 'EVENT_RESTORED',
+      entityType: 'EVENT',
+      reason: reason?.trim(),
+      metadata: { eventId, action },
+      ipAddress,
+    });
+
+    return event;
+  }
+
+  /**
+   * 17. CONTACT MESSAGES LIFECYCLE
+   */
+  async listContactMessages(query: {
+    status?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }) {
+    const page = Math.max(1, Number(query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(query.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    const filter: Record<string, any> = {};
+    if (query.status && query.status !== 'ALL') {
+      filter.status = query.status;
+    }
+    if (query.search && query.search.trim()) {
+      filter.$or = [
+        { fullName: { $regex: query.search.trim(), $options: 'i' } },
+        { email: { $regex: query.search.trim(), $options: 'i' } },
+        { subject: { $regex: query.search.trim(), $options: 'i' } },
+      ];
+    }
+
+    const [messages, total, pendingCount] = await Promise.all([
+      ContactMessage.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      ContactMessage.countDocuments(filter),
+      ContactMessage.countDocuments({ status: 'NEW' }),
+    ]);
+
+    return { messages, total, pendingCount, page, totalPages: Math.ceil(total / limit) || 1 };
+  }
+
+  async updateContactMessage(
+    messageId: string,
+    status: 'NEW' | 'IN_REVIEW' | 'RESOLVED' | 'ARCHIVED',
+    adminNotes: string,
+    adminId: string,
+    ipAddress?: string
+  ) {
+    if (!Types.ObjectId.isValid(messageId)) {
+      throw new AppError('Invalid message ID.', 400);
+    }
+    const message = await ContactMessage.findById(messageId);
+    if (!message) {
+      throw new AppError('Contact message not found.', 404);
+    }
+
+    message.status = status;
+    await message.save();
+
+    await auditService.logAdminAction({
+      adminId,
+      action: 'CONTACT_STATUS_UPDATED',
+      entityType: 'CONTACT',
+      reason: `Message status updated to ${status}. ${adminNotes || ''}`,
+      metadata: { messageId, status },
+      ipAddress,
+    });
+
+    return message;
+  }
+
+  /**
+   * 18. PLATFORM SETTINGS
+   */
+  async getPlatformSettings() {
+    let settings: any = await PlatformSetting.findOne().populate('updatedBy', 'fullName email role').lean();
+    if (!settings) {
+      const created = await PlatformSetting.create({
+        platformName: 'CUCampusSaathi',
+        supportEmail: 'support@cuchd.in',
+        supportPhone: '+91 160 3051000',
+        allowStudentRegistration: true,
+        allowTeacherRegistration: true,
+        maintenanceMode: false,
+        maintenanceMessage: 'CUCampusSaathi is currently undergoing scheduled platform maintenance. Please check back shortly.',
+        announcementBanner: { enabled: false, message: '', type: 'INFO' },
+      });
+      settings = created.toObject();
+    }
+    return settings;
+  }
+
+  async updatePlatformSettings(
+    data: {
+      platformName?: string;
+      supportEmail?: string;
+      supportPhone?: string;
+      allowStudentRegistration?: boolean;
+      allowTeacherRegistration?: boolean;
+      maintenanceMode?: boolean;
+      maintenanceMessage?: string;
+      announcementBanner?: { enabled: boolean; message: string; type: 'INFO' | 'WARNING' | 'ALERT' };
+    },
+    adminId: string,
+    ipAddress?: string
+  ) {
+    let settings = await PlatformSetting.findOne();
+    if (!settings) {
+      settings = new PlatformSetting();
+    }
+
+    if (data.platformName !== undefined) settings.platformName = data.platformName.trim();
+    if (data.supportEmail !== undefined) settings.supportEmail = data.supportEmail.trim();
+    if (data.supportPhone !== undefined) settings.supportPhone = data.supportPhone.trim();
+    if (data.allowStudentRegistration !== undefined) settings.allowStudentRegistration = data.allowStudentRegistration;
+    if (data.allowTeacherRegistration !== undefined) settings.allowTeacherRegistration = data.allowTeacherRegistration;
+    if (data.maintenanceMode !== undefined) settings.maintenanceMode = data.maintenanceMode;
+    if (data.maintenanceMessage !== undefined) settings.maintenanceMessage = data.maintenanceMessage.trim();
+    if (data.announcementBanner !== undefined) settings.announcementBanner = data.announcementBanner;
+
+    settings.updatedBy = new Types.ObjectId(adminId);
+    await settings.save();
+
+    await auditService.logAdminAction({
+      adminId,
+      action: 'SETTINGS_UPDATED',
+      entityType: 'SYSTEM',
+      reason: 'Platform operational configuration updated.',
+      metadata: data,
+      ipAddress,
+    });
+
+    return settings;
+  }
+
+  /**
+   * 19. GLOBAL CATEGORIZED SEARCH
+   */
+  async globalSearch(searchTerm: string) {
+    if (!searchTerm || searchTerm.trim().length < 2) {
+      return { users: [], appointments: [], events: [], listings: [], groups: [], messages: [] };
+    }
+    const q = searchTerm.trim();
+    const regex = { $regex: q, $options: 'i' };
+
+    const [users, appointments, events, listings, groups, messages] = await Promise.all([
+      User.find({
+        $or: [{ fullName: regex }, { email: regex }, { uid: regex }, { department: regex }],
+      })
+        .select('fullName email uid role department accountStatus')
+        .limit(6)
+        .lean(),
+      Appointment.find({ agenda: regex })
+        .populate('student', 'fullName email')
+        .select('agenda status meetingMode student createdAt')
+        .limit(5)
+        .lean(),
+      CampusEvent.find({ $or: [{ title: regex }, { organizerName: regex }] })
+        .select('title category mode startDateTime status venue')
+        .limit(5)
+        .lean(),
+      TeachingListingModel.find({ $or: [{ 'skill.name': regex }, { description: regex }] })
+        .populate('user', 'fullName email role')
+        .populate('skill')
+        .limit(5)
+        .lean(),
+      LearningGroupModel.find({ name: regex }).select('name membersCount isPrivate').limit(5)
+        .lean(),
+      ContactMessage.find({ $or: [{ fullName: regex }, { subject: regex }, { email: regex }] })
+        .select('fullName email subject status createdAt')
+        .limit(5)
+        .lean(),
+    ]);
+
+    return {
+      users,
+      appointments,
+      events,
+      listings,
+      groups,
+      messages,
+    };
+  }
+
 }
 
 export const adminService = new AdminService();
