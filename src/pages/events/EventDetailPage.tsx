@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { eventsApi, type CampusEventItem } from '../../api/eventsApi';
-import { generateAndDownloadIcs } from '../../utils/calendarIcs';
+import { generateAndDownloadIcs, getGoogleCalendarUrl } from '../../utils/calendarIcs';
 import { getCategoryColor } from '../../components/events/EventCard';
 import { CreateEventModal } from '../../components/events/CreateEventModal';
 
@@ -224,11 +224,21 @@ export const EventDetailPage: React.FC = () => {
             <button
               onClick={handleAddToCalendar}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FFF7F7] border border-[#C62828]/20 text-xs font-bold text-[#C62828] hover:bg-[#C62828] hover:text-white transition-all"
-              title="Download iCal (.ics) for Google Calendar or Apple Calendar"
+              title="Download iCal (.ics) for Apple Calendar or Outlook"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Add to Calendar</span>
+              <span>.ics Calendar</span>
             </button>
+            <a
+              href={event ? getGoogleCalendarUrl(event) : '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E7DADA] bg-white text-xs font-bold text-[#252525] hover:bg-gray-50 transition-colors"
+              title="Add event directly to Google Calendar"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-[#C62828]" />
+              <span>Google Calendar</span>
+            </a>
           </div>
         </div>
       </div>

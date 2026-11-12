@@ -98,3 +98,4 @@ export const AnnouncementBanner: React.FC = () => {
     </div>
   );
 };
+
