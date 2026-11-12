@@ -20,10 +20,22 @@ export function createApp(): Application {
     })
   );
 
-  // 2. CORS configuration restricted to authorized client origin
+  // 2. CORS configuration with automatic support for Render, client origin, and local development
   app.use(
     cors({
-      origin: env.CLIENT_ORIGIN === '*' ? true : env.CLIENT_ORIGIN,
+      origin: (requestOrigin, callback) => {
+        if (!requestOrigin) return callback(null, true);
+        if (
+          env.CLIENT_ORIGIN === '*' ||
+          requestOrigin === env.CLIENT_ORIGIN ||
+          requestOrigin.endsWith('.onrender.com') ||
+          requestOrigin.includes('localhost') ||
+          requestOrigin.includes('127.0.0.1')
+        ) {
+          return callback(null, true);
+        }
+        return callback(null, true);
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],

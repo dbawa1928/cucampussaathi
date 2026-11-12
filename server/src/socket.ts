@@ -19,10 +19,19 @@ let io: SocketIOServer | null = null;
 export function initSocketServer(httpServer: HttpServer): SocketIOServer {
   io = new SocketIOServer(httpServer, {
     cors: {
-      origin:
-        env.CLIENT_ORIGIN === '*'
-          ? true
-          : [env.CLIENT_ORIGIN, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+      origin: (requestOrigin, callback) => {
+        if (!requestOrigin) return callback(null, true);
+        if (
+          env.CLIENT_ORIGIN === '*' ||
+          requestOrigin === env.CLIENT_ORIGIN ||
+          requestOrigin.endsWith('.onrender.com') ||
+          requestOrigin.includes('localhost') ||
+          requestOrigin.includes('127.0.0.1')
+        ) {
+          return callback(null, true);
+        }
+        return callback(null, true);
+      },
       credentials: true,
       methods: ['GET', 'POST'],
     },

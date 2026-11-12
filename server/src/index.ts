@@ -38,7 +38,7 @@ async function bootstrap(): Promise<void> {
   }
 
   // Start HTTP Server
-  const server = httpServer.listen(env.PORT, () => {
+  const server = httpServer.listen(env.PORT, '0.0.0.0', () => {
     logger.info(`CUCampusSaathi Backend Server running on port ${env.PORT} [${env.NODE_ENV}]`);
     logger.info(`Health check available at http://localhost:${env.PORT}/api/v1/health`);
     logger.info(`WebSocket real-time notification engine initialized`);
