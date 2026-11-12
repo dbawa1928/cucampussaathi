@@ -4,8 +4,12 @@
  */
 
 export const API_BASE_URL: string =
-  import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.PROD ? '/api/v1' : 'http://localhost:5000/api/v1');
+  typeof window !== 'undefined' &&
+  !window.location.hostname.includes('localhost') &&
+  !window.location.hostname.includes('127.0.0.1')
+    ? '/api/v1'
+    : import.meta.env.VITE_API_BASE_URL ||
+      (import.meta.env.PROD ? '/api/v1' : 'http://localhost:5000/api/v1');
 
 export interface ApiResponse<T = any> {
   success: boolean;
